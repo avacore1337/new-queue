@@ -15,6 +15,8 @@ use diesel::pg::PgConnection;
 use dotenv::dotenv;
 use std::env;
 
+// use self::models::*;
+
 use std::thread;
 
 mod route;
