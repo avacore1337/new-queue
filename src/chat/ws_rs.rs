@@ -1,3 +1,5 @@
+extern crate diesel;
+extern crate chat;
 use ws::{
     listen,
     CloseCode,
@@ -13,6 +15,10 @@ use ws::{
 
 use std::cell::Cell;
 use std::rc::Rc;
+
+use self::chat::*;
+use self::models::*;
+use self::diesel::prelude::*;
 
 // Server web application handler
 struct Server {
@@ -61,8 +67,23 @@ impl Handler for Server {
 
     // Handle messages recieved in the websocket (in this case, only on /ws)
     fn on_message(&mut self, message: Message) -> Result<()> {
+        use chat::schema::posts::dsl::*;
         let raw_message = message.into_text()?;
         println!("The message from the client is {:#?}", &raw_message);
+        
+        let connection = establish_connection();
+        create_post(&connection, "fake", &raw_message);
+        let results = posts.filter(published.eq(false))
+            .limit(5)
+            .load::<Post>(&connection)
+            .expect("Error loading posts");
+
+        println!("Displaying {} posts", results.len());
+        for post in results {
+            println!("{}", post.title);
+            println!("----------\n");
+            println!("{}", post.body);
+        }
 
         let message = if raw_message.contains("!warn") {
             let warn_message = "One of the clients sent warning to the server.";
