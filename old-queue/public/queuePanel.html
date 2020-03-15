@@ -1,0 +1,20 @@
+<div class="row">
+  <!-- The left part of the content in the bar -->
+  <div class="col-xs-6">
+    <!-- The queue is locked -->
+    <h4 ng-class="{'text-red' : queue.locked && !queue.hiding, 'text-light-gray' : queue.hiding}">
+      <span ng-show="queue.locked" class="glyphicon glyphicon-lock"> <span ng-show="!queue.hiding">{{queue.name}}</span></span>
+      <span ng-show="queue.hiding" class="glyphicon glyphicon-eye-close"> {{queue.name}}</span>
+      <span ng-show="!queue.locked && !queue.hiding"><a href="">{{queue.name}}</a></span>
+    </h4>
+  </div>
+  
+  <!-- The right part of the content in the bar -->
+  <div class="col-xs-6">
+    <h4 class="pull-right" ng-class="{'text-light-gray' : queue.hiding}">
+      <span ng-show="queue.position !== -1">{{queue.position}} /</span>
+      {{queue.length}}
+      <i class="glyphicon glyphicon-user"></i>
+    </h4>
+  </div>
+</div>

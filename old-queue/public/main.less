@@ -1,0 +1,338 @@
+@blue: #387EFF;
+@blue-hover: #1C65EB;
+@green: #30E651;
+@green-hover: #2BCF49;
+@red: #F54F36;
+@red-hover: #D6432D;
+@yellow: #F0D73A;
+@yellow-hover: #E8CA0E;
+@light-gray: #BEBEBE;
+@white-hover: #E2E2E2;
+@orange-odd: #D96518;
+@orange-even: #F07422;
+@red-odd: #D6432D;
+@red-even: #F54F36;
+@yellow-odd: #E8CA0E;
+@yellow-even: #F0D73A;
+
+.html, body
+{
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+div.white.clickable:hover
+{
+	background-color: @white-hover;
+	cursor: pointer;
+}
+button.red
+{
+  background-color: @red;
+}
+button.red.clickable:hover
+{
+  background-color: @red-hover;
+  cursor: pointer;
+}
+button.yellow
+{
+  background-color: @yellow;
+}
+button.yellow.clickable:hover
+{
+  background-color: @yellow-hover;
+  cursor: pointer;
+}
+button.green
+{
+  background-color: @green;
+}
+button.green.clickable:hover
+{
+  background-color: @green-hover;
+  cursor: pointer;
+}
+span.blue,
+button.blue
+{
+  background-color: @blue;
+}
+span.blue.clickable:hover,
+button.blue.clickable:hover
+{
+  background-color: @blue-hover;
+  cursor: pointer;
+}
+a.text-light-gray,
+td.text-light-gray,
+h4.text-light-gray,
+div.text-light-gray,
+span.text-light-gray
+{
+  color: @light-gray;
+}
+table.table-striped.booked > tbody > tr:nth-child(odd) > td{
+ background-color: #4FF07F;
+}
+table.table-striped.booked > tbody > tr:nth-child(even) > td{
+ background-color: #47FF70;
+}
+button.text-white,
+span.text-white,
+i.text-white
+{
+  color: white;
+}
+td.text-red,
+h2.text-red,
+h4.text-red,
+span.text-red
+{
+  color: red;
+}
+span.text-red.clickable:hover
+{
+  color: @red-hover;
+  cursor: pointer;
+}
+span.text-yellow
+{
+  color: @yellow;
+}
+span.text-yellow.clickable:hover
+{
+  color: @yellow-hover;
+  cursor: pointer;
+}
+span.text-blue
+{
+  color: @blue;
+}
+span.text-blue.clickable:hover
+{
+  color: @blue-hover;
+  cursor: pointer;
+}
+.buffer
+{
+  margin-bottom: 5%;
+}
+.center-content
+{
+  text-align: center;
+  padding: 5%;
+}
+.main-body
+{
+  position: absolute;
+  top: 5em;
+  width: 100%;
+}
+img.frame,
+button.frame
+{
+  border: solid #FFFFFF 1px;
+}
+
+table.table-striped > tbody > tr:nth-child(odd).pulse > td {
+  background-color: #B5DAF5;
+}
+
+table.table-striped > tbody > tr:nth-child(odd).pulse {
+  -webkit-animation: pulse 2s infinite;
+  -moz-animation: pulse 2s infinite;
+}
+
+table.table-striped > tbody > tr:nth-child(even).pulse > td {
+  background-color: #C5E7FF;
+}
+
+table.table-striped > tbody > tr:nth-child(even).pulse {
+  -webkit-animation: pulse 2s infinite;
+  -moz-animation: pulse 2s infinite;
+}
+
+@-webkit-keyframes pulse
+{
+  0% {-webkit-transform: scale(1);}
+  50% {-webkit-transform: scale(0.98);}
+}
+
+@-moz-keyframes pulse
+{
+  0% {transform: scale(1);}
+  5% {transform: scale(0.9922);}
+  10% {transform: scale(0.9845);}
+  15% {transform: scale(0.9773);}
+  20% {transform: scale(0.9706);}
+  25% {transform: scale(0.9646);}
+  30% {transform: scale(0.9595);}
+  35% {transform: scale(0.9554);}
+  40% {transform: scale(0.9524);}
+  45% {transform: scale(0.9506);}
+  50% {transform: scale(0.95);}
+  55% {transform: scale(0.9506);}
+  60% {transform: scale(0.9524);}
+  65% {transform: scale(0.9554);}
+  70% {transform: scale(0.9595);}
+  75% {transform: scale(0.9646);}
+  80% {transform: scale(0.9706);}
+  85% {transform: scale(0.9773);}
+  90% {transform: scale(0.9845);}
+  95% {transform: scale(0.9922);}
+  100% {transform: scale(1);}
+}
+
+.left-divider
+{
+  border-left: 1px solid rgb(180, 180, 180);
+}
+.expand
+{
+  width:100%;
+}
+button:focus
+{
+  outline: 0;
+}
+.navbar .container
+{
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  width: 100%;
+}
+.navbar-brand-centered {
+  position: absolute;
+  left: 50%;
+  display: block;
+  width: 160px;
+  text-align: center;
+  background-color: transparent;
+}
+.navbar > .container .navbar-brand-centered,
+.navbar > .container-fluid .navbar-brand-centered
+{
+  margin-left: -80px;
+}
+.navbar
+{
+  border-bottom: 0;
+}
+.navbar-default .navbar-nav > li:not(.active) > a:not(.unresponsive):hover
+{
+  background-color: #0E0E0E;
+}
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:focus
+{
+  background-color: #3873FF;
+  color: #FFFFFF;
+}
+.navbar-default .navbar-nav > .active > a:hover
+{
+  background-color: #1C65EB;
+}
+.nav.navbar-nav.navbar-right > li > .unresponsive:hover
+{
+  color: #777777;
+  cursor: default;
+}
+table.table-striped > tbody > tr.light-blue-background > td
+{
+ background-color: #C5E7FF;
+}
+table.table-striped > tbody > tr:nth-child(odd).yellow-background > td
+{
+ background-color: @yellow-odd;
+}
+table.table-striped > tbody > tr:nth-child(even).yellow-background > td
+{
+ background-color: @yellow-even;
+}
+table.table-striped > tbody > tr:nth-child(odd).red-background > td
+{
+ background-color: @red-odd;
+}
+table.table-striped > tbody > tr:nth-child(even).red-background > td
+{
+ background-color: @red-even;
+}
+div.light-blue-background
+{
+  background-color: #C5E7FF;
+}
+div.light-blue-background:hover
+{
+  background-color: #B5DAF5;
+  cursor: pointer;
+}
+.panel
+{
+  font-size: 1.2em;
+  background-color: #F2F2F2;
+  padding: 2%;
+  border: 1px solid #E0E0E0;
+}
+.search
+{
+  background: url(images/magnifying-glass.png) no-repeat;
+  background-position:right center
+}
+img.frame
+{
+  background-color: #FFFFFF;
+  padding: 5%;
+  border: 1px solid #DDDDDD;
+}
+.pointer:hover
+{
+  cursor: pointer;
+}
+.no-text-decoration
+{
+  text-decoration: none;
+}
+img
+{
+  max-width: 100%;
+  max-height: 100%;
+}
+@media (max-width: 1000px) {
+  .navbar-header {
+    float: none;
+  }
+  .navbar-toggle {
+    display: block;
+  }
+  .navbar-collapse {
+    border-top: 1px solid transparent;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .navbar-collapse.collapse {
+    display: none!important;
+  }
+  .navbar-nav {
+    float: none!important;
+    margin: 7.5px -15px;
+  }
+  .navbar-nav>li {
+    float: none;
+  }
+  .navbar-nav>li>a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .navbar-text {
+    float: none;
+    margin: 15px 0;
+  }
+  /* since 3.1.0 */
+  .navbar-collapse.collapse.in {
+    display: block!important;
+  }
+  .collapsing {
+    overflow: hidden!important;
+  }
+}

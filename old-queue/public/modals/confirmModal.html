@@ -1,0 +1,13 @@
+<!-- {title: String, text: String, confirmButton: {text: String, callback: function}, declineButton: {text: String, callback: function}} -->
+<div class="modal-header">
+	<h4>{{title}}</h4>
+</div>
+<div class="modal-body" ng-show="text">
+	<div class="form-group">
+		<p>{{text}}</p>
+	</div>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-success" ng-click="decline()" id="modal{{declineButton.text}}Btn">{{declineButton.text}}</button>
+	<button class="btn btn-danger" ng-click="confirm()" id="modal{{confirmButton.text}}Btn">{{confirmButton.text}}</button>
+</div>

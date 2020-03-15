@@ -1,0 +1,9 @@
+Pre-req. Queuesystem running.
+         Dbas course that isn't locked or hibernated.
+
+(in the queueSystem folder)
+1. npm update
+2. node_modules/protractor/bin/webdriver-manager update         
+3. node_modules/protractor/bin/webdriver-manager start
+4. open a new terminal and go to queueSystem folder.             
+5. node_modules/protractor/bin/protractor testing/confQueue.js

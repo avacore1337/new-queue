@@ -1,0 +1,18 @@
+<div class="container">
+	<div ng-show="accessLevel() < 2" class="row">
+		<h5>There is nothing for you to see here.</h5>
+	</div>
+	<div ng-show="accessLevel() > 1" class="row">
+		<h1>Administration</h1>
+		<p>Please be careful on this page. Here, you have the power to change everything.</p>
+	</div>
+
+	<div class="row" ng-show="accessLevel() > 2">
+		<admin-options></admin-options>
+	</div>
+
+	<br>
+	<div ng-show="accessLevel() > 1">
+		<teacher-options></teacher-options>
+	</div>
+</div>

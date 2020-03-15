@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html ng-app="queue">
+	<head ng-controller="TitleController">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.min.css">
+		<link rel="stylesheet/less" type="text/css" href="main.less">
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/2.5.1/less.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular-route.min.js"></script>
+		<script src="http://momentjs.com/downloads/moment.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/livestamp/1.1.2/livestamp.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-google-chart/0.1.0/ng-google-chart.js"></script>
+		<title>{{title}}</title>
+	</head>
+
+	<body>
+		<nav class="navbar navbar-default navbar-inverse navbar-static-top" role="navigation" ng-controller="navigationController">
+			<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-brand-centered" id="indexCollapseBtn">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<div ng-click="redirect('list')" class="navbar-brand navbar-brand-centered" style="line-height: 1em; cursor: pointer;" id="indexStayAWhileBtn">Stay A While<span style="font-size: 1em; line-height: 1px; color: #222222;" class="hidden-xs"><br>And Listen</span></div>
+				</div>
+
+				<!-- Collect the nav links, forms, and other content for toggling -->
+				<div class="collapse navbar-collapse" id="navbar-brand-centered">
+					<ul class="nav navbar-nav">
+						<li ng-click="redirect('list')" ng-class="location == '/list' || location.match('/queue/.*') ? 'active' : ''" id="indexQueuesBtn"><a style="cursor: pointer;">Queues</a></li>
+						<li ng-click="redirect('about')" ng-class="location == '/about' ? 'active' : ''" id="indexAboutBtn"><a style="cursor: pointer;">About</a></li>
+						<li ng-click="redirect('help')" ng-class="location == '/help' ? 'active' : ''" id="indexHelpBtn"><a style="cursor: pointer;">Help</a></li>
+						<li ng-show="accessLevel() > 1" ng-click="redirect('administration')" ng-class="location == '/administration' ? 'active' : ''" id="indexAdminBtn"><a style="cursor: pointer;">Administration</a></li>
+						<li ng-show="accessLevel() > 1" ng-click="redirect('statistics')" ng-class="location == '/statistics' ? 'active' : ''" id="indexStatisticsBtn"><a style="cursor: pointer;">Statistics</a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li class="unresponsive hidden-xs" id="indexNameTextField"><a class="unresponsive">{{realname}}</a></li>
+						<li ng-hide="realname" ng-click="externalLink('login?target=' + location)" id="indexLogInBtn"><a style="cursor: pointer;">Log in</a></li>
+						<li ng-show="realname" ng-click="logOut()" id="indexLogOutBtn"><a style="cursor: pointer;">Log out</a></li>
+					</ul>
+				</div><!-- /.navbar-collapse -->
+			</div><!-- /.container-fluid -->
+		</nav>
+
+	<div class="main-body">
+		<div ng-view></div>
+		<div class="row col-xs-12 buffer"></div>
+	</div>
+
+		<script src = "/socket.io/socket.io.js"></script>
+		<script src = "app.js"></script>
+		<script src = "controllers.js"></script>
+		<script src = "services.js"></script>
+		<script src = "queue/queue.js"></script>
+		<script src = "queue/directive.js"></script>
+		<script src = "admin/admin.js"></script>
+		<script src = "statistics/statistics.js"></script>
+	</body>
+</html>

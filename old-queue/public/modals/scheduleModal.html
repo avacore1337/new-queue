@@ -1,0 +1,32 @@
+<!-- {title: String, remove: function, add: function} -->
+<div class="modal-header">
+	<h4>{{title}}</h4>
+</div>
+<div class="modal-body">
+	<div class="form-group">
+		<!-- Datepicker (from) -->
+		<div class="row">
+			<div class="col-md-6">
+				<h4>When</h4>
+				<p class="input-group">
+					<input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="from" is-open="opened" close-text="Close" show-button-bar="false" id="modalFromDateInputField"/>
+					<span class="input-group-btn">
+						<button type="button" class="btn btn-default" ng-click="open()" id="modalFromDateCalendarBtn"><i class="glyphicon glyphicon-calendar"></i></button>
+					</span>
+				</p>
+				<!-- Timepicker (from) -->
+				<timepicker ng-model="from" minute-step="1" show-meridian="false" id="modalFromTimepicker"></timepicker>
+			</div>
+
+			<div class="col-md-6">
+				<h4>Duration</h4>
+				<!-- Timepicker (length) -->
+				<timepicker ng-model="length" minute-step="1" show-meridian="false" id="modalLengthTimepicker"></timepicker>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-warning" ng-click="remove()" id="modalRemoveScheduleBtn">Remove schedules</button>
+		<button class="btn btn-primary" ng-click="add()" id="modalAddScheduleBtn">Add schedule</button>
+	</div>
+</div>

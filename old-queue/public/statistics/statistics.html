@@ -1,0 +1,97 @@
+<div class="container">
+
+  <div ng-show="accessLevel() < 2">
+    <h5>There is nothing for you to see here.</h5>
+  </div>
+  <div ng-show="accessLevel() > 1">
+    <div class="row">
+      <!-- Dropdown of queues -->
+
+      <div class="col-md-2 col-md-offset-2">
+        <h4>Queue</h4>
+
+        <div class="dropdown">
+          <button class="btn btn-default dropdown-toggle col-xs-12 col-md-12" type="button" data-toggle="dropdown" id="statisticsSelectQueueDropDown">
+            <div class="col-xs-11 text-left" id="dropdown">Select Queue</div> <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li ng-repeat="queue in queues | orderBy:'toString()'"><a href="" ng-click="selectQueue(queue)" id="statistics{{queue}}DropDownBtn">{{queue}}</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Dropdown ends here -->
+
+    <div class="col-md-6">
+      <!-- Datepicker (from) -->
+      <div class="col-md-6">
+        <h4>From</h4>
+        <p class="input-group">
+          <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="fromTime" is-open="openedFrom" max-date="toTime" close-text="Close" show-button-bar="false" id="statisticsFromDateInputField"/>
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open($event, 'openedFrom')" id="statisticsFromDateCalendarBtn"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </p>
+        <!-- Timepicker (from) -->
+        <timepicker ng-model="fromTime" minute-step="mstep" show-meridian="false" id="statisticsFromTimeTimepicker"></timepicker>
+      </div>
+      <!-- Datepicker (to) -->
+      <div class="col-md-6">
+        <h4>To</h4>
+        <p class="input-group">
+          <input type="text" class="form-control" datepicker-popup="yyyy-MM-dd" ng-model="toTime" is-open="openedTo" min-date="fromTime" max-date="today" close-text="Close" show-button-bar="false" id="statisticsToDateInputField"/>
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open($event, 'openedTo')" id="statisticsToDateCalendarBtn"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </p>
+        <!-- Timepicker (to) -->
+        <timepicker ng-model="toTime" minute-step="mstep" show-meridian="false" id="statisticsToTimeTimepicker"></timepicker>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <button class="btn btn-primary pull-right" ng-show="selectedQueue" ng-click="getStatistics()" id="statisticsGetStatisticsBtn">Get statistics</button>
+          <button class="btn btn-primary pull-right" ng-hide="selectedQueue" popover="You must choose a queue first."  popover-trigger="focus" popover-placement="top" id="statisticsPromptQueueBtn">Get statistics</button>
+          <button class="btn btn-primary pull-right" ng-show="selectedQueue" ng-click="getJSONStatistics()" style="margin-right: 1em;" id="statisticsGetJSONStatisticsBtn">Get raw data</button>
+          <button class="btn btn-primary pull-right" ng-hide="selectedQueue" popover="You must choose a queue first."  popover-trigger="focus" popover-placement="top" style="margin-right: 1em;" id="statisticsPromptQueueBtn">Get raw data</button>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+    <div class="col-xs-12 col-md-6">
+      <table class="table table-striped" ng-show="showData">
+        <thead>
+          <th>Description</th>
+          <th>Statistics</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td >Amount of people helped</td>
+            <td>{{peopleHelped}}</td>
+          </tr>
+          <tr>
+            <td >Amount of presentations</td>
+            <td>{{peoplePresented}}</td>
+          </tr>
+          <tr>
+            <td>Amount of people left in the queue</td>
+            <td>{{leftInQueue}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Raw JSON data -->
+    </div>
+    <div class="col-xs-12">
+      <br>
+      <div ng-show="showJSONField">
+        <textarea class="col-xs-12" id="rawJSONTextArea" ng-model="rawJSON" rows="10"></textarea>
+      </div>
+    </div>
+    <div class="col-xs-12">
+      <div google-chart chart="chartObject" style="{{cssStyle}}"></div>
+    </div>
+  </div>
+</div>
+</div>

@@ -1,0 +1,104 @@
+{
+  "StayAWhile": [{
+    "name": "Anton Bäckström",
+    "gravatar": "7eaf43cc9a0edf01b4994318e03fe368",
+    "github": "antbac",
+    "linkedIn": "428598244"
+  }, {
+    "name": "Per Nyberg",
+    "gravatar": "a56ba9b63d4647d0d6593ad4869f2a8d",
+    "github": "",
+    "linkedIn": ""
+  }, {
+    "name": "Robert Welin-Berger",
+    "gravatar": "5577c2569cfb1fe29388d1e2c1a794d7",
+    "github": "avacore1337",
+    "linkedIn": "332859123"
+  }, {
+    "name": "Edvard Mickos",
+    "gravatar": "",
+    "github": "",
+    "linkedIn": ""
+  }, {
+    "name": "Pontus Blomberg",
+    "gravatar": "800801f53f64f446680972fe94a9856c",
+    "github": "",
+    "linkedIn": ""
+  }, {
+    "name": "Erik Tobias Lansner",
+    "gravatar": "2e508eec4544e2e4e9a700d16609bd5b",
+    "github": "",
+    "linkedIn": ""
+  }, {
+    "name": "Henrik Johansson",
+    "gravatar": "221e9f29c16c6530991f2ed157ee2dcf",
+    "github": "Kahevajo",
+    "linkedIn": "06687392"
+  }, {
+    "name": "Samuel Philipson",
+    "gravatar": "b85e81410ea4c7b886d06dc9c7b46fd5",
+    "github": "",
+    "linkedIn": "229372642"
+  }, {
+    "name": "Christoffer Neppare",
+    "gravatar": "",
+    "github": "",
+    "linkedIn": ""
+  }, {
+    "name": "Thomas Jorsell",
+    "gravatar": "da32551f9c7c6f72b607a011f5a5e153",
+    "github": "",
+    "linkedIn": ""
+  }],
+  "QWait": [{
+    "name": "Adrian Blanco",
+    "gravatar": "5e24f37bda5a846cdaa822e72627fe63",
+    "twitter": "",
+    "github": "adrianblp"
+  }, {
+    "name": "Casper Winsnes",
+    "gravatar": "0cb03d273d7ab05bcdd39b317a3bb401",
+    "twitter": "",
+    "github": ""
+  }, {
+    "name": "Christoffer Pettersson",
+    "gravatar": "5ba6cca11f93ea6d22f458700ac8a506",
+    "twitter": "csieuwerts",
+    "github": "krillmeister"
+  }, {
+    "name": "David Flemström",
+    "gravatar": "202ecb437d8bbd442d093a3a35c67a04",
+    "twitter": "dflemstr",
+    "github": "dflemstr"
+  }, {
+    "name": "Eric Schmidt",
+    "gravatar": "62c78ae979bece6aeb0a153641a46fbd",
+    "twitter": "",
+    "github": ""
+  }, {
+    "name": "Gustav Zander",
+    "gravatar": "354a77646cf4a560ea5d5357a5a4aa84",
+    "twitter": "",
+    "github": ""
+  }, {
+    "name": "Hampus Liljekvist",
+    "gravatar": "9f977d80508af50fe1fcc53f6db7b1a1",
+    "twitter": "hlilje",
+    "github": "hlilje"
+  }, {
+    "name": "Jacob Sievers",
+    "gravatar": "00c2d95911a8ccf7e5200257f03ffb34",
+    "twitter": "",
+    "github": ""
+  }, {
+    "name": "Michael Håkansson",
+    "gravatar": "e12d2965870d5054f901b088ab692d3d",
+    "twitter": "michaelhak",
+    "github": "michaelhakansson"
+  }, {
+    "name": "Robin Engström",
+    "gravatar": "d3389ec4c8f9a0d7d0500ec982a35099",
+    "twitter": "",
+    "github": ""
+  }]
+}

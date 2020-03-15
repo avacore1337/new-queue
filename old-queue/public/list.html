@@ -1,0 +1,18 @@
+<div class="container">
+
+  <section class="col-md-10 col-md-offset-1">
+    <div class="row">
+      <h1>Queues</h1>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12 col-md-offset-9 col-md-3" style="padding: 0; margin-bottom: 1%;">
+        <input type="text" class="search" ng-model="search" placeholder="Search" style="height: 3em; margin-bottom: 2%; width: 100%; padding-left: 1em;">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="well" ng-repeat="queue in queues | orderBy:['locked','name']" ng-class="{'light-blue-background' : queue.position !== -1, 'white' : queue.position === -1,'clickable' : accessLevel(queue.name) > 0 || !queue.locked}" ng-click="redirect(queue)" id="list{{queue.name}}Btn" ng-hide="noMatch(queue.name) || (accessLevel(queue.name) < 2 && queue.hiding)" style="padding-left: 5%; padding-right: 5%;" ng-include="'queuePanel.html'">
+      </div>
+  </section>
+</div>

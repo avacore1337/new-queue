@@ -1,0 +1,12 @@
+<!-- {title: String, placeholder: String, buttonText: String, callback: function} -->
+<div class="modal-header">
+  <h4>{{title}}</h4>
+</div>
+<div class="modal-body">
+  <div class="form-group">
+    <textarea class="form-control" rows="3" ng-model="message" placeholder="{{placeholder}}" id="modalTextArea"></textarea>
+  </div>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary" ng-click="submit()" id="modal{{button.text}}Btn">{{buttonText}}</button>
+</div>

@@ -1,0 +1,8 @@
+<!-- {title: String, buttonOne: {text: string, type: string, callback: function}, buttonTwo: {text: string, type: string, callback: function}} -->
+<div class="modal-header">
+  <h4>{{title}}</h4>
+</div>
+<div class="modal-footer" style="text-align: center;">
+	<button ng-class="'btn btn-' + buttonOne.type" ng-click="funcOne()" id="modal{{buttonOne.text}}Btn">{{buttonOne.text}}</button>
+	<button ng-class="'btn btn-' + buttonTwo.type" ng-click="funcTwo()" id="modal{{buttonTwo.text}}Btn">{{buttonTwo.text}}</button>
+</div>
