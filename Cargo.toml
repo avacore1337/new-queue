@@ -13,6 +13,7 @@ r2d2 = "0.8"
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
+ldap3 = "0.6"
 
 [dependencies.rocket_contrib]
 version = "*"
