@@ -1,5 +1,5 @@
 -- Your SQL goes here
-CREATE TABLE kthuser (
+CREATE TABLE kthusers (
   id SERIAL PRIMARY KEY,
   username VARCHAR NOT NULL,
   ugkthid VARCHAR NOT NULL,

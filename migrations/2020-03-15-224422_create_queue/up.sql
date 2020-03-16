@@ -1,5 +1,5 @@
 -- Your SQL goes here
-CREATE TABLE queue (
+CREATE TABLE queues (
   id SERIAL PRIMARY KEY,
   locked BOOLEAN NOT NULL DEFAULT 'f',
   hiding BOOLEAN NOT NULL DEFAULT 'f',

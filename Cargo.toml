@@ -4,14 +4,15 @@ version = "0.1.0"
 edition = "2018"
 
 [dependencies]
+chrono = { version = "0.4", features = ["serde"] }
 ws = "0.8.1"
 rocket = "0.4.3"
-diesel = { version = "1.0.0", features = ["postgres"] }
+rocket_codegen = "0.4.3"
+diesel = { version = "1.0.0", features = ["postgres", "chrono"] }
 dotenv = "0.9.0"
 r2d2-diesel = "1.0"
 r2d2 = "0.8"
-serde = "1.0"
-serde_derive = "1.0"
+serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 ldap3 = "0.6"
 

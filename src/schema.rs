@@ -8,7 +8,7 @@ table! {
 }
 
 table! {
-    kthuser (id) {
+    kthusers (id) {
         id -> Int4,
         username -> Varchar,
         ugkthid -> Varchar,
@@ -32,7 +32,7 @@ table! {
 }
 
 table! {
-    queue (id) {
+    queues (id) {
         id -> Int4,
         locked -> Bool,
         hiding -> Bool,
@@ -41,11 +41,11 @@ table! {
     }
 }
 
-joinable!(admin -> queue (queue_id));
+joinable!(admin -> queues (queue_id));
 
 allow_tables_to_appear_in_same_query!(
     admin,
-    kthuser,
+    kthusers,
     posts,
-    queue,
+    queues,
 );
