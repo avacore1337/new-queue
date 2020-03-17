@@ -1,12 +1,22 @@
-use std::time::{SystemTime};
+#![allow(proc_macro_derive_resolution_fallback)]
 
 use super::schema::posts;
 use super::schema::kthusers;
 use super::schema::queues;
 
+
+use diesel;
+use diesel::prelude::*;
+
 use serde::{Serialize, Deserialize};
 
-use diesel::sql_types::Timestamp;
+pub fn all(connection: &PgConnection) -> QueryResult<Vec<Queue>> {
+    queues::table.load::<Queue>(&*connection)
+}
+
+pub fn get(id: i32, connection: &PgConnection) -> QueryResult<Queue> {
+    queues::table.find(id).get_result::<Queue>(connection)
+}
 
 #[derive(Queryable, AsChangeset, Serialize, Deserialize)]
 // #[derive(Queryable, Serialize, Deserialize)]
@@ -23,9 +33,8 @@ pub struct Kthuser {
         pub help : bool,
         pub badlocation : bool,
 }
-        // pub starttime : chrono::NaiveDateTime,
 
-// #[derive(Queryable, AsChangeset)]
+
 #[derive(Queryable, AsChangeset, Serialize, Deserialize)]
 pub struct Queue {
         pub id: i32,
@@ -34,6 +43,16 @@ pub struct Queue {
         pub motd: String,
         pub info : String,
   }
+
+#[derive(Insertable, Deserialize)]
+#[table_name = "queues"]
+struct NewQueue {
+        locked : bool,
+        hiding : bool,
+        motd: String,
+        info : String,
+}
+
 
 #[derive(Queryable)]
 pub struct Post {

@@ -13,7 +13,7 @@ extern crate ws;
 extern crate rocket_contrib;
 extern crate serde;
 
-use chrono::prelude::*;
+// use chrono::prelude::*;
 // use diesel::prelude::*;
 // use diesel::pg::PgConnection;
 // use dotenv::dotenv;
@@ -35,6 +35,7 @@ fn rocket() -> rocket::Rocket {
         //
         get::index,
         get::chat,
+        get::queues,
     ];
 
     rocket::ignite()
