@@ -34,6 +34,7 @@ table! {
 table! {
     queues (id) {
         id -> Int4,
+        name -> Varchar,
         locked -> Bool,
         hiding -> Bool,
         motd -> Varchar,
