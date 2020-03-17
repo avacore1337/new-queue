@@ -9,13 +9,32 @@ sudo apt install postgresql postgresql-contrib
 sudo apt install libpq-dev openssl -y
 '''
 
-get rustup
-https://rustup.rs/
+Get rustup (nightly version) from https://rustup.rs/
 
 install postgresql
 
 setup a user with password
+- Add the password to the .env file in the root directory of the repository
 
+Build the project
+´´´bash
+cargo build
+´´´
+
+Install Diesel CLI
+´´´bash
+cargo install diesel_cli --no-default-features --features postgres
+´´´
+
+Fix the database
+´´´bash
+diesel setup
+´´´
+
+Start the project using
+´´´bash
+cargo run
+´´´
 
 # guides
 
