@@ -14,6 +14,8 @@ sudo apt install libpq-dev openssl -y
 setup a user with password. Create a .env file that looks like this:
 ```bash
 DATABASE_URL=postgres://username:password@localhost/diesel_demo
+ROCKET_ADDRESS=localhost
+ROCKET_PORT=8001
 ```
 
 ### Get rust nightly

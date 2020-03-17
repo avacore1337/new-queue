@@ -4,7 +4,6 @@ use super::schema::posts;
 use super::schema::kthusers;
 use super::schema::queues;
 
-
 use diesel;
 use diesel::prelude::*;
 
@@ -16,6 +15,18 @@ pub fn all(connection: &PgConnection) -> QueryResult<Vec<Queue>> {
 
 pub fn get(id: i32, connection: &PgConnection) -> QueryResult<Queue> {
     queues::table.find(id).get_result::<Queue>(connection)
+}
+
+pub fn insert(queue: Queue, connection: &PgConnection) -> QueryResult<Queue> {
+    diesel::insert_into(queues::table)
+        .values(&NewQueue::from_queue(queue))
+        .get_result(connection)
+}
+
+pub fn new_insert(queue: NewQueue, connection: &PgConnection) -> QueryResult<Queue> {
+    diesel::insert_into(queues::table)
+        .values(queue)
+        .get_result(connection)
 }
 
 #[derive(Queryable, AsChangeset, Serialize, Deserialize)]
@@ -38,6 +49,7 @@ pub struct Kthuser {
 #[derive(Queryable, AsChangeset, Serialize, Deserialize)]
 pub struct Queue {
         pub id: i32,
+        pub name: String,
         pub locked : bool,
         pub hiding : bool,
         pub motd: String,
@@ -46,13 +58,18 @@ pub struct Queue {
 
 #[derive(Insertable, Deserialize)]
 #[table_name = "queues"]
-struct NewQueue {
-        locked : bool,
-        hiding : bool,
-        motd: String,
-        info : String,
+pub struct NewQueue {
+        name: String,
 }
 
+impl NewQueue {
+
+    fn from_queue(queue: Queue) -> NewQueue {
+        NewQueue {
+            name: queue.name,
+        }
+    }
+}
 
 #[derive(Queryable)]
 pub struct Post {
