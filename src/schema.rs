@@ -14,7 +14,7 @@ table! {
         ugkthid -> Varchar,
         realname -> Varchar,
         location -> Varchar,
-        starttime -> Date,
+        starttime -> Timestamptz,
         gettinghelp -> Bool,
         helper -> Varchar,
         help -> Bool,

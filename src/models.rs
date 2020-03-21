@@ -6,6 +6,7 @@ use super::schema::queues;
 
 use diesel;
 use diesel::prelude::*;
+use chrono::{DateTime, Utc};
 
 use serde::{Serialize, Deserialize};
 
@@ -38,7 +39,7 @@ pub struct Kthuser {
         pub ugkthid : String,
         pub realname : String,
         pub location : String,
-        pub starttime : chrono::NaiveDate,
+        pub starttime: DateTime<Utc>,
         pub gettinghelp : bool,
         pub helper : String,
         pub help : bool,
