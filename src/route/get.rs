@@ -1,4 +1,5 @@
 extern crate chat;
+use self::db::queue::*;
 use diesel::result::Error;
 use std::env;
 use rocket::http::Status;
@@ -37,7 +38,7 @@ pub fn queues() -> Result<Json<Vec<Queue>>, Status> {
 #[get("/queues/<id>")]
 pub fn queue(id: i32) -> Result<Json<Queue>, Status> {
     let connection = establish_connection();
-    self::models::get(id, &connection)
+    self::db::queue::get(id, &connection)
         .map(|queue| Json(queue))
         .map_err(|error| error_status(error))
 }

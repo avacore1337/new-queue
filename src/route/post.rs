@@ -1,4 +1,5 @@
 extern crate chat;
+use self::db::queue::*;
 use diesel::result::Error;
 use std::env;
 use rocket::http::Status;
