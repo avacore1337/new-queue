@@ -15,10 +15,10 @@ export default function App() {
   let [queues, setQueues] = useState(Queue.InitialValue);
 
   useEffect(() => {
-    // fetch('/api/queues')
-    //   .then(response => response.json())
-    //   .then((response: any[]) => response.map((res: any) => new Queue(res)))
-    //   .then((response: Queue[]) => setQueues(response));
+    fetch('http://localhost:8000/api/queues')
+      .then(response => response.json())
+      .then((response: any) => response.queues.map((res: any) => new Queue(res)))
+      .then((response: Queue[]) => setQueues(response));
   }, []);
 
   return (
