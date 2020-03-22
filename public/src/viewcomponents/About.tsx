@@ -1,22 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Contributor from '../models/Contributor';
+import Contributors from '../data/contributors.json';
 
 export default function AboutViewComponent() {
 
-  let [contributors, setContributors] = useState(Contributor.InitialValue);
-
-  useEffect(() => {
-    // fetch('/api/queues')
-    //   .then(response => response.json())
-    //   .then((response: any[]) => response.map((res: any) => new Queue(res)))
-    //   .then((response: Queue[]) => setQueues(response));
-  }, []);
+  let contributors: Contributor[] = Contributors.Contributors.map(contributor => new Contributor(contributor));
 
   return (
     <div className="container">
-      <h1>About Stay A While 2</h1>
-      <div className="panel">
-        <h2 style={{marginTop: 0}}>Story about the product</h2>
+      <div className="card" style={{marginTop: '5%', padding: '2em'}}>
+        <h2>About Stay A While 2</h2>
         <p>
           Welcome to <i>Stay a While 2</i>, the queueing system of KTH
         </p>
@@ -27,15 +20,14 @@ export default function AboutViewComponent() {
 
         <p>
           <a href="https://github.com/avacore1337/new-queue">
-            <img src="/images/github.svg" height="14" width="14" /> StayAWhile2@GitHub
+            <i className="fab fa-github" style={{color: '#000000'}}></i> StayAWhile2@GitHub
           </a>
-          v 1.0.0.0
           <br />
           Admin: <a href="mailto:robertwb@kth.se?Subject=Stay%20A%20While" target="_top">robertwb@kth.se</a>
         </p>
 
         <h2>Contributors</h2>
-        <div className="row" style={{fontSize: '9em'}}>
+        <div className="row">
         {contributors.map(contributor =>
           <div className="col-md-4" style={{marginBottom: '2%'}}>
             <div className="col-md-4">
@@ -45,21 +37,18 @@ export default function AboutViewComponent() {
               <h4>{contributor.name}</h4>
               {contributor.github
                 ? <a href={'https://github.com/' + contributor.github}>
-                    <i className="fab fa-github" style={{fontSize: '1em', color: '#000000'}}></i> {contributor.github}
+                    <i className="fab fa-github" style={{color: '#000000'}}></i> {contributor.github}
                     <br />
                   </a>
                 : null
               }
               {contributor.linkedIn
                 ? <a href={'https://www.linkedin.com/profile/view?id=' + contributor.linkedIn}>
-                    <i className="fab fa-github" style={{fontSize: '1em', color: '#000000'}}></i> {contributor.github}
+                    <i className="fab fa-linkedin" style={{color: '#0077B5'}}></i> {contributor.name}
                     <br />
                   </a>
                 : null
               }
-              <a ng-if="contributor.linkedIn" href="https://www.linkedin.com/profile/view?id={{contributor.linkedIn}}">
-                <i className="fab fa-linkedin" style={{fontSize: '1em', color: '#0077B5'}}></i> {contributor.name}
-              </a>
             </div>
           </div>
         )}
