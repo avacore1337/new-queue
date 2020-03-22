@@ -7,6 +7,7 @@ import Queue from './models/Queue';
 import HomeViewComponent from './viewcomponents/Home';
 import QueueViewComponent from './viewcomponents/Queue';
 import NavBarViewComponent from './viewcomponents/NavBar';
+import AboutViewComponent from './viewcomponents/About';
 
 export default function App() {
 
@@ -24,14 +25,29 @@ export default function App() {
     <Router>
       <NavBarViewComponent user={user} />
       <Switch>
-        <Route path="/">
+        <Route exact path="/">
           <HomeViewComponent queues={queues} user={user}/>
         </Route>
         <Route path="/Queue/:queueName">
           <QueueViewComponent queues={queues} user={user}/>
         </Route>
-        <Route path="/About">
-          <h1>About page</h1>
+        <Route exact path="/About">
+          <AboutViewComponent />
+        </Route>
+        <Route exact path="/Help">
+          <h1>Help page</h1>
+        </Route>
+        <Route exact path="/Administration">
+          <h1>Administration page</h1>
+        </Route>
+        <Route exact path="/Statistics">
+          <h1>Statistics page</h1>
+        </Route>
+        <Route exact path="/Login">
+          <h1>Login page</h1>
+        </Route>
+        <Route exact path="/Logout">
+          <h1>Logout page</h1>
         </Route>
       </Switch>
     </Router>
