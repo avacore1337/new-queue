@@ -44,10 +44,11 @@ pub fn rocket() -> rocket::Rocket {
         .mount(
             "/api",
             routes![
-                // routes::users::post_users,
+                routes::users::post_users,
                 routes::users::post_users_login,
                 // routes::users::put_user,
                 routes::users::get_user,
+                routes::queues::post_queues,
                 // routes::articles::post_articles,
                 // routes::articles::put_articles,
                 // routes::articles::get_article,

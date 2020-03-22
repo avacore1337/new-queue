@@ -3,7 +3,6 @@ use crate::schema::users;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use diesel::result::{DatabaseErrorKind, Error};
-use serde::Deserialize;
 
 #[derive(Insertable)]
 #[table_name = "users"]

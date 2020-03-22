@@ -3,7 +3,6 @@ use crate::schema::queues;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use diesel::result::{DatabaseErrorKind, Error};
-use serde::Deserialize;
 
 pub enum QueueCreationError {
     DuplicatedName,
@@ -21,13 +20,13 @@ impl From<Error> for QueueCreationError {
     }
 }
 
-pub fn all(connection: &PgConnection) -> QueryResult<Vec<Queue>> {
-    queues::table.load::<Queue>(&*connection)
-}
+// pub fn all(connection: &PgConnection) -> QueryResult<Vec<Queue>> {
+//     queues::table.load::<Queue>(&*connection)
+// }
 
-pub fn get(id: i32, connection: &PgConnection) -> QueryResult<Queue> {
-    queues::table.find(id).get_result::<Queue>(connection)
-}
+// pub fn get(id: i32, connection: &PgConnection) -> QueryResult<Queue> {
+//     queues::table.find(id).get_result::<Queue>(connection)
+// }
 
 pub fn create(
     conn: &PgConnection,

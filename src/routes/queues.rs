@@ -1,10 +1,7 @@
-
 use crate::auth::Auth;
-use crate::config::AppState;
 use crate::db::{self, queues::QueueCreationError};
 use crate::errors::{Errors, FieldValidator};
 
-use rocket::State;
 use rocket_contrib::json::{Json, JsonValue};
 use serde::Deserialize;
 use validator::Validate;
@@ -22,9 +19,9 @@ struct NewQueueData {
 
 #[post("/queues", format = "json", data = "<new_queue>")]
 pub fn post_queues(
+    _auth: Auth,
     new_queue: Json<NewQueue>,
     conn: db::Conn,
-    state: State<AppState>,
 ) -> Result<JsonValue, Errors> {
     let new_queue = new_queue.into_inner().queue;
 
@@ -42,3 +39,10 @@ pub fn post_queues(
             Errors::new(&[(field, "already exists")])
         })
 }
+
+// #[get("/queues")]
+// pub fn queues(auth: Option<Auth>, conn: db::Conn) -> Result<Json<Vec<Queue>>, Status> {
+//     all(&conn)
+//         .map(|queues| Json(queues))
+//         .map_err(|error| error_status(error))
+// }

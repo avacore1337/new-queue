@@ -1,10 +1,4 @@
-use chrono::{Duration, Utc};
 use serde::Serialize;
-
-use crate::schema::queues;
-
-use diesel;
-use diesel::prelude::*;
 
 #[derive(Queryable, Serialize)]
 pub struct Queue {
