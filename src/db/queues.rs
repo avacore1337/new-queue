@@ -20,9 +20,10 @@ impl From<Error> for QueueCreationError {
     }
 }
 
-// pub fn all(connection: &PgConnection) -> QueryResult<Vec<Queue>> {
-//     queues::table.load::<Queue>(&*connection)
-// }
+pub fn all( conn: &PgConnection) -> Vec<Queue> {
+    queues::table.load::<Queue>(&*conn)
+        .expect("Could not get queues")
+}
 
 // pub fn get(id: i32, connection: &PgConnection) -> QueryResult<Queue> {
 //     queues::table.find(id).get_result::<Queue>(connection)

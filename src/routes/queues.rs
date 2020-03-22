@@ -40,9 +40,7 @@ pub fn post_queues(
         })
 }
 
-// #[get("/queues")]
-// pub fn queues(auth: Option<Auth>, conn: db::Conn) -> Result<Json<Vec<Queue>>, Status> {
-//     all(&conn)
-//         .map(|queues| Json(queues))
-//         .map_err(|error| error_status(error))
-// }
+#[get("/queues")]
+pub fn get_queues(conn: db::Conn) -> JsonValue {
+    json!({ "queues": db::queues::all(&conn) })
+}
