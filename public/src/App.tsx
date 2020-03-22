@@ -29,7 +29,7 @@ export default function App() {
           <HomeViewComponent queues={queues} user={user}/>
         </Route>
         <Route path="/Queue/:queueName">
-          <QueueViewComponent queues={queues} user={user}/>
+          <QueueViewComponent />
         </Route>
         <Route exact path="/About">
           <AboutViewComponent />
