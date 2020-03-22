@@ -1,8 +1,8 @@
 use std::path::{Path, PathBuf};
 use rocket::response::NamedFile;
 
-#[get("/public/public/<file..>")]
+#[get("/<file..>")]
 pub fn file(file: PathBuf) -> Option<NamedFile> {
-    NamedFile::open(Path::new("static/").join(file)).ok()
+    NamedFile::open(Path::new("public/build/").join(file)).ok()
 }
 

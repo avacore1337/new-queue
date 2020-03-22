@@ -42,6 +42,12 @@ pub fn rocket() -> rocket::Rocket {
     dotenv().ok();
     rocket::custom(config::from_env())
         .mount(
+            "/",
+            routes![
+        routes::static_files::file,
+               ],
+               )
+        .mount(
             "/api",
             routes![
                 routes::users::post_users,
