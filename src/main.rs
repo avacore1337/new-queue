@@ -24,7 +24,7 @@ extern crate serde;
 use std::thread;
 
 mod route;
-use crate::route::{get, static_files};
+use crate::route::{get, static_files, post};
 
 mod chat;
 use crate::chat::ws_rs;
@@ -36,6 +36,8 @@ fn rocket() -> rocket::Rocket {
         get::index,
         get::chat,
         get::queues,
+        get::queue,
+        post::queue,
     ];
 
     rocket::ignite()

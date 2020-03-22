@@ -3,42 +3,64 @@
 This the the new queue system, written in rust.
 
 ## Setup
-'''bash
+```bash
 sudo apt install libssl-dev
 sudo apt install postgresql postgresql-contrib
 sudo apt install libpq-dev openssl -y
-'''
+```
 
-Get rustup (nightly version) from https://rustup.rs/
+### Setup postgresql
 
-install postgresql
+setup a user with password. Create a .env file that looks like this:
+```bash
+DATABASE_URL=postgres://username:password@localhost/diesel_demo
+ROCKET_ADDRESS=localhost
+ROCKET_PORT=8001
+```
 
-setup a user with password
-- Add the password to the .env file in the root directory of the repository
-
-Build the project
-´´´bash
-cargo build
-´´´
+### Get rust nightly
+Get [rustup](https://rustup.rs/) (nightly version) from
 
 Install Diesel CLI
-´´´bash
+```bash
 cargo install diesel_cli --no-default-features --features postgres
-´´´
+```
 
-Fix the database
-´´´bash
+Setup the database
+```bash
 diesel setup
-´´´
+```
 
+## Building
+Build the project
+```bash
+cargo build
+```
+
+## Starting the webserver
 Start the project using
-´´´bash
+```bash
 cargo run
-´´´
+```
+
+## Tips and tricks
+Run new migrations with
+```bash
+diesel migration run
+```
+
+revert migrations with
+```bash
+diesel migration revert
+```
+
+Reset all migrations with
+```bash
+for x in ./migrations/20*; do diesel migration revert; done; diesel migration run
+```
 
 # guides
-
-[Rocket, diesel, serde setup]: https://lankydan.dev/2018/05/20/creating-a-rusty-rocket-fuelled-with-diesel
-[Rust react setup]: https://github.com/ghotiphud/rust-web-starter
-[Chat blog]: ttps://www.steadylearner.com/blog/read/How-to-start-Rust-Chat-App
-[Steadylearner Chat]: https://github.com/steadylearner/Chat
+* [Rocket, diesel, serde setup](https://lankydan.dev/2018/05/20/creating-a-rusty-rocket-fuelled-with-diesel)
+* [Rust react setup](https://github.com/ghotiphud/rust-web-starter)
+* [Chat blog](https://www.steadylearner.com/blog/read/How-to-start-Rust-Chat-App)
+* [Steadylearner Chat](https://github.com/steadylearner/Chat)
