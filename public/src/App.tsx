@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import logo from './logo.svg';
 import './App.css';
 import User from './models/User';
 import Queue from './models/Queue';
@@ -14,12 +13,12 @@ export default function App() {
   let [user, setUser] = useState(User.InitialValue);
   let [queues, setQueues] = useState(Queue.InitialValue);
 
-  useEffect(() => {
-    fetch('http://localhost:8000/api/queues')
-      .then(response => response.json())
-      .then((response: any) => response.queues.map((res: any) => new Queue(res)))
-      .then((response: Queue[]) => setQueues(response));
-  }, []);
+  // useEffect(() => {
+  //   fetch('http://localhost:8000/api/queues')
+  //     .then(response => response.json())
+  //     .then((response: any) => response.queues.map((res: any) => new Queue(res)))
+  //     .then((response: Queue[]) => setQueues(response));
+  // }, []);
 
   return (
     <Router>
@@ -29,7 +28,7 @@ export default function App() {
           <HomeViewComponent queues={queues} user={user}/>
         </Route>
         <Route path="/Queue/:queueName">
-          <QueueViewComponent />
+          <QueueViewComponent queues={queues} />
         </Route>
         <Route exact path="/About">
           <AboutViewComponent />

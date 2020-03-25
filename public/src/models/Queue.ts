@@ -20,6 +20,9 @@ export default class Queue {
   private _hiding: boolean;
   public get hiding() { return this._hiding; }
 
+  private _users: User[];
+  public get users() { return this._users; }
+
   public constructor(data: any) {
     this._id = data.id;
     this._name = data.name;
@@ -27,6 +30,7 @@ export default class Queue {
     this._motd = data.motd;
     this._locked = data.locked;
     this._hiding = data.hiding;
+    this._users = [];
   }
 
   // public add(user: User) {
@@ -45,12 +49,12 @@ export default class Queue {
   //   }
   // }
 
-  public static InitialValue: Queue[] = [];
+  // public static InitialValue: Queue[] = [];
 
-  // public static InitialValue: Queue[] = [
-  //   new Queue({name: 'TestQueue 1', info: 'Info 1', motd: 'Motd 1', locked: false, hiding: false}),
-  //   new Queue({name: 'TestQueue 2', info: 'Info 2', motd: 'Motd 2', locked: true, hiding: false}),
-  //   new Queue({name: 'TestQueue 3', info: 'Info 3', motd: 'Motd 3', locked: false, hiding: true}),
-  //   new Queue({name: 'TestQueue 4', info: 'Info 4', motd: 'Motd 4', locked: true, hiding: true})
-  // ];
+  public static InitialValue: Queue[] = [
+    new Queue({name: 'TestQueue 1', info: 'Info 1', motd: 'Motd 1', locked: false, hiding: false}),
+    new Queue({name: 'TestQueue 2', info: 'Info 2', motd: 'Motd 2', locked: true, hiding: false}),
+    new Queue({name: 'TestQueue 3', info: 'Info 3', motd: 'Motd 3', locked: false, hiding: true}),
+    new Queue({name: 'TestQueue 4', info: 'Info 4', motd: 'Motd 4', locked: true, hiding: true})
+  ];
 }
