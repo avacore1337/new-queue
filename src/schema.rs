@@ -4,6 +4,7 @@ table! {
         user_id -> Int4,
         queue_id -> Int4,
         location -> Varchar,
+        usercomment -> Varchar,
         starttime -> Timestamptz,
         gettinghelp -> Bool,
         helper -> Varchar,
