@@ -29,7 +29,7 @@ export default function HomeViewComponent(props: any) {
     }
 
     return (
-      <div className="card row" style={styles} key={queue.name}>
+      <div className="card row" style={styles} key={queue.name + 'card'}>
         <div className="card-body">
           {queue.hiding ? <i className="fas fa-eye-slash" style={{marginRight: '1em'}}></i> : null}
           {queue.locked ? <i className="fas fa-lock" style={{marginRight: '1em'}}></i> : null}
@@ -53,7 +53,7 @@ export default function HomeViewComponent(props: any) {
         .map(queue =>
           canSee(queue)
           ? canClick(queue)
-            ? <Link to={"/Queue/" + queue.name}>
+            ? <Link to={"/Queue/" + queue.name} key={queue.name + 'link'}>
                 {queueCard(queue)}
               </Link>
             : queueCard(queue)

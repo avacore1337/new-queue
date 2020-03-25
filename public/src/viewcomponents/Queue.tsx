@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams,  } from "react-router-dom";
+import SocketConnection from '../utils/SocketConnection';
 import Queue from '../models/Queue';
 import NotFoundViewComponent from './NoMatch';
 
@@ -12,10 +13,21 @@ export default function QueueViewComponent(props: any) {
   let { queueName } = useParams();
   let queue: Queue | undefined = props.queues.filter((q: Queue) => q.name === queueName)[0];
 
+  function messageHandler(data: any) {
+    console.log(queueName + ': ' + JSON.stringify(data));
+  }
+
+  let socket: SocketConnection = props.socket;
+  useEffect(() => {
+    if (queueName !== undefined) {
+      socket.joinRoom(queueName as string, messageHandler);
+
+      return () => { socket.leaveRoom(queueName as string); };
+    }
+  }, []);
+
   if (queue === undefined) {
-    return (
-      <NotFoundViewComponent />
-    );
+    return ( <NotFoundViewComponent /> );
   }
 
   function changeLocation(event: any): void {

@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import './App.css';
+import SocketConnection from './utils/SocketConnection';
 import User from './models/User';
 import Queue from './models/Queue';
 import HomeViewComponent from './viewcomponents/Home';
 import QueueViewComponent from './viewcomponents/Queue';
 import NavBarViewComponent from './viewcomponents/NavBar';
 import AboutViewComponent from './viewcomponents/About';
+
+const SERVER_URL = 'http://localhost:8080';
 
 export default function App() {
 
@@ -20,6 +23,18 @@ export default function App() {
   //     .then((response: Queue[]) => setQueues(response));
   // }, []);
 
+  function messageHandler(data: any) {
+    console.log('Lobby: ' + JSON.stringify(data));
+  }
+
+  const socket = new SocketConnection(SERVER_URL);
+  useEffect(() => {
+    socket.joinRoom('lobby', messageHandler);
+
+    return () => { socket.leaveRoom('lobby'); };
+  }, []);
+
+
   return (
     <Router>
       <NavBarViewComponent user={user} />
@@ -28,7 +43,7 @@ export default function App() {
           <HomeViewComponent queues={queues} user={user}/>
         </Route>
         <Route path="/Queue/:queueName">
-          <QueueViewComponent queues={queues} />
+          <QueueViewComponent queues={queues} socket={socket} />
         </Route>
         <Route exact path="/About">
           <AboutViewComponent />
