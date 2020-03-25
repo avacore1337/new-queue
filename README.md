@@ -11,11 +11,11 @@ sudo apt install libpq-dev openssl -y
 
 ### Setup postgresql
 
-setup a user with password. Create a .env file that looks like this:
+setup a user (with your current username) with password. You know it works when you can run `psql` Then run the following:
 ```bash
-DATABASE_URL=postgres://username:password@localhost/diesel_demo
-ROCKET_ADDRESS=localhost
-ROCKET_PORT=8001
+psql -f init.sql
+diesel migration run
+psql -f testing.sql
 ```
 
 ### Get rust nightly
