@@ -9,15 +9,6 @@ sudo apt install postgresql postgresql-contrib
 sudo apt install libpq-dev openssl -y
 ```
 
-### Setup postgresql
-
-setup a user (with your current username) with password. You know it works when you can run `psql` Then run the following:
-```bash
-psql -f init.sql
-diesel migration run
-psql -f testing.sql
-```
-
 ### Get rust nightly
 Get [rustup](https://rustup.rs/) (nightly version) from
 
@@ -26,10 +17,15 @@ Install Diesel CLI
 cargo install diesel_cli --no-default-features --features postgres
 ```
 
-Setup the database
+### Setup postgresql
+
+setup a user (with your current username) with password. You know it works when you can run `psql` Then run the following:
 ```bash
-diesel setup
+psql -f init.sql
+diesel migration run
+psql -f testing.sql
 ```
+If you want to reset your database you can just run the scripts again
 
 ## Building
 Build the project
@@ -54,13 +50,11 @@ revert migrations with
 diesel migration revert
 ```
 
-Reset all migrations with
-```bash
-for x in ./migrations/20*; do diesel migration revert; done; diesel migration run
-```
-
 # guides
 * [Rocket, diesel, serde setup](https://lankydan.dev/2018/05/20/creating-a-rusty-rocket-fuelled-with-diesel)
 * [Rust react setup](https://github.com/ghotiphud/rust-web-starter)
 * [Chat blog](https://www.steadylearner.com/blog/read/How-to-start-Rust-Chat-App)
 * [Steadylearner Chat](https://github.com/steadylearner/Chat)
+* [Realworld Rust Rocket](https://github.com/TatriX/realworld-rust-rocket)
+
+
