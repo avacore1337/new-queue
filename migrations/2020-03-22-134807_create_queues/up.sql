@@ -1,7 +1,7 @@
 -- Your SQL goes here
 CREATE TABLE queues (
   id SERIAL PRIMARY KEY,
-  name VARCHAR NOT NULL,
+  name VARCHAR NOT NULL UNIQUE,
   locked BOOLEAN NOT NULL DEFAULT 'f',
   hiding BOOLEAN NOT NULL DEFAULT 'f',
   motd VARCHAR NOT NULL DEFAULT 'You can do it!',
