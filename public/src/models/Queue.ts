@@ -1,4 +1,4 @@
-import User from './User';
+import QueueEntry from './QueueEntry';
 
 export default class Queue {
 
@@ -20,8 +20,8 @@ export default class Queue {
   private _hiding: boolean;
   public get hiding() { return this._hiding; }
 
-  private _users: User[];
-  public get users() { return this._users; }
+  private _queueEntries: QueueEntry[];
+  public get queueEntries() { return this._queueEntries; }
 
   public constructor(data: any) {
     this._id = data.id;
@@ -30,18 +30,18 @@ export default class Queue {
     this._motd = data.motd;
     this._locked = data.locked;
     this._hiding = data.hiding;
-    this._users = [];
+    this._queueEntries = [QueueEntry.InitialValue];
   }
 
-  // public add(user: User) {
-  //   this.users.push(user);
+  // public add(user: QueueEntry) {
+  //   this.queueEntries.push(user);
   // }
   //
-  // public remove(user: User) {
+  // public remove(user: QueueEntry) {
   //   let index = 0;
-  //   while (index < this.users.length) {
-  //     if (this.users[index].kthuid === user.kthuid) {
-  //       this.users.splice(index, 1);
+  //   while (index < this.queueEntries.length) {
+  //     if (this.queueEntries[index].kthuid === user.kthuid) {
+  //       this.queueEntries.splice(index, 1);
   //     }
   //     else {
   //       index++;

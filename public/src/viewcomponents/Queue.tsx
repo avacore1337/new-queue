@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams,  } from "react-router-dom";
 import SocketConnection from '../utils/SocketConnection';
 import Queue from '../models/Queue';
+import QueueEntry from '../models/QueueEntry';
 import NotFoundViewComponent from './NoMatch';
 
 export default function QueueViewComponent(props: any) {
@@ -48,13 +49,13 @@ export default function QueueViewComponent(props: any) {
   }
 
   return (
-    <div className="container">
+    <div className="container col-10">
       <div className="row">
         <h1 className="col-12 col-md-4">{queue.name}</h1>
         <p className="col-12 col-md-4">{queue.info}</p>
       </div>
       <div className="row" style={{marginTop: '5em'}}>
-        <div className="col-12 col-md-4">
+        <div className="col-12 col-md-3">
           <form onSubmit={handleSubmit}>
 
             <label htmlFor="location">Location:</label>
@@ -117,13 +118,44 @@ export default function QueueViewComponent(props: any) {
             </div>
           </form>
         </div>
+        <div className="col-12 col-md-9">
         {
-          queue.users.length == 0
+          queue.queueEntries.length === 0
             ? <h3>This queue is empty</h3>
-            : <table className="col-12 col-md-8">
-
+            : <table className="table table-hover table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Location</th>
+                    <th scope="col"></th>
+                    <th scope="col">Comment</th>
+                    <th scope="col">Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    queue.queueEntries.map((queueEntry, index) =>
+                      <>
+                        <tr>
+                          <th scope="row">{index + 1}</th>
+                          <td>{queueEntry.name}</td>
+                          <td>{queueEntry.location}</td>
+                          <td>{queueEntry.typeOfCommunication}</td>
+                          <td>{queueEntry.comment}</td>
+                          <td>{queueEntry.timeOfEntry}</td>
+                        </tr>
+                        <tr></tr>
+                        <tr>
+                          <td colSpan={6}>This is for the hidden row</td>
+                        </tr>
+                      </>
+                    )
+                  }
+                </tbody>
               </table>
           }
+          </div>
       </div>
     </div>
   );
