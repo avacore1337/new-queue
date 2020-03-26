@@ -1,12 +1,14 @@
 import React from 'react';
+import Coffee from '../img/Coffee.png';
 import DarthVader from '../img/DarthVader.png';
+import Inside from '../img/Inside.png';
+import Panda from '../img/Panda.png';
 import Penguin from '../img/Penguin.png';
+import Rabbit from '../img/Rabbit.png';
 
 export default function NotFoundViewComponent() {
 
-  const images = [
-    DarthVader, Penguin
-  ];
+  const images = [ Coffee, DarthVader, Inside, Panda, Penguin, Rabbit ];
 
   const image = images[Math.floor(Math.random() * images.length)];
 
