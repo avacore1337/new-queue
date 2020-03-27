@@ -1,8 +1,8 @@
 use rocket_contrib::databases::diesel;
 
-pub mod users;
-pub mod queues;
 pub mod queue_entries;
+pub mod queues;
+pub mod users;
 
 #[database("diesel_postgres_pool")]
 pub struct Conn(diesel::PgConnection);

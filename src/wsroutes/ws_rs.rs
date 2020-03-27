@@ -1,28 +1,47 @@
 extern crate diesel;
 use ws::{
-    listen,
-    CloseCode,
-    Error,
-    Handler,
-    Handshake,
-    Message,
-    Request,
-    Response,
-    Result,
-    Sender,
+    listen, CloseCode, Error, Handler, Handshake, Message, Request, Response, Result, Sender,
 };
 
-use std::cell::Cell;
+use std::cell::{Cell, RefCell, RefMut};
+use std::collections::HashMap;
 use std::rc::Rc;
 
 // use self::chat::*;
 // use self::models::*;
 // use self::diesel::prelude::*;
 
+// struct Room {
+
+// // Type inference lets us omit an explicit type signature (which
+// // would be `HashMap<String, String>` in this example).
+//     members: HashMap<String, u32>
+// }
+
+// impl Room {
+//     fn broadcast(&mut self, message: String) {
+//         for (_, id) in &self.members {
+//             // TODO
+//             // send?
+//             println!("{}, {}", id, message);
+//         }
+//     }
+
+//     fn send(&mut self, message: String, name: String) {
+//         let id = self.members[&name];
+//             // TODO
+//             // send?
+//             println!("{}, {}", id, message);
+//     }
+// }
+
 // Server web application handler
 struct Server {
     out: Sender,
     count: Rc<Cell<u32>>,
+    rooms: Rc<RefCell<HashMap<String, Vec<u32>>>>,
+    // *map.entry(key).or_insert(0) += 1
+    // chatRooms:
 }
 
 impl Handler for Server {
@@ -52,7 +71,11 @@ impl Handler for Server {
         //
         // The most important part and used to assign id for clients
         // println!("{}", &handshake.local_addr.unwrap());
-        let open_message = format!("{} entered and the number of live connections is {}", &handshake.peer_addr.unwrap(), &number_of_connection);
+        let open_message = format!(
+            "{} entered and the number of live connections is {}",
+            &handshake.peer_addr.unwrap(),
+            &number_of_connection
+        );
 
         println!("{}", &open_message);
         self.out.broadcast(open_message);
@@ -65,7 +88,7 @@ impl Handler for Server {
         // use chat::schema::posts::dsl::*;
         let raw_message = message.into_text()?;
         println!("The message from the client is {:#?}", &raw_message);
-        
+
         // let connection = establish_connection();
         // create_post(&connection, "fake", &raw_message);
         // let results = posts.filter(published.eq(false))
@@ -98,7 +121,7 @@ impl Handler for Server {
             CloseCode::Away => println!("The client is leaving the site."),
             CloseCode::Abnormal => {
                 println!("Closing handshake failed! Unable to obtain closing status from client.")
-            },
+            }
             _ => println!("The client encountered an error: {}", reason),
         }
         self.count.set(self.count.get() - 1)
@@ -109,16 +132,29 @@ impl Handler for Server {
     }
 }
 
+impl Server {
+    pub fn new(out: Sender) -> Server {
+        // let count = Rc::new(Cell::new(0));
+        // let rooms: Rc<RefCell<HashMap<String, Vec<u32>>>>= Rc::new(RefCell::new(HashMap::new()));
+        //   , count: count.clone()), rooms: rooms
+        //   }
+        Server {
+            out: out,
+            count: Rc::new(Cell::new(0)),
+            rooms: Rc::new(RefCell::new(HashMap::new())),
+        }
+    }
+}
+
 pub fn websocket() -> () {
-  println!("Web Socket Server is ready at ws://127.0.0.1:7777/ws");
-  println!("Server is ready at http://127.0.0.1:7777/");
+    println!("Web Socket Server is ready at ws://127.0.0.1:7777/ws");
+    println!("Server is ready at http://127.0.0.1:7777/");
 
-  // Rc is a reference-counted box for sharing the count between handlers
-  // since each handler needs to own its contents.
-  // Cell gives us interior mutability so we can increment
-  // or decrement the count between handlers.
+    // Rc is a reference-counted box for sharing the count between handlers
+    // since each handler needs to own its contents.
+    // Cell gives us interior mutability so we can increment
+    // or decrement the count between handlers.
 
-  // Listen on an address and call the closure for each connection
-  let count = Rc::new(Cell::new(0));
-  listen("127.0.0.1:7777", |out| { Server { out: out, count: count.clone(), } }).unwrap()
+    // Listen on an address and call the closure for each connection
+    listen("127.0.0.1:7777", |out| Server::new(out)).unwrap()
 }

@@ -31,7 +31,7 @@ pub fn post_queues(
     extractor.check()?;
 
     db::queues::create(&conn, &name)
-        .map(|queue| json!({ "queue": queue}))
+        .map(|queue| json!({ "queue": queue }))
         .map_err(|error| {
             let field = match error {
                 QueueCreationError::DuplicatedName => "name",

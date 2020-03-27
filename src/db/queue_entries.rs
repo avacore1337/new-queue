@@ -39,8 +39,8 @@ pub fn create(
     let new_queue = &NewQueueEntry {
         user_id,
         queue_id,
-    location,
-    usercomment,
+        location,
+        usercomment,
     };
 
     diesel::insert_into(queue_entries::table)
@@ -52,8 +52,8 @@ pub fn create(
 #[derive(Insertable)]
 #[table_name = "queue_entries"]
 pub struct NewQueueEntry<'a> {
-        user_id: i32,
-        queue_id: i32,
-        location : &'a str,    
-        usercomment : &'a str,
+    user_id: i32,
+    queue_id: i32,
+    location: &'a str,
+    usercomment: &'a str,
 }

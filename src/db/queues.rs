@@ -20,8 +20,9 @@ impl From<Error> for QueueCreationError {
     }
 }
 
-pub fn all( conn: &PgConnection) -> Vec<Queue> {
-    queues::table.load::<Queue>(&*conn)
+pub fn all(conn: &PgConnection) -> Vec<Queue> {
+    queues::table
+        .load::<Queue>(&*conn)
         .expect("Could not get queues")
 }
 
@@ -29,13 +30,8 @@ pub fn all( conn: &PgConnection) -> Vec<Queue> {
 //     queues::table.find(id).get_result::<Queue>(connection)
 // }
 
-pub fn create(
-    conn: &PgConnection,
-    name: &str,
-) -> Result<Queue, QueueCreationError> {
-    let new_queue = &NewQueue {
-        name,
-    };
+pub fn create(conn: &PgConnection, name: &str) -> Result<Queue, QueueCreationError> {
+    let new_queue = &NewQueue { name };
 
     diesel::insert_into(queues::table)
         .values(new_queue)

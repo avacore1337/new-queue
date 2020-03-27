@@ -36,8 +36,4 @@ table! {
 joinable!(queue_entries -> queues (queue_id));
 joinable!(queue_entries -> users (user_id));
 
-allow_tables_to_appear_in_same_query!(
-    queue_entries,
-    queues,
-    users,
-);
+allow_tables_to_appear_in_same_query!(queue_entries, queues, users,);

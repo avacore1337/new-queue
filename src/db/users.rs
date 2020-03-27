@@ -34,7 +34,6 @@ pub fn create(
     ugkthid: &str,
     realname: &str,
 ) -> Result<User, UserCreationError> {
-
     let new_user = &NewUser {
         username,
         ugkthid,

@@ -1,8 +1,8 @@
+use crate::config::AppState;
 use rocket::http::Status;
 use rocket::request::{self, FromRequest, Request};
 use rocket::{Outcome, State};
 use serde::{Deserialize, Serialize};
-use crate::config::AppState;
 
 use jsonwebtoken as jwt;
 

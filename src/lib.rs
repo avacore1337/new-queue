@@ -1,4 +1,3 @@
-
 #![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use]
@@ -41,12 +40,7 @@ fn cors_fairing() -> Cors {
 pub fn rocket() -> rocket::Rocket {
     dotenv().ok();
     rocket::custom(config::from_env())
-        .mount(
-            "/",
-            routes![
-        routes::static_files::file,
-               ],
-               )
+        .mount("/", routes![routes::static_files::file,])
         .mount(
             "/api",
             routes![
