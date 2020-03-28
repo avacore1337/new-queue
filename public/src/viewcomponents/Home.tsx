@@ -46,7 +46,13 @@ export default function HomeViewComponent(props: any) {
   return (
     <div className="container">
       <div className="row">
-        <input type="text" value={filter} onChange={handleChange} className="col-12 col-md-4 offset-md-8" style={{lineHeight: '3em'}}/>
+        <input
+          type="text"
+          value={filter}
+          onChange={handleChange}
+          className="col-12 col-md-4 offset-md-8"
+          style={{lineHeight: '3em'}}
+          placeholder="Search" />
       </div>
       {queues
         .filter(queue => filter === '' || queue.name.toLowerCase().includes(filter.toLowerCase()))

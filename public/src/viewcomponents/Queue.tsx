@@ -3,13 +3,11 @@ import { useParams,  } from "react-router-dom";
 import SocketConnection from '../utils/SocketConnection';
 import Queue from '../models/Queue';
 import QueueEntry from '../models/QueueEntry';
+import EnterQueueViewComponent from './EnterQueue';
+import QueueEntryTableViewComponent from './QueueEntryTable';
 import NotFoundViewComponent from './NoMatch';
 
 export default function QueueViewComponent(props: any) {
-
-  let [location, setLocation] = useState('');
-  let [comment, setComment] = useState('');
-  let [typeOfCommunication, setTypeOfCommunication] = useState('help');
 
   let { queueName } = useParams();
   let queue: Queue | undefined = props.queues.filter((q: Queue) => q.name === queueName)[0];
@@ -31,131 +29,15 @@ export default function QueueViewComponent(props: any) {
     return ( <NotFoundViewComponent /> );
   }
 
-  function changeLocation(event: any): void {
-    setLocation(event.target.value);
-  }
-
-  function changeComment(event: any): void {
-    setComment(event.target.value);
-  }
-
-  function handleCommunicationType(event: any): void {
-    setTypeOfCommunication(event.target.value);
-  }
-
-  function handleSubmit(event: any): void {
-    event.preventDefault();
-
-  }
-
   return (
     <div className="container col-10">
       <div className="row">
-        <h1 className="col-12 col-md-4">{queue.name}</h1>
-        <p className="col-12 col-md-4">{queue.info}</p>
+        <h1 className="col-12 col-md-3">{queue.name}</h1>
+        <p className="col-12 col-md-9">{queue.info}</p>
       </div>
       <div className="row" style={{marginTop: '5em'}}>
-        <div className="col-12 col-md-3">
-          <form onSubmit={handleSubmit}>
-
-            <label htmlFor="location">Location:</label>
-            <br />
-            <div style={{backgroundColor: location === '' ? 'red' : 'inherit'}}>
-              <input name="location" type="text" value={location} onChange={changeLocation} style={{width: '100%', borderRadius: 0}} />
-              {
-                location === ''
-                ? <>
-                    <br />
-                    <em>Required</em>
-                  </>
-                : null
-              }
-            </div>
-
-            <br />
-
-            <label htmlFor="comment">Comment:</label>
-            <br />
-            <div style={{backgroundColor: comment === '' ? 'red' : 'inherit'}}>
-              <input name="comment" type="text" value={comment} onChange={changeComment} style={{width: '100%', borderRadius: 0}} />
-              {
-                comment === ''
-                ? <>
-                    <br />
-                    <em>Required</em>
-                  </>
-                : null
-              }
-            </div>
-
-            <br />
-
-            <div className="row text-center">
-              <div className="col-6">
-                <label htmlFor="help" style={{marginRight: '.5em' }}>Help</label>
-                <input
-                  type="radio"
-                  name="react-tips"
-                  value="help"
-                  checked={typeOfCommunication === "help"}
-                  onChange={handleCommunicationType} />
-              </div>
-              <div className="col-6">
-                <label htmlFor="presentation" style={{marginRight: '.5em' }}>Presentation</label>
-                <input
-                  type="radio"
-                  name="react-tips"
-                  value="presentation"
-                  checked={typeOfCommunication === "presentation"}
-                  onChange={handleCommunicationType} />
-                </div>
-            </div>
-
-            <br />
-
-            <div className="col-12 text-center" style={{backgroundColor: '#0275d8', lineHeight: '3em'}}>
-              <strong>Join queue</strong>
-            </div>
-          </form>
-        </div>
-        <div className="col-12 col-md-9">
-        {
-          queue.queueEntries.length === 0
-            ? <h3>This queue is empty</h3>
-            : <table className="table table-hover table-striped">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">User</th>
-                    <th scope="col">Location</th>
-                    <th scope="col"></th>
-                    <th scope="col">Comment</th>
-                    <th scope="col">Time</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    queue.queueEntries.map((queueEntry, index) =>
-                      <>
-                        <tr>
-                          <th scope="row">{index + 1}</th>
-                          <td>{queueEntry.name}</td>
-                          <td>{queueEntry.location}</td>
-                          <td>{queueEntry.typeOfCommunication}</td>
-                          <td>{queueEntry.comment}</td>
-                          <td>{queueEntry.timeOfEntry}</td>
-                        </tr>
-                        <tr></tr>
-                        <tr>
-                          <td colSpan={6}>This is for the hidden row</td>
-                        </tr>
-                      </>
-                    )
-                  }
-                </tbody>
-              </table>
-          }
-          </div>
+        <EnterQueueViewComponent socket={socket} />
+        <QueueEntryTableViewComponent queue={queue} />
       </div>
     </div>
   );
