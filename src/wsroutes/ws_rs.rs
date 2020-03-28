@@ -79,6 +79,7 @@ impl Handler for Server {
 
         println!("{}", &open_message);
         self.out.broadcast(open_message);
+        self.join_room("test_room".to_string(), self.count.get());
 
         Ok(())
     }
@@ -103,6 +104,7 @@ impl Handler for Server {
         //     println!("{}", post.body);
         // }
 
+        self.broadcast_room("test_room", &raw_message);
         let message = if raw_message.contains("!warn") {
             let warn_message = "One of the clients sent warning to the server.";
             println!("{}", &warn_message);
@@ -133,17 +135,29 @@ impl Handler for Server {
 }
 
 impl Server {
-    pub fn new(out: Sender) -> Server {
-        // let count = Rc::new(Cell::new(0));
-        // let rooms: Rc<RefCell<HashMap<String, Vec<u32>>>>= Rc::new(RefCell::new(HashMap::new()));
-        //   , count: count.clone()), rooms: rooms
-        //   }
-        Server {
-            out: out,
-            count: Rc::new(Cell::new(0)),
-            rooms: Rc::new(RefCell::new(HashMap::new())),
+    fn broadcast_room(&mut self, room: &str, message: &str) {
+        let rooms: RefMut<_> = self.rooms.borrow_mut();
+        println!("broadcasting room: {}", room);
+        for id in &rooms[room] {
+            // TODO
+            // send?
+            println!("Sending: '{}' to {}", message, id);
         }
     }
+
+    fn join_room(&mut self, room: String, id: u32) {
+        let mut rooms: RefMut<_> = self.rooms.borrow_mut();
+        rooms.entry(room.clone()).or_insert_with(Vec::new);
+        rooms.get_mut(&room).unwrap().push(id);
+        println!("Joining room: {}, {}", room, id);
+    }
+
+    //     fn send(&mut self, message: String, name: String) {
+    //         let id = self.members[&name];
+    //             // TODO
+    //             // send?
+    //             println!("{}, {}", id, message);
+    //     }
 }
 
 pub fn websocket() -> () {
@@ -156,5 +170,12 @@ pub fn websocket() -> () {
     // or decrement the count between handlers.
 
     // Listen on an address and call the closure for each connection
-    listen("127.0.0.1:7777", |out| Server::new(out)).unwrap()
+    let count = Rc::new(Cell::new(0));
+    let rooms: Rc<RefCell<HashMap<String, Vec<u32>>>> = Rc::new(RefCell::new(HashMap::new()));
+    listen("127.0.0.1:7777", |out| Server {
+        out: out,
+        count: count.clone(),
+        rooms: rooms.clone(),
+    })
+    .unwrap()
 }
