@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
 import './App.css';
 import SocketConnection from './utils/SocketConnection';
 import User from './models/User';
@@ -8,6 +8,7 @@ import HomeViewComponent from './viewcomponents/Home';
 import QueueViewComponent from './viewcomponents/Queue';
 import NavBarViewComponent from './viewcomponents/NavBar';
 import AboutViewComponent from './viewcomponents/About';
+import NoMatchViewComponent from './viewcomponents/NoMatch';
 
 const SERVER_URL = 'http://localhost:8080';
 
@@ -62,6 +63,9 @@ export default function App() {
         </Route>
         <Route exact path="/Logout">
           <h1>Logout page</h1>
+        </Route>
+        <Route>
+          <NoMatchViewComponent />
         </Route>
       </Switch>
     </Router>

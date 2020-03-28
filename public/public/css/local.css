@@ -25,3 +25,9 @@
 .yellow.clickable:hover {
   background-color: #e8ca0e;
 }
+
+img.frame {
+    background-color: #FFFFFF;
+    padding: 1%;
+    border: 1px solid #DDDDDD;
+}

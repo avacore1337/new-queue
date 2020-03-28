@@ -28,30 +28,34 @@ export default function AboutViewComponent() {
 
         <h2>Contributors</h2>
         <div className="row">
-        {contributors.map(contributor =>
-          <div className="col-md-4" style={{marginBottom: '2%'}}>
-            <div className="col-md-4">
-              <img className="frame" src={'http://gravatar.com/avatar/' + (contributor.gravatar || '00000000000000000000000000000000') + '.png'} alt={contributor.name} />
+        {
+          contributors.map(contributor =>
+            <div className="col-12 col-lg-6 row my-3 px-3" style={{marginBottom: '2%'}} key={contributor.name}>
+              <div className="col-3">
+                <img className="frame" src={'http://gravatar.com/avatar/' + (contributor.gravatar || '00000000000000000000000000000000') + '.png'} alt={contributor.name} />
+              </div>
+              <div className="col-9">
+                <h4>{contributor.name}</h4>
+                {
+                  contributor.github
+                    ? <a href={'https://github.com/' + contributor.github}>
+                        <i className="fab fa-github" style={{color: '#000000'}}></i> {contributor.github}
+                        <br />
+                      </a>
+                    : null
+                }
+                {
+                  contributor.linkedIn
+                    ? <a href={'https://www.linkedin.com/profile/view?id=' + contributor.linkedIn}>
+                        <i className="fab fa-linkedin" style={{color: '#0077B5'}}></i> {contributor.name}
+                        <br />
+                      </a>
+                    : null
+                }
+              </div>
             </div>
-            <div className="col-md-8">
-              <h4>{contributor.name}</h4>
-              {contributor.github
-                ? <a href={'https://github.com/' + contributor.github}>
-                    <i className="fab fa-github" style={{color: '#000000'}}></i> {contributor.github}
-                    <br />
-                  </a>
-                : null
-              }
-              {contributor.linkedIn
-                ? <a href={'https://www.linkedin.com/profile/view?id=' + contributor.linkedIn}>
-                    <i className="fab fa-linkedin" style={{color: '#0077B5'}}></i> {contributor.name}
-                    <br />
-                  </a>
-                : null
-              }
-            </div>
-          </div>
-        )}
+          )
+        }
         </div>
       </div>
     </div>

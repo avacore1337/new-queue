@@ -26,7 +26,7 @@ export default function EnterQueueViewComponent(props: any) {
   }
 
   return (
-    <div className="col-12 col-md-3">
+    <div className="col-12 col-lg-3">
       <form onSubmit={handleSubmit}>
 
         <label htmlFor="location">Location:</label>

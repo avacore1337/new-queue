@@ -32,8 +32,8 @@ export default function QueueViewComponent(props: any) {
   return (
     <div className="container col-10">
       <div className="row">
-        <h1 className="col-12 col-md-3">{queue.name}</h1>
-        <p className="col-12 col-md-9">{queue.info}</p>
+        <h1 className="col-12 col-lg-3">{queue.name}</h1>
+        <p className="col-12 col-lg-9">{queue.info}</p>
       </div>
       <div className="row" style={{marginTop: '5em'}}>
         <EnterQueueViewComponent socket={socket} />

@@ -7,7 +7,7 @@ export default function QueueEntryTableViewComponent(props: any) {
   let queue: Queue = props.queue;
 
   return (
-    <div className="col-12 col-md-9">
+    <div className="col-12 col-lg-9">
     {
       queue.queueEntries.length === 0
         ? <h3>This queue is empty</h3>

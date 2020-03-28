@@ -50,7 +50,7 @@ export default function HomeViewComponent(props: any) {
           type="text"
           value={filter}
           onChange={handleChange}
-          className="col-12 col-md-4 offset-md-8"
+          className="col-12 col-lg-4 offset-md-8"
           style={{lineHeight: '3em'}}
           placeholder="Search" />
       </div>
