@@ -11,35 +11,11 @@ use std::rc::Rc;
 // use self::models::*;
 // use self::diesel::prelude::*;
 
-// struct Room {
-
-// // Type inference lets us omit an explicit type signature (which
-// // would be `HashMap<String, String>` in this example).
-//     members: HashMap<String, u32>
-// }
-
-// impl Room {
-//     fn broadcast(&mut self, message: String) {
-//         for (_, id) in &self.members {
-//             // TODO
-//             // send?
-//             println!("{}, {}", id, message);
-//         }
-//     }
-
-//     fn send(&mut self, message: String, name: String) {
-//         let id = self.members[&name];
-//             // TODO
-//             // send?
-//             println!("{}, {}", id, message);
-//     }
-// }
-
 // Server web application handler
 struct Server {
     out: Sender,
     count: Rc<Cell<u32>>,
-    rooms: Rc<RefCell<HashMap<String, Vec<u32>>>>,
+    rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>>,
     // *map.entry(key).or_insert(0) += 1
     // chatRooms:
 }
@@ -78,8 +54,8 @@ impl Handler for Server {
         );
 
         println!("{}", &open_message);
-        self.out.broadcast(open_message);
-        self.join_room("test_room".to_string(), self.count.get());
+        // self.out.broadcast(open_message).unwrap();
+        self.join_room("test_room".to_string());
 
         Ok(())
     }
@@ -105,16 +81,17 @@ impl Handler for Server {
         // }
 
         self.broadcast_room("test_room", &raw_message);
-        let message = if raw_message.contains("!warn") {
-            let warn_message = "One of the clients sent warning to the server.";
-            println!("{}", &warn_message);
-            Message::Text("There was warning from another user.".to_string())
-        } else {
-            Message::Text(raw_message)
-        };
+        // let message = if raw_message.contains("!warn") {
+        //     let warn_message = "One of the clients sent warning to the server.";
+        //     println!("{}", &warn_message);
+        //     Message::Text("There was warning from another user.".to_string())
+        // } else {
+        //     Message::Text(raw_message)
+        // };
 
         // Broadcast to all connections
-        self.out.broadcast(message)
+        // self.out.broadcast(message)
+        Ok(())
     }
 
     fn on_close(&mut self, code: CloseCode, reason: &str) {
@@ -138,18 +115,20 @@ impl Server {
     fn broadcast_room(&mut self, room: &str, message: &str) {
         let rooms: RefMut<_> = self.rooms.borrow_mut();
         println!("broadcasting room: {}", room);
-        for id in &rooms[room] {
+        for sender in &rooms[room] {
             // TODO
             // send?
-            println!("Sending: '{}' to {}", message, id);
+            // TODO deal with errors
+            println!("Sending: '{}' to {}", &message, sender.connection_id());
+            sender.send(Message::Text(message.to_string())).unwrap();
         }
     }
 
-    fn join_room(&mut self, room: String, id: u32) {
+    fn join_room(&mut self, room: String) {
         let mut rooms: RefMut<_> = self.rooms.borrow_mut();
         rooms.entry(room.clone()).or_insert_with(Vec::new);
-        rooms.get_mut(&room).unwrap().push(id);
-        println!("Joining room: {}, {}", room, id);
+        rooms.get_mut(&room).unwrap().push(self.out.clone());
+        println!("Joining room: {}, {}", room, self.out.connection_id());
     }
 
     //     fn send(&mut self, message: String, name: String) {
@@ -171,7 +150,7 @@ pub fn websocket() -> () {
 
     // Listen on an address and call the closure for each connection
     let count = Rc::new(Cell::new(0));
-    let rooms: Rc<RefCell<HashMap<String, Vec<u32>>>> = Rc::new(RefCell::new(HashMap::new()));
+    let rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>> = Rc::new(RefCell::new(HashMap::new()));
     listen("127.0.0.1:7777", |out| Server {
         out: out,
         count: count.clone(),
