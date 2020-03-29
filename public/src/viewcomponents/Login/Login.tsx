@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { Redirect } from "react-router-dom";
 import axios from 'axios';
 import User from "../../models/User";
+import SocketConnection from "../../utils/SocketConnection";
+import RequestMessage from "../../utils/RequestMessage";
 
 export default function LoginViewComponent(props: any) {
 
   let setUser: React.Dispatch<React.SetStateAction<User | null>> = props.setUser;
+  let socket: SocketConnection = props.socket;
 
   let [username, setUsername] = useState('');
   let [shouldRedirect, setShouldRedirect] = useState(false);
@@ -33,6 +36,8 @@ export default function LoginViewComponent(props: any) {
         };
         localStorage.setItem('User', JSON.stringify(userData));
         setUser(new User(userData));
+
+        socket.send(new RequestMessage('/login', { token: res.data.user.token }));
 
         setShouldRedirect(true);
       })

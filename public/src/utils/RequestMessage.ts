@@ -8,7 +8,7 @@ export default class RequestMessage {
 
   public constructor(path: string, content?: any) {
     this._path = path;
-    this._content = content;
+    this._content = content || {};
   }
 
   public stringify(): string {

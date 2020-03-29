@@ -56,10 +56,14 @@ export default function App(props: any) {
           <h1>Statistics page</h1>
         </Route>
         <Route exact path="/Login">
-          <LoginViewComponent setUser={setUser} />
+          <LoginViewComponent
+            setUser={setUser}
+            socket={socket} />
         </Route>
         <Route exact path="/Logout">
-          <LogoutViewComponent setUser={setUser} />
+          <LogoutViewComponent
+            setUser={setUser}
+            socket={socket} />
         </Route>
         <Route>
           <NoMatchViewComponent />
