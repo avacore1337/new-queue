@@ -48,11 +48,18 @@ struct LogMessage {
     message: String,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct JoinQueue {
+    comment: String,
+    help: bool,
+    location: String,
+}
 // RoomHandler web application handler
 struct RoomHandler {
     out: Sender,
     count: Rc<Cell<u32>>,
     rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>>,
+    room_name: String,
 }
 
 impl Handler for RoomHandler {
@@ -114,16 +121,36 @@ impl Handler for RoomHandler {
                             }
                             Err(e) => println!("Error Deserializing: {:?}", e),
                         }
+                        return Ok(());
                     }
                     "/leave" => {
                         println!("attempting leaving");
-                        if let Ok(leave) = from_value::<Leave>(wrapper.content.clone()) {
-                            println!("Leaving");
-                            self.leave_room(leave.room);
+                        println!("Leaving");
+                        self.leave_room(self.room_name.clone());
+                        return Ok(());
+                    }
+                    "/joinQueue" => {
+                        println!("attempting leaving");
+                        if let Ok(join_queue) = from_value::<JoinQueue>(wrapper.content.clone()) {
+                            println!("User is joining Queue");
+                            // self.update database with joining queue
+                            self.broadcast_room(
+                                self.room_name.clone(),
+                                &json!({"path": "join/".to_string() + &self.room_name,
+                                    "content": {
+                                    "location": join_queue.location,
+                                    "help": join_queue.help,
+                                    "comment": join_queue.comment,
+                                    }
+                                })
+                                .to_string(),
+                            );
+                            // self.leave_room(leave.room);
+                            return Ok(());
                         }
                     }
                     // 3 => println!("three"),
-                    _ => println!("anything"),
+                    _ => println!("Unknown message"),
                 }
                 // if let Ok(simple_msg) = serde_json::from_value::<Message>(wrapper.content.clone()) {
                 //     self.message_log.borrow_mut().push(simple_msg.into_log());
@@ -209,10 +236,10 @@ impl Handler for RoomHandler {
 }
 
 impl RoomHandler {
-    fn broadcast_room(&mut self, room: &str, message: &str) {
+    fn broadcast_room(&mut self, room: String, message: &str) {
         let rooms: RefMut<_> = self.rooms.borrow_mut();
         println!("broadcasting room: {}", room);
-        for sender in &rooms[room] {
+        for sender in &rooms[&room] {
             // TODO
             // send?
             // TODO deal with errors
@@ -225,13 +252,15 @@ impl RoomHandler {
         let mut rooms: RefMut<_> = self.rooms.borrow_mut();
         rooms.entry(room.clone()).or_insert_with(Vec::new);
         rooms.get_mut(&room).unwrap().push(self.out.clone());
-        println!("Joining room: {}, {}", room, self.out.connection_id());
+        println!("Joining room: {}, {}", &room, self.out.connection_id());
+        self.room_name = room;
     }
 
     fn leave_room(&mut self, room: String) {
         let mut rooms: RefMut<_> = self.rooms.borrow_mut();
         rooms.entry(room.clone()).or_insert_with(Vec::new);
         rooms.get_mut(&room).unwrap().retain(|x| x != &self.out);
+        self.room_name = "".to_string();
         println!("Leaving room: {}, {}", room, self.out.connection_id());
     }
     //     fn send(&mut self, message: String, name: String) {
@@ -258,6 +287,7 @@ pub fn websocket() -> () {
         out: out,
         count: count.clone(),
         rooms: rooms.clone(),
+        room_name: "".to_string(),
     })
     .unwrap()
 }
