@@ -3,6 +3,8 @@ use ws::{
     listen, CloseCode, Error, Handler, Handshake, Message, Request, Response, Result, Sender,
 };
 
+use serde::{Deserialize, Serialize};
+use serde_json::{from_str, from_value, json};
 use std::cell::{Cell, RefCell, RefMut};
 use std::collections::HashMap;
 use std::rc::Rc;
@@ -11,16 +13,49 @@ use std::rc::Rc;
 // use self::models::*;
 // use self::diesel::prelude::*;
 
-// Server web application handler
-struct Server {
+use serde_json::Value as Json;
+// #[macro_use] serde_json::json!;
+
+// type MessageLog = Rc<RefCell<Vec<LogMessage>>>;
+// type Users = Rc<RefCell<HashSet<String>>>;
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct Wrapper {
+    path: String,
+    content: Json,
+}
+
+// #[derive(Serialize, Deserialize, Debug, Clone)]
+// struct Message {
+//     nick: String,
+//     message: String,
+// }
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct Join {
+    room: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct Leave {
+    room: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct LogMessage {
+    nick: String,
+    sent: Option<i64>,
+    message: String,
+}
+
+// RoomHandler web application handler
+struct RoomHandler {
     out: Sender,
     count: Rc<Cell<u32>>,
     rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>>,
-    // *map.entry(key).or_insert(0) += 1
-    // chatRooms:
 }
 
-impl Handler for Server {
+impl Handler for RoomHandler {
     fn on_request(&mut self, req: &Request) -> Result<Response> {
         match req.resource() {
             "/ws" => {
@@ -55,16 +90,78 @@ impl Handler for Server {
 
         println!("{}", &open_message);
         // self.out.broadcast(open_message).unwrap();
-        self.join_room("test_room".to_string());
+        // self.join_room("test_room".to_string());
 
         Ok(())
     }
 
     // Handle messages recieved in the websocket (in this case, only on /ws)
     fn on_message(&mut self, message: Message) -> Result<()> {
-        // use chat::schema::posts::dsl::*;
-        let raw_message = message.into_text()?;
+        let raw_message = message.clone().into_text()?;
         println!("The message from the client is {:#?}", &raw_message);
+        if let Ok(text_msg) = message.clone().as_text() {
+            println!("text_msg {:#?}", &text_msg);
+            if let Ok(wrapper) = from_str::<Wrapper>(text_msg) {
+                println!("wrapper.path {:#?}", &wrapper.path);
+                println!("wrapper.content {:#?}", &wrapper.content);
+                match wrapper.path.as_str() {
+                    "/join" => {
+                        println!("attempting join");
+                        match from_value::<Join>(wrapper.content.clone()) {
+                            Ok(join) => {
+                                println!("joining");
+                                self.join_room(join.room);
+                            }
+                            Err(e) => println!("Error Deserializing: {:?}", e),
+                        }
+                    }
+                    "/leave" => {
+                        println!("attempting leaving");
+                        if let Ok(leave) = from_value::<Leave>(wrapper.content.clone()) {
+                            println!("Leaving");
+                            self.leave_room(leave.room);
+                        }
+                    }
+                    // 3 => println!("three"),
+                    _ => println!("anything"),
+                }
+                // if let Ok(simple_msg) = serde_json::from_value::<Message>(wrapper.content.clone()) {
+                //     self.message_log.borrow_mut().push(simple_msg.into_log());
+                //     return self.out.broadcast(msg)
+                // }
+
+                // if let Ok(join) = serde_json::from_value::<Join>(wrapper.content.clone()) {
+                //     if self.users.borrow().contains(&join.join_nick) {
+                //         return self.out.send(format!("{:?}", json!({
+                //             "path": "/error",
+                //             "content": "A user by that name already exists.",
+                //         })))
+                //     }
+
+                //     let join_msg = Message {
+                //         nick: "system".into(),
+                //         message: format!("{} has joined the chat.", join.join_nick),
+                //     };
+                //     self.users.borrow_mut().insert(join.join_nick.clone());
+                //     self.nick = Some(join.join_nick);
+                //     self.message_log.borrow_mut().push(join_msg.clone().into_log());
+                //     return self.out.broadcast(format!("{:?}", json!({
+                //         "path": "/joined",
+                //         "content": join_msg,
+                //     })))
+                // }
+            }
+        }
+        self.out.send(
+            json!({
+                "path": "/error",
+                "content": format!("Unable to parse message {:?}", message),
+            })
+            .to_string(),
+        )
+        // use chat::schema::posts::dsl::*;
+        // let raw_message = message.into_text()?;
+        // println!("The message from the client is {:#?}", &raw_message);
 
         // let connection = establish_connection();
         // create_post(&connection, "fake", &raw_message);
@@ -80,9 +177,9 @@ impl Handler for Server {
         //     println!("{}", post.body);
         // }
 
-        self.broadcast_room("test_room", &raw_message);
+        // self.broadcast_room("test_room", &raw_message);
         // let message = if raw_message.contains("!warn") {
-        //     let warn_message = "One of the clients sent warning to the server.";
+        //     let warn_message = "One of the clients sent warning to the RoomHandler.";
         //     println!("{}", &warn_message);
         //     Message::Text("There was warning from another user.".to_string())
         // } else {
@@ -91,7 +188,7 @@ impl Handler for Server {
 
         // Broadcast to all connections
         // self.out.broadcast(message)
-        Ok(())
+        // Ok(())
     }
 
     fn on_close(&mut self, code: CloseCode, reason: &str) {
@@ -107,11 +204,11 @@ impl Handler for Server {
     }
 
     fn on_error(&mut self, err: Error) {
-        println!("The server encountered an error: {:?}", err);
+        println!("The RoomHandler encountered an error: {:?}", err);
     }
 }
 
-impl Server {
+impl RoomHandler {
     fn broadcast_room(&mut self, room: &str, message: &str) {
         let rooms: RefMut<_> = self.rooms.borrow_mut();
         println!("broadcasting room: {}", room);
@@ -131,6 +228,12 @@ impl Server {
         println!("Joining room: {}, {}", room, self.out.connection_id());
     }
 
+    fn leave_room(&mut self, room: String) {
+        let mut rooms: RefMut<_> = self.rooms.borrow_mut();
+        rooms.entry(room.clone()).or_insert_with(Vec::new);
+        rooms.get_mut(&room).unwrap().retain(|x| x != &self.out);
+        println!("Leaving room: {}, {}", room, self.out.connection_id());
+    }
     //     fn send(&mut self, message: String, name: String) {
     //         let id = self.members[&name];
     //             // TODO
@@ -140,8 +243,8 @@ impl Server {
 }
 
 pub fn websocket() -> () {
-    println!("Web Socket Server is ready at ws://127.0.0.1:7777/ws");
-    println!("Server is ready at http://127.0.0.1:7777/");
+    println!("Web Socket RoomHandler is ready at ws://127.0.0.1:7777/ws");
+    println!("RoomHandler is ready at http://127.0.0.1:7777/");
 
     // Rc is a reference-counted box for sharing the count between handlers
     // since each handler needs to own its contents.
@@ -151,7 +254,7 @@ pub fn websocket() -> () {
     // Listen on an address and call the closure for each connection
     let count = Rc::new(Cell::new(0));
     let rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>> = Rc::new(RefCell::new(HashMap::new()));
-    listen("127.0.0.1:7777", |out| Server {
+    listen("127.0.0.1:7777", |out| RoomHandler {
         out: out,
         count: count.clone(),
         rooms: rooms.clone(),
