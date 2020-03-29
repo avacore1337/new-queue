@@ -15,18 +15,21 @@ pub struct AppState {
     pub secret: Vec<u8>,
 }
 
+pub fn get_secret() -> String {
+    env::var("SECRET_KEY").unwrap_or_else(|err| {
+        if cfg!(debug_assertions) {
+            SECRET.to_string()
+        } else {
+            panic!("No SECRET_KEY environment variable found: {:?}", err)
+        }
+    })
+}
+
 impl AppState {
     pub fn manage() -> AdHoc {
         AdHoc::on_attach("Manage config", |rocket| {
             // Rocket doesn't expose it's own secret_key, so we use our own here.
-            let secret = env::var("SECRET_KEY").unwrap_or_else(|err| {
-                if cfg!(debug_assertions) {
-                    SECRET.to_string()
-                } else {
-                    panic!("No SECRET_KEY environment variable found: {:?}", err)
-                }
-            });
-
+            let secret = get_secret();
             Ok(rocket.manage(AppState {
                 secret: secret.into_bytes(),
             }))

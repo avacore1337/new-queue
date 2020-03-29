@@ -1,8 +1,10 @@
-extern crate diesel;
+//extern crate diesel;
 use ws::{
     listen, CloseCode, Error, Handler, Handshake, Message, Request, Response, Result, Sender,
 };
 
+use crate::auth::{decode_token, Auth};
+use crate::config::get_secret;
 use serde::{Deserialize, Serialize};
 use serde_json::{from_str, from_value, json};
 use std::cell::{Cell, RefCell, RefMut};
@@ -42,6 +44,11 @@ struct Leave {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+struct Login {
+    token: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 struct LogMessage {
     nick: String,
     sent: Option<i64>,
@@ -60,6 +67,8 @@ struct RoomHandler {
     count: Rc<Cell<u32>>,
     rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>>,
     room_name: String,
+    secret: Vec<u8>,
+    auth: Option<Auth>,
 }
 
 impl Handler for RoomHandler {
@@ -121,6 +130,25 @@ impl Handler for RoomHandler {
                             }
                             Err(e) => println!("Error Deserializing: {:?}", e),
                         }
+                        return Ok(());
+                    }
+                    "/login" => {
+                        println!("attempting join");
+                        match from_value::<Login>(wrapper.content.clone()) {
+                            Ok(login) => {
+                                println!("login");
+                                self.auth = decode_token(&login.token, &self.secret);
+                                if let Some(auth) = &self.auth {
+                                    println!("Logged in as {}", auth.username)
+                                }
+                            }
+                            Err(e) => println!("Error Deserializing: {:?}", e),
+                        }
+                        return Ok(());
+                    }
+                    "/logout" => {
+                        println!("Logged out");
+                        self.auth = Option::None;
                         return Ok(());
                     }
                     "/leave" => {
@@ -288,6 +316,8 @@ pub fn websocket() -> () {
         count: count.clone(),
         rooms: rooms.clone(),
         room_name: "".to_string(),
+        secret: get_secret().into_bytes(),
+        auth: Option::None,
     })
     .unwrap()
 }

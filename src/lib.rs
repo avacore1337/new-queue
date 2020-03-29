@@ -1,5 +1,7 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
+use std::thread;
+
 #[macro_use]
 extern crate rocket;
 #[macro_use]
@@ -21,6 +23,7 @@ mod errors;
 mod models;
 mod routes;
 mod schema;
+mod wsroutes;
 
 use rocket_contrib::json::JsonValue;
 use rocket_cors::Cors;
@@ -38,6 +41,13 @@ fn cors_fairing() -> Cors {
 }
 
 pub fn rocket() -> rocket::Rocket {
+    thread::Builder::new()
+        .name("Thread for Rust Chat with ws-rs".into())
+        // .stack_size(83886 * 1024) // 80mib in killobytes
+        .spawn(|| {
+            wsroutes::ws_rs::websocket();
+        })
+        .unwrap();
     dotenv().ok();
     rocket::custom(config::from_env())
         .mount("/", routes![routes::static_files::file,])
