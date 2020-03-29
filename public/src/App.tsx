@@ -9,13 +9,14 @@ import QueueViewComponent from './viewcomponents/Queue/Queue';
 import NavBarViewComponent from './viewcomponents/NavBar';
 import AboutViewComponent from './viewcomponents/About/About';
 import NoMatchViewComponent from './viewcomponents/NoMatch';
+import DebugViewComponent from './viewcomponents/Debug';
 
-const SERVER_URL = 'wss://localhost:8080';
-
-export default function App() {
+export default function App(props: any) {
 
   let [user, setUser] = useState(User.InitialValue);
   let [queues, setQueues] = useState(Queue.InitialValue);
+
+  const socket: SocketConnection = props.socket;
 
   // useEffect(() => {
   //   fetch('http://localhost:8000/api/queues')
@@ -24,53 +25,17 @@ export default function App() {
   //     .then((response: Queue[]) => setQueues(response));
   // }, []);
 
-  let [debugMessages, setDebugMessages] = useState([] as string[]);
-  let [activeDebugMessage, setActiveDebugMessage] = useState(0);
-  function handleDebugMessage(data: any) {
-    if (debugMessages.length > 100) {
-      debugMessages.shift();
-    }
-    debugMessages.push(JSON.stringify(data));
-    setDebugMessages(debugMessages);
-  }
-
-  function messageHandler(data: any) {
-    console.log('Lobby: ' + JSON.stringify(data));
-  }
-
-  const socket = new SocketConnection(SERVER_URL);
   useEffect(() => {
     socket.joinRoom('lobby', messageHandler);
-    socket.startDebug(handleDebugMessage);
-
-    return () => {
-      socket.leaveRoom('lobby');
-      socket.stopDebug();
-    };
   }, []);
 
+  function messageHandler(data: any) {
+  }
 
   return (
     <Router>
       <NavBarViewComponent user={user} />
-      {
-        debugMessages.length === 0
-        ? null
-        : <div className="container">
-            <div className="alert alert-info">
-              <strong>{activeDebugMessage + 1} / {debugMessages.length}</strong>
-              <hr />
-              <em>{debugMessages[activeDebugMessage]}</em>
-              <hr />
-              <div className="row">
-                <button className="col-3" onClick={() => {setActiveDebugMessage(0)}}><i className="fas fa-fast-backward"></i></button>
-                <button className="col-3" onClick={() => {setActiveDebugMessage(Math.max(activeDebugMessage - 1, 0))}}><i className="fas fa-backward"></i></button>
-                <button className="col-3" onClick={() => {setActiveDebugMessage(Math.min(activeDebugMessage + 1, debugMessages.length - 1))}}><i className="fas fa-forward"></i></button>
-                <button className="col-3" onClick={() => {setActiveDebugMessage(debugMessages.length - 1)}}><i className="fas fa-fast-forward"></i></button>
-              </div>
-            </div>
-          </div>
-      }
+      <DebugViewComponent socket={socket} />
       <Switch>
         <Route exact path="/">
           <HomeViewComponent queues={queues} user={user}/>

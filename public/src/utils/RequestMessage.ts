@@ -1,18 +1,21 @@
 export default class RequestMessage {
 
-  private _operation: string;
-  private _data: any;
+  private _path: string;
+  public get path() { return this._path; }
 
-  public constructor(operation: string, data: any) {
-    this._operation = operation;
-    this._data = data;
+  private _content: any;
+  public get content() { return this._content; }
+
+  public constructor(path: string, content: any) {
+    this._path = path;
+    this._content = content;
   }
 
   public stringify(): string {
     return JSON.stringify(
       {
-        operation: this._operation,
-        data: this._data
+        path: this._path,
+        content: this._content
       }
     );
   }

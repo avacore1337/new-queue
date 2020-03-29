@@ -3,10 +3,18 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import SocketConnection from './utils/SocketConnection';
+
+const SERVER_URL = 'ws://localhost:7777/ws';
+const socket = new SocketConnection(SERVER_URL);
+
+window.onbeforeunload = () => {
+  socket.close();
+};
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <App socket={socket}/>
   </React.StrictMode>,
   document.getElementById('root')
 );
