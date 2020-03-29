@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useParams,  } from "react-router-dom";
-import SocketConnection from '../utils/SocketConnection';
-import Queue from '../models/Queue';
-import QueueEntry from '../models/QueueEntry';
+import SocketConnection from '../../utils/SocketConnection';
+import Queue from '../../models/Queue';
 import EnterQueueViewComponent from './EnterQueue';
 import QueueEntryTableViewComponent from './QueueEntryTable';
-import NotFoundViewComponent from './NoMatch';
+import NotFoundViewComponent from '../NoMatch';
 
 export default function QueueViewComponent(props: any) {
 

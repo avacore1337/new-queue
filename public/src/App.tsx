@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import './App.css';
 import SocketConnection from './utils/SocketConnection';
 import User from './models/User';
 import Queue from './models/Queue';
-import HomeViewComponent from './viewcomponents/Home';
-import QueueViewComponent from './viewcomponents/Queue';
+import HomeViewComponent from './viewcomponents/Home/Home';
+import QueueViewComponent from './viewcomponents/Queue/Queue';
 import NavBarViewComponent from './viewcomponents/NavBar';
-import AboutViewComponent from './viewcomponents/About';
+import AboutViewComponent from './viewcomponents/About/About';
 import NoMatchViewComponent from './viewcomponents/NoMatch';
 
-const SERVER_URL = 'http://localhost:8080';
+const SERVER_URL = 'wss://localhost:8080';
 
 export default function App() {
 
@@ -24,6 +24,16 @@ export default function App() {
   //     .then((response: Queue[]) => setQueues(response));
   // }, []);
 
+  let [debugMessages, setDebugMessages] = useState([] as string[]);
+  let [activeDebugMessage, setActiveDebugMessage] = useState(0);
+  function handleDebugMessage(data: any) {
+    if (debugMessages.length > 100) {
+      debugMessages.shift();
+    }
+    debugMessages.push(JSON.stringify(data));
+    setDebugMessages(debugMessages);
+  }
+
   function messageHandler(data: any) {
     console.log('Lobby: ' + JSON.stringify(data));
   }
@@ -31,14 +41,36 @@ export default function App() {
   const socket = new SocketConnection(SERVER_URL);
   useEffect(() => {
     socket.joinRoom('lobby', messageHandler);
+    socket.startDebug(handleDebugMessage);
 
-    return () => { socket.leaveRoom('lobby'); };
+    return () => {
+      socket.leaveRoom('lobby');
+      socket.stopDebug();
+    };
   }, []);
 
 
   return (
     <Router>
       <NavBarViewComponent user={user} />
+      {
+        debugMessages.length === 0
+        ? null
+        : <div className="container">
+            <div className="alert alert-info">
+              <strong>{activeDebugMessage + 1} / {debugMessages.length}</strong>
+              <hr />
+              <em>{debugMessages[activeDebugMessage]}</em>
+              <hr />
+              <div className="row">
+                <button className="col-3" onClick={() => {setActiveDebugMessage(0)}}><i className="fas fa-fast-backward"></i></button>
+                <button className="col-3" onClick={() => {setActiveDebugMessage(Math.max(activeDebugMessage - 1, 0))}}><i className="fas fa-backward"></i></button>
+                <button className="col-3" onClick={() => {setActiveDebugMessage(Math.min(activeDebugMessage + 1, debugMessages.length - 1))}}><i className="fas fa-forward"></i></button>
+                <button className="col-3" onClick={() => {setActiveDebugMessage(debugMessages.length - 1)}}><i className="fas fa-fast-forward"></i></button>
+              </div>
+            </div>
+          </div>
+      }
       <Switch>
         <Route exact path="/">
           <HomeViewComponent queues={queues} user={user}/>

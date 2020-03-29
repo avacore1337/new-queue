@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import SocketConnection from '../utils/SocketConnection';
+import SocketConnection from '../../utils/SocketConnection';
 
 export default function EnterQueueViewComponent(props: any) {
 

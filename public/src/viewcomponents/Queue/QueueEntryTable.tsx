@@ -1,5 +1,5 @@
 import React from 'react';
-import Queue from '../models/Queue';
+import Queue from '../../models/Queue';
 import QueueEntryRowViewComponent from './QueueEntryRow';
 
 export default function QueueEntryTableViewComponent(props: any) {

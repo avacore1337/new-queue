@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Contributor from '../models/Contributor';
-import Contributors from '../data/contributors.json';
+import Contributor from '../../models/Contributor';
+import Contributors from '../../data/contributors.json';
 
 export default function AboutViewComponent() {
 

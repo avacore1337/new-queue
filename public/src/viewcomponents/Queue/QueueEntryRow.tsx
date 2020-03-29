@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import TimeAgo from 'react-timeago';
-import QueueEntry from '../models/QueueEntry';
+import QueueEntry from '../../models/QueueEntry';
 
 export default function QueueEntryRowViewComponent(props: any) {
 
