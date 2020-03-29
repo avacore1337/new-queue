@@ -12,6 +12,7 @@ import NoMatchViewComponent from './viewcomponents/NoMatch';
 import DebugViewComponent from './viewcomponents/Debug';
 import LoginViewComponent from './viewcomponents/Login/Login';
 import LogoutViewComponent from './viewcomponents/Logout/Logout';
+import AdministrationViewComponent from './viewcomponents/Administration/Administration';
 
 export default function App(props: any) {
 
@@ -50,7 +51,9 @@ export default function App(props: any) {
           <h1>Help page</h1>
         </Route>
         <Route exact path="/Administration">
-          <h1>Administration page</h1>
+          <AdministrationViewComponent
+            user={user}
+            socket={socket} />
         </Route>
         <Route exact path="/Statistics">
           <h1>Statistics page</h1>
