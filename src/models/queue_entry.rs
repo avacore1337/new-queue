@@ -12,7 +12,6 @@ pub struct QueueEntry {
     pub location: String,
     pub starttime: DateTime<Utc>,
     pub gettinghelp: bool,
-    pub helper: String,
     pub help: bool,
     pub badlocation: bool,
 }
