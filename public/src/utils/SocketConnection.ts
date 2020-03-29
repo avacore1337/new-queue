@@ -8,8 +8,6 @@ export default class SocketConnection {
   private _pendingRequests: RequestMessage[];
 
   public constructor(serverUrl: string) {
-    console.log('Calling constructor');
-
     this._callbacks = {};
     this._pendingRequests = [];
 
@@ -23,11 +21,8 @@ export default class SocketConnection {
     };
 
     this._socket.onmessage = (event: MessageEvent) => {
-      console.log(event);
       let callback = this._callbacks[JSON.parse(event.data).path]
-      console.log(callback);
       if (callback !== undefined) {
-        console.log(JSON.parse(event.data).content);
         callback(JSON.parse(event.data).content);
       }
     };
@@ -36,14 +31,14 @@ export default class SocketConnection {
   public joinRoom(room: string, callback: (data: any) => void): void {
     this._callbacks[room] = callback;
 
-    const message = new RequestMessage('joinRoom', { room: room });
+    const message = new RequestMessage('join', { room: room });
     this.send(message);
   }
 
   public leaveRoom(room: string): void {
     delete this._callbacks[room];
 
-    const message = new RequestMessage('leaveRoom', { room: room });
+    const message = new RequestMessage('leave', { room: room });
     this.send(message);
   }
 

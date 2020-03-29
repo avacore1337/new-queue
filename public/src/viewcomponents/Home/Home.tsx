@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import User from '../../models/User';
 import Queue from '../../models/Queue';
 import QueueCardViewComponent from './QueueCard';
+import SearchViewComponent from '../Search';
 
 export default function HomeViewComponent(props: any) {
 
@@ -19,20 +20,14 @@ export default function HomeViewComponent(props: any) {
     return !queue.locked || user !== null && (user.isAdministrator || user.isTeacherIn(queue.name) || user.isTeachingAssistantIn(queue.name));
   }
 
-  function handleChange(event: any): void {
-    setFilter(event.target.value);
-  }
-
   return (
     <div className="container">
       <div className="row">
-        <input
-          type="text"
-          value={filter}
-          onChange={handleChange}
-          className="col-12 col-lg-4 offset-md-8"
-          style={{lineHeight: '3em'}}
-          placeholder="Search" />
+        <div className="col-lg-4 offset-lg-8">
+          <SearchViewComponent
+            filter={filter}
+            setFilter={setFilter} />
+        </div>
       </div>
       {queues
         .filter(queue => filter === '' || queue.name.toLowerCase().includes(filter.toLowerCase()))

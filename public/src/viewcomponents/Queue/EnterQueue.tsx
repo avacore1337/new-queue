@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import SocketConnection from '../../utils/SocketConnection';
+import RequestMessage from '../../utils/RequestMessage';
 
 export default function EnterQueueViewComponent(props: any) {
 
@@ -8,6 +9,7 @@ export default function EnterQueueViewComponent(props: any) {
   let [typeOfCommunication, setTypeOfCommunication] = useState('help');
 
   let socket: SocketConnection = props.socket;
+  let isInQueue: boolean = props.isInQueue;
 
   function changeLocation(event: any): void {
     setLocation(event.target.value);
@@ -23,6 +25,12 @@ export default function EnterQueueViewComponent(props: any) {
 
   function handleSubmit(event: any): void {
     event.preventDefault();
+
+    socket.send(new RequestMessage('joinQueue', {
+      location: location,
+      comment: comment,
+      typeOfCommunication: typeOfCommunication
+    }));
   }
 
   return (

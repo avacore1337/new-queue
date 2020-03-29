@@ -3,6 +3,9 @@ export default class QueueEntry {
   private _name: string;
   public get name() { return this._name; }
 
+  private _kthuid: string;
+  public get kthuid() { return this._kthuid; }
+
   private _location: string;
   public get location() { return this._location; }
 
@@ -17,6 +20,7 @@ export default class QueueEntry {
 
   public constructor(data: any) {
     this._name = data.name;
+    this._kthuid = data.kthuid;
     this._location = data.location;
     this._typeOfCommunication = data.typeOfCommunication;
     this._comment = data.comment;
