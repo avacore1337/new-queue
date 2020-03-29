@@ -117,133 +117,12 @@ impl Handler for RoomHandler {
         println!("The message from the client is {:#?}", &raw_message);
         if let Ok(text_msg) = message.clone().as_text() {
             println!("text_msg {:#?}", &text_msg);
-            if let Ok(wrapper) = from_str::<Wrapper>(text_msg) {
-                println!("wrapper.path {:#?}", &wrapper.path);
-                println!("wrapper.content {:#?}", &wrapper.content);
-                match wrapper.path.as_str() {
-                    "/join" => {
-                        println!("attempting join");
-                        match from_value::<Join>(wrapper.content.clone()) {
-                            Ok(join) => {
-                                println!("joining");
-                                self.join_room(join.room);
-                            }
-                            Err(e) => println!("Error Deserializing: {:?}", e),
-                        }
-                        return Ok(());
-                    }
-                    "/login" => {
-                        println!("attempting join");
-                        match from_value::<Login>(wrapper.content.clone()) {
-                            Ok(login) => {
-                                println!("login");
-                                self.auth = decode_token(&login.token, &self.secret);
-                                if let Some(auth) = &self.auth {
-                                    println!("Logged in as {}", auth.username)
-                                }
-                            }
-                            Err(e) => println!("Error Deserializing: {:?}", e),
-                        }
-                        return Ok(());
-                    }
-                    "/logout" => {
-                        println!("Logged out");
-                        self.auth = Option::None;
-                        return Ok(());
-                    }
-                    "/leave" => {
-                        println!("attempting leaving");
-                        println!("Leaving");
-                        self.leave_room(self.room_name.clone());
-                        return Ok(());
-                    }
-                    "/joinQueue" => {
-                        println!("attempting leaving");
-                        if let Ok(join_queue) = from_value::<JoinQueue>(wrapper.content.clone()) {
-                            println!("User is joining Queue");
-                            // self.update database with joining queue
-                            self.broadcast_room(
-                                self.room_name.clone(),
-                                &json!({"path": "join/".to_string() + &self.room_name,
-                                    "content": {
-                                    "location": join_queue.location,
-                                    "help": join_queue.help,
-                                    "comment": join_queue.comment,
-                                    }
-                                })
-                                .to_string(),
-                            );
-                            // self.leave_room(leave.room);
-                            return Ok(());
-                        }
-                    }
-                    // 3 => println!("three"),
-                    _ => println!("Unknown message"),
-                }
-                // if let Ok(simple_msg) = serde_json::from_value::<Message>(wrapper.content.clone()) {
-                //     self.message_log.borrow_mut().push(simple_msg.into_log());
-                //     return self.out.broadcast(msg)
-                // }
-
-                // if let Ok(join) = serde_json::from_value::<Join>(wrapper.content.clone()) {
-                //     if self.users.borrow().contains(&join.join_nick) {
-                //         return self.out.send(format!("{:?}", json!({
-                //             "path": "/error",
-                //             "content": "A user by that name already exists.",
-                //         })))
-                //     }
-
-                //     let join_msg = Message {
-                //         nick: "system".into(),
-                //         message: format!("{} has joined the chat.", join.join_nick),
-                //     };
-                //     self.users.borrow_mut().insert(join.join_nick.clone());
-                //     self.nick = Some(join.join_nick);
-                //     self.message_log.borrow_mut().push(join_msg.clone().into_log());
-                //     return self.out.broadcast(format!("{:?}", json!({
-                //         "path": "/joined",
-                //         "content": join_msg,
-                //     })))
-                // }
+            match from_str::<Wrapper>(text_msg) {
+                Ok(wrapper) => self.route_wrapper(wrapper),
+                Err(e) => self.send_error_message(e, message),
             }
         }
-        self.out.send(
-            json!({
-                "path": "/error",
-                "content": format!("Unable to parse message {:?}", message),
-            })
-            .to_string(),
-        )
-        // use chat::schema::posts::dsl::*;
-        // let raw_message = message.into_text()?;
-        // println!("The message from the client is {:#?}", &raw_message);
-
-        // let connection = establish_connection();
-        // create_post(&connection, "fake", &raw_message);
-        // let results = posts.filter(published.eq(false))
-        //     .limit(5)
-        //     .load::<Post>(&connection)
-        //     .expect("Error loading posts");
-
-        // println!("Displaying {} posts", results.len());
-        // for post in results {
-        //     println!("{}", post.title);
-        //     println!("----------\n");
-        //     println!("{}", post.body);
-        // }
-
-        // self.broadcast_room("test_room", &raw_message);
-        // let message = if raw_message.contains("!warn") {
-        //     let warn_message = "One of the clients sent warning to the RoomHandler.";
-        //     println!("{}", &warn_message);
-        //     Message::Text("There was warning from another user.".to_string())
-        // } else {
-        //     Message::Text(raw_message)
-        // };
-
-        // Broadcast to all connections
-        // self.out.broadcast(message)
-        // Ok(())
+        Ok(())
     }
 
     fn on_close(&mut self, code: CloseCode, reason: &str) {
@@ -264,6 +143,85 @@ impl Handler for RoomHandler {
 }
 
 impl RoomHandler {
+    fn send_error_message(&mut self, e: serde_json::error::Error, message: Message) {
+        let _ = self.out.send(
+            json!({
+                "path": "/error",
+                "content": format!("Unable to parse message {:?}, got error {:?}", message, e),
+            })
+            .to_string(),
+        );
+    }
+
+    fn route_wrapper(&mut self, wrapper: Wrapper) {
+        println!("wrapper.path {:#?}", &wrapper.path);
+        println!("wrapper.content {:#?}", &wrapper.content);
+        match wrapper.path.as_str() {
+            "/join" => self.join_route(wrapper),
+            "/login" => self.login_route(wrapper),
+            "/logout" => self.logout_route(wrapper),
+            "/leave" => self.leave_route(wrapper),
+            "/joinQueue" => self.join_queue_route(wrapper),
+            // 3 => println!("three"),
+            _ => println!("Unknown message"),
+        }
+    }
+
+    fn login_route(&mut self, wrapper: Wrapper) {
+        println!("attempting join");
+        match from_value::<Login>(wrapper.content.clone()) {
+            Ok(login) => {
+                println!("login");
+                self.auth = decode_token(&login.token, &self.secret);
+                if let Some(auth) = &self.auth {
+                    println!("Logged in as {}", auth.username)
+                }
+            }
+            Err(e) => println!("Error Deserializing: {:?}", e),
+        }
+    }
+
+    fn logout_route(&mut self, _wrapper: Wrapper) {
+        println!("Logged out");
+        self.auth = Option::None;
+    }
+
+    fn join_route(&mut self, wrapper: Wrapper) {
+        println!("attempting join");
+        match from_value::<Join>(wrapper.content.clone()) {
+            Ok(join) => {
+                println!("joining");
+                self.join_room(join.room);
+            }
+            Err(e) => println!("Error Deserializing: {:?}", e),
+        }
+    }
+
+    fn leave_route(&mut self, _wrapper: Wrapper) {
+        println!("attempting leaving");
+        println!("Leaving");
+        self.leave_room(self.room_name.clone());
+    }
+
+    fn join_queue_route(&mut self, wrapper: Wrapper) {
+        println!("attempting leaving");
+        if let Ok(join_queue) = from_value::<JoinQueue>(wrapper.content.clone()) {
+            println!("User is joining Queue");
+            // self.update database with joining queue
+            self.broadcast_room(
+                self.room_name.clone(),
+                &json!({"path": "join/".to_string() + &self.room_name,
+                    "content": {
+                    "location": join_queue.location,
+                    "help": join_queue.help,
+                    "comment": join_queue.comment,
+                    }
+                })
+                .to_string(),
+            );
+        }
+    }
+
     fn broadcast_room(&mut self, room: String, message: &str) {
         let rooms: RefMut<_> = self.rooms.borrow_mut();
         println!("broadcasting room: {}", room);
