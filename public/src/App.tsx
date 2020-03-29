@@ -10,10 +10,12 @@ import NavBarViewComponent from './viewcomponents/NavBar';
 import AboutViewComponent from './viewcomponents/About/About';
 import NoMatchViewComponent from './viewcomponents/NoMatch';
 import DebugViewComponent from './viewcomponents/Debug';
+import LoginViewComponent from './viewcomponents/Login/Login';
+import LogoutViewComponent from './viewcomponents/Logout/Logout';
 
 export default function App(props: any) {
 
-  let [user, setUser] = useState(User.InitialValue);
+  let [user, setUser] = useState(props.user as User | null);
   let [queues, setQueues] = useState(Queue.InitialValue);
 
   const socket: SocketConnection = props.socket;
@@ -54,10 +56,10 @@ export default function App(props: any) {
           <h1>Statistics page</h1>
         </Route>
         <Route exact path="/Login">
-          <h1>Login page</h1>
+          <LoginViewComponent setUser={setUser} />
         </Route>
         <Route exact path="/Logout">
-          <h1>Logout page</h1>
+          <LogoutViewComponent setUser={setUser} />
         </Route>
         <Route>
           <NoMatchViewComponent />

@@ -31,14 +31,14 @@ export default class SocketConnection {
   public joinRoom(room: string, callback: (data: any) => void): void {
     this._callbacks[room] = callback;
 
-    const message = new RequestMessage('join', { room: room });
+    const message = new RequestMessage('/join', { room: room });
     this.send(message);
   }
 
   public leaveRoom(room: string): void {
     delete this._callbacks[room];
 
-    const message = new RequestMessage('leave', { room: room });
+    const message = new RequestMessage('/leave', { room: room });
     this.send(message);
   }
 

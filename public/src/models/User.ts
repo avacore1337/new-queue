@@ -6,6 +6,9 @@ export default class User {
   private _name: string;
   public get name() { return this._name; }
 
+  private _username: string;
+  public get username() { return this._username; }
+
   private _isAdministrator: boolean;
   public get isAdministrator() { return this._isAdministrator; }
 
@@ -15,6 +18,7 @@ export default class User {
   public constructor(data: any) {
     this._ugkthid = data.ugkthid;
     this._name = data.name;
+    this._username = data.username;
     this._isAdministrator = data.isAdministrator;
     this._teacherIn = data.teacherIn;
     this._teachingAssistantIn = data.teachingAssistantIn;
@@ -36,21 +40,13 @@ export default class User {
     return this._teachingAssistantIn.includes(queue);
   }
 
-  // public static InitialValue: User | null = null;
-
-  public static InitialValue: User | null = new User({
-    ugkthid: 'u_123456789',
-    name: 'Anton Bäckström',
-    isAdministrator: true,
-    teacherIn: ['TestQueue 1'],
-    teachingAssistantIn: ['TestQueue 2']
-  });
+  public static InitialValue: User | null = null;
 
   // public static InitialValue: User | null = new User({
   //   ugkthid: 'u_123456789',
   //   name: 'Anton Bäckström',
-  //   isAdministrator: false,
-  //   teacherIn: ['TestQueue 3'],
-  //   teachingAssistantIn: []
+  //   isAdministrator: true,
+  //   teacherIn: ['TestQueue 1'],
+  //   teachingAssistantIn: ['TestQueue 2']
   // });
 }

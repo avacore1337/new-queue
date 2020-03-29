@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import SocketConnection from './utils/SocketConnection';
+import User from './models/User';
 
 const SERVER_URL = 'ws://localhost:7777/ws';
 const socket = new SocketConnection(SERVER_URL);
@@ -12,9 +13,16 @@ window.onbeforeunload = () => {
   socket.close();
 };
 
+const userData = localStorage.getItem('User');
+const user = userData === null
+  ? null
+  : new User(JSON.parse(userData));
+
 ReactDOM.render(
   <React.StrictMode>
-    <App socket={socket}/>
+    <App
+      socket={socket}
+      user={user} />
   </React.StrictMode>,
   document.getElementById('root')
 );
