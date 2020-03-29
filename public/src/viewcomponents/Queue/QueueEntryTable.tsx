@@ -12,16 +12,18 @@ export default function QueueEntryTableViewComponent(props: any) {
   function filterUsers(entry: QueueEntry) {
     const lowerCaseFilter = filter.toLowerCase();
 
+    const helpType = entry.help ? 'help' : 'presentation';
+
     return (
       filter === ''
       || entry.comment.toLowerCase().includes(lowerCaseFilter)
       || entry.location.toLowerCase().includes(lowerCaseFilter)
-      || entry.name.toLowerCase().includes(lowerCaseFilter)
-      || entry.typeOfCommunication.toLowerCase().includes(lowerCaseFilter));
+      || entry.realname.toLowerCase().includes(lowerCaseFilter)
+      || helpType.includes(lowerCaseFilter));
   }
 
   return (
-    <div className="col-12 col-lg-9 row">
+    <div className="col-12 col-lg-9 row pr-lg-0">
       {
         queue.queueEntries.length === 0
           ? <h3>This queue is empty</h3>

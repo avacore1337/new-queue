@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import debounce from 'lodash.debounce';
 import SocketConnection from '../../utils/SocketConnection';
 import RequestMessage from '../../utils/RequestMessage';
 
@@ -23,19 +24,25 @@ export default function EnterQueueViewComponent(props: any) {
     setTypeOfCommunication(event.target.value);
   }
 
-  function handleSubmit(event: any): void {
-    event.preventDefault();
-
+  function enterQueue(): void {
     socket.send(new RequestMessage('joinQueue', {
       location: location,
       comment: comment,
-      typeOfCommunication: typeOfCommunication
+      help: typeOfCommunication === 'help'
     }));
+  }
+
+  function leaveQueue(): void {
+    socket.send(new RequestMessage('leaveQueue'));
+  }
+
+  function recievingHelp(): void {
+    socket.send(new RequestMessage('recievingHelp'));
   }
 
   return (
     <div className="col-12 col-lg-3">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={enterQueue}>
 
         <label htmlFor="location">Location:</label>
         <br />
@@ -74,32 +81,58 @@ export default function EnterQueueViewComponent(props: any) {
 
         <br />
 
-        <div className="row text-center">
-          <div className="col-6">
-            <label htmlFor="help" style={{marginRight: '.5em' }}>Help</label>
-            <input
-              type="radio"
-              name="react-tips"
-              value="help"
-              checked={typeOfCommunication === "help"}
-              onChange={changeCommunicationType} />
-          </div>
-          <div className="col-6">
-            <label htmlFor="presentation" style={{marginRight: '.5em' }}>Presentation</label>
-            <input
-              type="radio"
-              name="react-tips"
-              value="presentation"
-              checked={typeOfCommunication === "presentation"}
-              onChange={changeCommunicationType} />
-            </div>
-        </div>
+        {
+          isInQueue
+            ? null
+            : <>
+                <div className="row text-center">
+                  <div className="col-6">
+                    <label htmlFor="help" style={{marginRight: '.5em' }}>Help</label>
+                    <input
+                      type="radio"
+                      name="react-tips"
+                      value="help"
+                      checked={typeOfCommunication === "help"}
+                      onChange={changeCommunicationType} />
+                  </div>
+                  <div className="col-6">
+                    <label htmlFor="presentation" style={{marginRight: '.5em' }}>Presentation</label>
+                    <input
+                      type="radio"
+                      name="react-tips"
+                      value="presentation"
+                      checked={typeOfCommunication === "presentation"}
+                      onChange={changeCommunicationType} />
+                    </div>
+                </div>
 
-        <br />
+                <br />
+              </>
+        }
 
-        <div className="col-12 text-center" style={{backgroundColor: '#0275d8', lineHeight: '3em'}}>
-          <strong>Join queue</strong>
-        </div>
+        {
+          isInQueue
+            ? <>
+                <div
+                  className="col-12 text-center yellow clickable"
+                  style={{lineHeight: '3em'}}
+                  onClick={recievingHelp}>
+                  <strong>Recieving help</strong>
+                </div>
+                <div
+                  className="col-12 text-center red clickable"
+                  style={{lineHeight: '3em'}}
+                  onClick={leaveQueue}>
+                  <strong>Leave queue</strong>
+                </div>
+              </>
+            : <div
+                className="col-12 text-center blue clickable"
+                style={{lineHeight: '3em'}}
+                onClick={enterQueue}>
+                <strong>Join queue</strong>
+              </div>
+        }
       </form>
     </div>
   );

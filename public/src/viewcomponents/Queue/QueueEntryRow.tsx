@@ -38,11 +38,11 @@ export default function QueueEntryRowViewComponent(props: any) {
     <>
       <tr onClick={click} onTouchEnd={touch}>
         <th scope="row">{index + 1}</th>
-        <td>{queueEntry.name}</td>
+        <td>{queueEntry.realname}</td>
         <td>{queueEntry.location}</td>
-        <td>{queueEntry.typeOfCommunication}</td>
+        <td>{queueEntry.help ? 'help' : 'presentation'}</td>
         <td>{queueEntry.comment}</td>
-        <td><TimeAgo date={queueEntry.timeOfEntry} /></td>
+        <td><TimeAgo date={queueEntry.starttime} /></td>
       </tr>
       <tr style={{display: displayTAOptions}}></tr>
       <tr style={{display: displayTAOptions}}>

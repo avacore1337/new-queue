@@ -25,23 +25,21 @@ export default function App(props: any) {
   //     .then((response: Queue[]) => setQueues(response));
   // }, []);
 
-  useEffect(() => {
-    socket.joinRoom('lobby', messageHandler);
-  }, []);
-
-  function messageHandler(data: any) {
-  }
-
   return (
     <Router>
       <NavBarViewComponent user={user} />
       <DebugViewComponent socket={socket} />
       <Switch>
         <Route exact path="/">
-          <HomeViewComponent queues={queues} user={user}/>
+          <HomeViewComponent
+            socket={socket}
+            queues={queues}
+            user={user} />
         </Route>
         <Route path="/Queue/:queueName">
-          <QueueViewComponent queues={queues} socket={socket} />
+          <QueueViewComponent
+            queues={queues}
+            socket={socket} />
         </Route>
         <Route exact path="/About">
           <AboutViewComponent />

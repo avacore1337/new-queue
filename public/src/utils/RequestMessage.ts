@@ -6,7 +6,7 @@ export default class RequestMessage {
   private _content: any;
   public get content() { return this._content; }
 
-  public constructor(path: string, content: any) {
+  public constructor(path: string, content?: any) {
     this._path = path;
     this._content = content;
   }

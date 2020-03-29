@@ -2,6 +2,10 @@
   margin-top: 5%;
 }
 
+.clickable {
+  cursor: pointer;
+}
+
 .blue {
   background-color: #0275d8;
 }

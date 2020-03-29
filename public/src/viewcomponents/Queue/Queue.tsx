@@ -34,7 +34,7 @@ export default function QueueViewComponent(props: any) {
     return ( <NotFoundViewComponent /> );
   }
 
-  let isInQueue: boolean = user !== undefined && queue.queueEntries.filter((entry: QueueEntry) => entry.kthuid === user.kthuid).length > 0;
+  let isInQueue: boolean = user !== undefined && queue.queueEntries.filter((entry: QueueEntry) => entry.ugkthid === user.ugkthid).length > 0;
 
   return (
     <div className="container col-10">

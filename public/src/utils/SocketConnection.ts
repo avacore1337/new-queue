@@ -21,7 +21,7 @@ export default class SocketConnection {
     };
 
     this._socket.onmessage = (event: MessageEvent) => {
-      let callback = this._callbacks[JSON.parse(event.data).path]
+      let callback = this._callbacks[JSON.parse(event.data).path];
       if (callback !== undefined) {
         callback(JSON.parse(event.data).content);
       }

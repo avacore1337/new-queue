@@ -1,7 +1,7 @@
 export default class User {
 
-  private _kthuid: string;
-  public get kthuid() { return this._kthuid; }
+  private _ugkthid: string;
+  public get ugkthid() { return this._ugkthid; }
 
   private _name: string;
   public get name() { return this._name; }
@@ -13,7 +13,7 @@ export default class User {
   private _teachingAssistantIn: string[];
 
   public constructor(data: any) {
-    this._kthuid = data.kthuid;
+    this._ugkthid = data.ugkthid;
     this._name = data.name;
     this._isAdministrator = data.isAdministrator;
     this._teacherIn = data.teacherIn;
@@ -39,7 +39,7 @@ export default class User {
   // public static InitialValue: User | null = null;
 
   public static InitialValue: User | null = new User({
-    kthuid: 'u_123456789',
+    ugkthid: 'u_123456789',
     name: 'Anton Bäckström',
     isAdministrator: true,
     teacherIn: ['TestQueue 1'],
@@ -47,7 +47,7 @@ export default class User {
   });
 
   // public static InitialValue: User | null = new User({
-  //   kthuid: 'u_123456789',
+  //   ugkthid: 'u_123456789',
   //   name: 'Anton Bäckström',
   //   isAdministrator: false,
   //   teacherIn: ['TestQueue 3'],
