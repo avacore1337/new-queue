@@ -119,7 +119,7 @@ impl Handler for RoomHandler {
             println!("text_msg {:#?}", &text_msg);
             match from_str::<Wrapper>(text_msg) {
                 Ok(wrapper) => self.route_wrapper(wrapper),
-                Err(e) => self.send_error_message(e, message),
+                Err(e) => self.send_error_message(e, text_msg),
             }
         }
         Ok(())
@@ -143,7 +143,21 @@ impl Handler for RoomHandler {
 }
 
 impl RoomHandler {
-    fn send_error_message(&mut self, e: serde_json::error::Error, message: Message) {
+    fn deserialize<T, F>(&mut self, wrapper: Wrapper, fun: F)
+    where
+        T: for<'de> serde::Deserialize<'de>,
+        F: Fn(&mut Self, T),
+    {
+        match from_value::<T>(wrapper.content.clone()) {
+            Ok(v) => fun(self, v),
+            Err(e) => {
+                println!("Error Deserializing: {:?}", e);
+                self.send_error_message(e, &wrapper.content.to_string());
+            }
+        }
+    }
+
+    fn send_error_message(&mut self, e: serde_json::error::Error, message: &str) {
         let _ = self.out.send(
             json!({
                 "path": "/error",
@@ -157,69 +171,51 @@ impl RoomHandler {
         println!("wrapper.path {:#?}", &wrapper.path);
         println!("wrapper.content {:#?}", &wrapper.content);
         match wrapper.path.as_str() {
-            "/join" => self.join_route(wrapper),
-            "/login" => self.login_route(wrapper),
-            "/logout" => self.logout_route(wrapper),
-            "/leave" => self.leave_route(wrapper),
-            "/joinQueue" => self.join_queue_route(wrapper),
+            "/join" => self.deserialize(wrapper, RoomHandler::join_route),
+            "/login" => self.deserialize(wrapper, RoomHandler::login_route),
+            "/logout" => self.logout_route(),
+            "/leave" => self.leave_route(),
+            "/joinQueue" => self.deserialize(wrapper, RoomHandler::join_queue_route),
             // 3 => println!("three"),
             _ => println!("Unknown message"),
         }
     }
 
-    fn login_route(&mut self, wrapper: Wrapper) {
-        println!("attempting join");
-        match from_value::<Login>(wrapper.content.clone()) {
-            Ok(login) => {
-                println!("login");
-                self.auth = decode_token(&login.token, &self.secret);
-                if let Some(auth) = &self.auth {
-                    println!("Logged in as {}", auth.username)
-                }
-            }
-            Err(e) => println!("Error Deserializing: {:?}", e),
+    fn login_route(&mut self, login: Login) {
+        self.auth = decode_token(&login.token, &self.secret);
+        if let Some(auth) = &self.auth {
+            println!("Logged in as {}", auth.username)
         }
     }
 
-    fn logout_route(&mut self, _wrapper: Wrapper) {
+    fn logout_route(&mut self) {
         println!("Logged out");
         self.auth = Option::None;
     }
 
-    fn join_route(&mut self, wrapper: Wrapper) {
-        println!("attempting join");
-        match from_value::<Join>(wrapper.content.clone()) {
-            Ok(join) => {
-                println!("joining");
-                self.join_room(join.room);
-            }
-            Err(e) => println!("Error Deserializing: {:?}", e),
-        }
+    fn join_route(&mut self, join: Join) {
+        println!("joining");
+        self.join_room(join.room);
     }
 
-    fn leave_route(&mut self, _wrapper: Wrapper) {
+    fn leave_route(&mut self) {
         println!("attempting leaving");
         println!("Leaving");
         self.leave_room(self.room_name.clone());
     }
 
-    fn join_queue_route(&mut self, wrapper: Wrapper) {
-        println!("attempting leaving");
-        if let Ok(join_queue) = from_value::<JoinQueue>(wrapper.content.clone()) {
-            println!("User is joining Queue");
-            // self.update database with joining queue
-            self.broadcast_room(
-                self.room_name.clone(),
-                &json!({"path": "join/".to_string() + &self.room_name,
-                    "content": {
-                    "location": join_queue.location,
-                    "help": join_queue.help,
-                    "comment": join_queue.comment,
-                    }
-                })
-                .to_string(),
-            );
-        }
+    fn join_queue_route(&mut self, join_queue: JoinQueue) {
+        self.broadcast_room(
+            self.room_name.clone(),
+            &json!({"path": "join/".to_string() + &self.room_name,
+                "content": {
+                "location": join_queue.location,
+                "help": join_queue.help,
+                "comment": join_queue.comment,
+                }
+            })
+            .to_string(),
+        );
     }
 
     fn broadcast_room(&mut self, room: String, message: &str) {
