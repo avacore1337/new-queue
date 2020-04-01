@@ -5,6 +5,8 @@ use ws::{
 
 use crate::auth::{decode_token, Auth};
 use crate::config::get_secret;
+use crate::db;
+use crate::db::queue_entries;
 use serde::{Deserialize, Serialize};
 use serde_json::{from_str, from_value, json};
 use std::cell::{Cell, RefCell, RefMut};
@@ -69,6 +71,7 @@ struct RoomHandler {
     room_name: String,
     secret: Vec<u8>,
     auth: Option<Auth>,
+    pool: Rc<RefCell<db::Pool>>,
 }
 
 impl Handler for RoomHandler {
@@ -143,6 +146,12 @@ impl Handler for RoomHandler {
 }
 
 impl RoomHandler {
+    fn get_db_connection(&mut self) -> db::DbConn {
+        let mut pool: RefMut<_> = self.pool.borrow_mut();
+        let conn = pool.get().unwrap();
+        db::DbConn(conn)
+    }
+
     fn deserialize<T, F>(&mut self, wrapper: Wrapper, fun: F)
     where
         T: for<'de> serde::Deserialize<'de>,
@@ -205,6 +214,20 @@ impl RoomHandler {
     }
 
     fn join_queue_route(&mut self, join_queue: JoinQueue) {
+        // pub fn create(
+        //     conn: &PgConnection,
+        //     user_id: i32,
+        //     queue_id: i32,
+        //     location: &str,
+        //     usercomment: &str,
+        queue_entries::create(
+            &self.get_db_connection(),
+            1,
+            // self.auth.user_id,
+            1,
+            &join_queue.location,
+            &join_queue.comment,
+        );
         self.broadcast_room(
             self.room_name.clone(),
             &json!({"path": "join/".to_string() + &self.room_name,
@@ -265,6 +288,7 @@ pub fn websocket() -> () {
     // Listen on an address and call the closure for each connection
     let count = Rc::new(Cell::new(0));
     let rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>> = Rc::new(RefCell::new(HashMap::new()));
+    let pool: Rc<RefCell<db::Pool>> = Rc::new(RefCell::new(db::init_pool()));
     listen("127.0.0.1:7777", |out| RoomHandler {
         out: out,
         count: count.clone(),
@@ -272,6 +296,7 @@ pub fn websocket() -> () {
         room_name: "".to_string(),
         secret: get_secret().into_bytes(),
         auth: Option::None,
+        pool: pool.clone(),
     })
     .unwrap()
 }

@@ -21,7 +21,7 @@ struct NewQueueData {
 pub fn post_queues(
     _auth: Auth,
     new_queue: Json<NewQueue>,
-    conn: db::Conn,
+    conn: db::DbConn,
 ) -> Result<JsonValue, Errors> {
     let new_queue = new_queue.into_inner().queue;
 
@@ -41,6 +41,6 @@ pub fn post_queues(
 }
 
 #[get("/queues")]
-pub fn get_queues(conn: db::Conn) -> JsonValue {
+pub fn get_queues(conn: db::DbConn) -> JsonValue {
     json!({ "queues": db::queues::all(&conn) })
 }

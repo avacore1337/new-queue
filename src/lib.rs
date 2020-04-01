@@ -4,6 +4,10 @@ use std::thread;
 
 #[macro_use]
 extern crate rocket;
+
+extern crate r2d2;
+extern crate r2d2_diesel;
+
 #[macro_use]
 extern crate rocket_contrib;
 use rocket_cors;
@@ -50,6 +54,7 @@ pub fn rocket() -> rocket::Rocket {
         .unwrap();
     dotenv().ok();
     rocket::custom(config::from_env())
+        .manage(db::init_pool())
         .mount("/", routes![routes::static_files::file,])
         .mount(
             "/api",
@@ -77,7 +82,6 @@ pub fn rocket() -> rocket::Rocket {
                 // routes::profiles::unfollow,
             ],
         )
-        .attach(db::Conn::fairing())
         .attach(cors_fairing())
         .attach(config::AppState::manage())
         .register(catchers![not_found])

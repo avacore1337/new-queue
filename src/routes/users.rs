@@ -26,7 +26,7 @@ struct NewUserData {
 #[post("/users", format = "json", data = "<new_user>")]
 pub fn post_users(
     new_user: Json<NewUser>,
-    conn: db::Conn,
+    conn: db::DbConn,
     state: State<AppState>,
 ) -> Result<JsonValue, Errors> {
     let new_user = new_user.into_inner().user;
@@ -61,7 +61,7 @@ struct LoginUserData {
 #[post("/users/login", format = "json", data = "<user>")]
 pub fn post_users_login(
     user: Json<LoginUser>,
-    conn: db::Conn,
+    conn: db::DbConn,
     state: State<AppState>,
 ) -> Result<JsonValue, Errors> {
     let user = user.into_inner().user;
@@ -76,7 +76,7 @@ pub fn post_users_login(
 }
 
 #[get("/user")]
-pub fn get_user(auth: Auth, conn: db::Conn, state: State<AppState>) -> Option<JsonValue> {
+pub fn get_user(auth: Auth, conn: db::DbConn, state: State<AppState>) -> Option<JsonValue> {
     db::users::find(&conn, auth.id).map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
 }
 
@@ -89,7 +89,7 @@ pub fn get_user(auth: Auth, conn: db::Conn, state: State<AppState>) -> Option<Js
 // pub fn put_user(
 //     user: Json<UpdateUser>,
 //     auth: Auth,
-//     conn: db::Conn,
+//     conn: db::DbConn,
 //     state: State<AppState>,
 // ) -> Option<JsonValue> {
 //     db::users::update(&conn, auth.id, &user.user)
