@@ -8,7 +8,7 @@ use jsonwebtoken as jwt;
 
 use crate::config;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Auth {
     /// timestamp
     pub exp: i64,

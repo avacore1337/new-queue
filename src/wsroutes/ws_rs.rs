@@ -1,26 +1,18 @@
-//extern crate diesel;
-use ws::{
-    listen, CloseCode, Error, Handler, Handshake, Message, Request, Response, Result, Sender,
-};
+use ws::{listen, CloseCode, Handler, Handshake, Message, Request, Response, Sender};
 
 use crate::auth::{decode_token, Auth};
 use crate::config::get_secret;
 use crate::db;
-use crate::db::queue_entries;
+use crate::db::{queue_entries, queues};
 use serde::{Deserialize, Serialize};
 use serde_json::{from_str, from_value, json};
 use std::cell::{Cell, RefCell, RefMut};
 use std::collections::HashMap;
 use std::rc::Rc;
 
-// use self::chat::*;
-// use self::models::*;
-// use self::diesel::prelude::*;
-
 use serde_json::Value as Json;
 // #[macro_use] serde_json::json!;
 
-// type MessageLog = Rc<RefCell<Vec<LogMessage>>>;
 // type Users = Rc<RefCell<HashSet<String>>>;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -28,12 +20,6 @@ struct Wrapper {
     path: String,
     content: Json,
 }
-
-// #[derive(Serialize, Deserialize, Debug, Clone)]
-// struct Message {
-//     nick: String,
-//     message: String,
-// }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct Join {
@@ -48,13 +34,6 @@ struct Leave {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct Login {
     token: String,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct LogMessage {
-    nick: String,
-    sent: Option<i64>,
-    message: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -75,7 +54,7 @@ struct RoomHandler {
 }
 
 impl Handler for RoomHandler {
-    fn on_request(&mut self, req: &Request) -> Result<Response> {
+    fn on_request(&mut self, req: &Request) -> ws::Result<Response> {
         match req.resource() {
             "/ws" => {
                 // used once for const socket = new WebSocket("ws://" + window.location.host + "/ws");
@@ -94,7 +73,7 @@ impl Handler for RoomHandler {
         }
     }
 
-    fn on_open(&mut self, handshake: Handshake) -> Result<()> {
+    fn on_open(&mut self, handshake: Handshake) -> ws::Result<()> {
         // We have a new connection, so we increment the connection counter
         self.count.set(self.count.get() + 1);
         let number_of_connection = self.count.get();
@@ -115,7 +94,7 @@ impl Handler for RoomHandler {
     }
 
     // Handle messages recieved in the websocket (in this case, only on /ws)
-    fn on_message(&mut self, message: Message) -> Result<()> {
+    fn on_message(&mut self, message: Message) -> ws::Result<()> {
         let raw_message = message.clone().into_text()?;
         println!("The message from the client is {:#?}", &raw_message);
         if let Ok(text_msg) = message.clone().as_text() {
@@ -137,17 +116,18 @@ impl Handler for RoomHandler {
             }
             _ => println!("The client encountered an error: {}", reason),
         }
+        self.leave_room(self.room_name.clone());
         self.count.set(self.count.get() - 1)
     }
 
-    fn on_error(&mut self, err: Error) {
+    fn on_error(&mut self, err: ws::Error) {
         println!("The RoomHandler encountered an error: {:?}", err);
     }
 }
 
 impl RoomHandler {
     fn get_db_connection(&mut self) -> db::DbConn {
-        let mut pool: RefMut<_> = self.pool.borrow_mut();
+        let pool: RefMut<_> = self.pool.borrow_mut();
         let conn = pool.get().unwrap();
         db::DbConn(conn)
     }
@@ -160,7 +140,24 @@ impl RoomHandler {
         match from_value::<T>(wrapper.content.clone()) {
             Ok(v) => fun(self, v),
             Err(e) => {
-                println!("Error Deserializing: {:?}", e);
+                println!("ws::Error Deserializing: {:?}", e);
+                self.send_error_message(e, &wrapper.content.to_string());
+            }
+        }
+    }
+
+    fn auth_deserialize<T, F>(&mut self, wrapper: Wrapper, fun: F)
+    where
+        T: for<'de> serde::Deserialize<'de>,
+        F: Fn(&mut Self, Auth, T),
+    {
+        match from_value::<T>(wrapper.content.clone()) {
+            Ok(v) => match self.auth.clone() {
+                Some(auth) => fun(self, auth, v),
+                None => println!("User is not logged in"),
+            },
+            Err(e) => {
+                println!("ws::Error Deserializing: {:?}", e);
                 self.send_error_message(e, &wrapper.content.to_string());
             }
         }
@@ -184,7 +181,7 @@ impl RoomHandler {
             "/login" => self.deserialize(wrapper, RoomHandler::login_route),
             "/logout" => self.logout_route(),
             "/leave" => self.leave_route(),
-            "/joinQueue" => self.deserialize(wrapper, RoomHandler::join_queue_route),
+            "/joinQueue" => self.auth_deserialize(wrapper, RoomHandler::join_queue_route),
             // 3 => println!("three"),
             _ => println!("Unknown message"),
         }
@@ -213,21 +210,17 @@ impl RoomHandler {
         self.leave_room(self.room_name.clone());
     }
 
-    fn join_queue_route(&mut self, join_queue: JoinQueue) {
-        // pub fn create(
-        //     conn: &PgConnection,
-        //     user_id: i32,
-        //     queue_id: i32,
-        //     location: &str,
-        //     usercomment: &str,
-        queue_entries::create(
-            &self.get_db_connection(),
-            1,
-            // self.auth.user_id,
-            1,
-            &join_queue.location,
-            &join_queue.comment,
-        );
+    fn join_queue_route(&mut self, auth: Auth, join_queue: JoinQueue) {
+        match queues::name_to_id(&self.get_db_connection(), &self.room_name) {
+            Err(err) => println!("No such queue name"),
+            Ok(queue_id) => queue_entries::create(
+                &self.get_db_connection(),
+                auth.id,
+                queue_id,
+                &join_queue.location,
+                &join_queue.comment,
+            ),
+        }
         self.broadcast_room(
             self.room_name.clone(),
             &json!({"path": "join/".to_string() + &self.room_name,
@@ -245,8 +238,6 @@ impl RoomHandler {
         let rooms: RefMut<_> = self.rooms.borrow_mut();
         println!("broadcasting room: {}", room);
         for sender in &rooms[&room] {
-            // TODO
-            // send?
             // TODO deal with errors
             println!("Sending: '{}' to {}", &message, sender.connection_id());
             sender.send(Message::Text(message.to_string())).unwrap();

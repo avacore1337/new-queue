@@ -20,6 +20,23 @@ impl From<Error> for QueueCreationError {
     }
 }
 
+pub fn name_to_id(conn: &PgConnection, name: &str) -> Result<i32, QueueCreationError> {
+    queues::table
+        .filter(queues::name.eq(name))
+        .select(queues::id)
+        .first(&*conn)
+        .map_err(Into::into)
+}
+
+pub fn find_by_name(conn: &PgConnection, name: &str) -> Result<Queue, QueueCreationError> {
+    // let tess_id = users.filter(name.eq("Tess")).select(id)
+    // .first(&connection);
+    queues::table
+        .filter(queues::name.eq(name))
+        .get_result::<Queue>(&*conn)
+        .map_err(Into::into)
+}
+
 pub fn all(conn: &PgConnection) -> Vec<Queue> {
     queues::table
         .load::<Queue>(&*conn)
