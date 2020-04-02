@@ -45,6 +45,7 @@ fn cors_fairing() -> Cors {
 }
 
 pub fn rocket() -> rocket::Rocket {
+    dotenv().ok();
     thread::Builder::new()
         .name("Thread for Rust Chat with ws-rs".into())
         // .stack_size(83886 * 1024) // 80mib in killobytes
@@ -52,7 +53,6 @@ pub fn rocket() -> rocket::Rocket {
             wsroutes::ws_rs::websocket();
         })
         .unwrap();
-    dotenv().ok();
     rocket::custom(config::from_env())
         .manage(db::init_pool())
         .mount("/", routes![routes::static_files::file,])

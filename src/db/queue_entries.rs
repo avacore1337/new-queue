@@ -35,7 +35,7 @@ pub fn create(
     queue_id: i32,
     location: &str,
     usercomment: &str,
-) -> Result<QueueEntry, QueueEntryCreationError> {
+) -> Result<QueueEntry, diesel::result::Error> {
     let new_queue = &NewQueueEntry {
         user_id,
         queue_id,
