@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-#[derive(Queryable, Serialize)]
+#[derive(Queryable, Serialize, Clone)]
 pub struct Queue {
     pub id: i32,
     pub name: String,

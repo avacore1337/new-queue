@@ -4,6 +4,7 @@ use crate::auth::{decode_token, Auth};
 use crate::config::get_secret;
 use crate::db;
 use crate::db::{queue_entries, queues};
+use crate::models::queue::Queue;
 use serde::{Deserialize, Serialize};
 use serde_json::{from_str, from_value, json};
 use std::cell::{Cell, RefCell, RefMut};
@@ -11,6 +12,12 @@ use std::collections::HashMap;
 use std::error;
 use std::fmt;
 use std::rc::Rc;
+
+enum AuthLevel {
+    Any,
+    Assistant,
+    Teacher,
+}
 
 // Change the alias to `Box<error::Error>`.
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
@@ -75,7 +82,7 @@ struct RoomHandler {
     out: Sender,
     count: Rc<Cell<u32>>,
     rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>>,
-    room_name: String,
+    current_queue: Option<Queue>,
     secret: Vec<u8>,
     auth: Option<Auth>,
     pool: Rc<RefCell<db::Pool>>,
@@ -93,7 +100,6 @@ impl Handler for RoomHandler {
                 println!("Browser Request from {:?}", req.origin().unwrap().unwrap());
                 println!("Client found is {:?}", req.client_addr().unwrap());
                 let resp = Response::from_request(req);
-                // println!("{:?} \n", &resp);
                 resp
             }
 
@@ -107,7 +113,6 @@ impl Handler for RoomHandler {
         let number_of_connection = self.count.get();
         //
         // The most important part and used to assign id for clients
-        // println!("{}", &handshake.local_addr.unwrap());
         let open_message = format!(
             "{} entered and the number of live connections is {}",
             &handshake.peer_addr.unwrap(),
@@ -115,9 +120,6 @@ impl Handler for RoomHandler {
         );
 
         println!("{}", &open_message);
-        // self.out.broadcast(open_message).unwrap();
-        // self.join_room("test_room".to_string());
-
         Ok(())
     }
 
@@ -141,7 +143,7 @@ impl Handler for RoomHandler {
             }
             _ => println!("The client encountered an error: {}", reason),
         }
-        self.leave_room(self.room_name.clone());
+        self.leave_room();
         self.count.set(self.count.get() - 1)
     }
 
@@ -171,23 +173,38 @@ impl RoomHandler {
         fun(self, v)
     }
 
-    fn auth_deserialize<T, F>(&mut self, wrapper: Wrapper, fun: F) -> Result<()>
+    fn auth_deserialize<T, F>(
+        &mut self,
+        wrapper: Wrapper,
+        fun: F,
+        auth_level: AuthLevel,
+    ) -> Result<()>
     where
         T: for<'de> serde::Deserialize<'de>,
         F: Fn(&mut Self, Auth, T) -> Result<()>,
     {
         let v = from_value::<T>(wrapper.content.clone())?;
+        let auth = self.get_auth(auth_level)?;
+        fun(self, auth, v)
+    }
+
+    fn get_auth(&mut self, auth_level: AuthLevel) -> Result<Auth> {
         match self.auth.clone() {
-            Some(auth) => fun(self, auth, v),
+            Some(auth) => match auth_level {
+                AuthLevel::Any => Ok(auth),
+                AuthLevel::Assistant => Ok(auth),
+                AuthLevel::Teacher => Ok(auth),
+            },
             None => Err(Box::new(NotLoggedInError)),
         }
     }
 
     fn send_error_message(&mut self, e: Box<dyn std::error::Error>, message: &str) {
+        println!("Message {:?}, resulted in error: {:?}", message, e);
         let _ = self.out.send(
             json!({
                 "path": "/error",
-                "content": format!("Unable to parse message {:?}, got error {:?}", message, e),
+                "content": format!("Message {:?}, resulted in error: {:?}", message, e),
             })
             .to_string(),
         );
@@ -201,12 +218,15 @@ impl RoomHandler {
             "/login" => self.deserialize(wrapper, RoomHandler::login_route),
             "/logout" => self.logout_route(),
             "/leave" => self.leave_route(),
-            "/joinQueue" => self.auth_deserialize(wrapper, RoomHandler::join_queue_route),
+            "/joinQueue" => {
+                self.auth_deserialize(wrapper, RoomHandler::join_queue_route, AuthLevel::Any)
+            }
             _ => Ok(()),
         }
     }
 
     fn login_route(&mut self, login: Login) -> Result<()> {
+        println!("Logged in");
         self.auth = decode_token(&login.token, &self.secret);
         if let Some(auth) = &self.auth {
             println!("Logged in as {}", auth.username)
@@ -221,22 +241,27 @@ impl RoomHandler {
     }
 
     fn join_route(&mut self, join: Join) -> Result<()> {
-        println!("joining");
-        self.join_room(join.room);
-        Ok(())
+        println!("joining room {}", &join.room);
+        self.join_room(join.room)
     }
 
     fn leave_route(&mut self) -> Result<()> {
-        println!("attempting leaving");
-        println!("Leaving");
-        self.leave_room(self.room_name.clone());
+        self.leave_room();
         Ok(())
     }
 
     fn join_queue_route(&mut self, auth: Auth, join_queue: JoinQueue) -> Result<()> {
-        let queue_id = queues::name_to_id(&self.get_db_connection(), &self.room_name)?;
+        let queue = self
+            .current_queue
+            .as_ref()
+            .ok_or_else(|| NotLoggedInError)?
+            .clone();
+        println!("Joining queue: {}", &queue.name);
+        let conn = &self.get_db_connection();
+        let queue_id = queues::name_to_id(&conn, &queue.name)?;
+        println!("Joining queue with id: {}", &queue_id);
         let queue_entry = queue_entries::create(
-            &self.get_db_connection(),
+            &conn,
             auth.id,
             queue_id,
             &join_queue.location,
@@ -245,8 +270,8 @@ impl RoomHandler {
         println!("QueueEntry ID: {}", queue_entry.id);
 
         self.broadcast_room(
-            self.room_name.clone(),
-            &json!({"path": "join/".to_string() + &self.room_name,
+            &queue.name,
+            &json!({"path": "join/".to_string() + &queue.name,
                 "content": {
                 "location": join_queue.location,
                 "help": join_queue.help,
@@ -258,30 +283,39 @@ impl RoomHandler {
         Ok(())
     }
 
-    fn broadcast_room(&mut self, room: String, message: &str) {
-        let rooms: RefMut<_> = self.rooms.borrow_mut();
-        println!("broadcasting room: {}", room);
-        for sender in &rooms[&room] {
+    fn broadcast_room(&self, room: &str, message: &str) {
+        let rooms = self.rooms.borrow();
+        println!("broadcasting in room: {}", room);
+        for sender in &rooms[room] {
             // TODO deal with errors
             println!("Sending: '{}' to {}", &message, sender.connection_id());
             sender.send(Message::Text(message.to_string())).unwrap();
         }
     }
 
-    fn join_room(&mut self, room: String) {
+    fn join_room(&mut self, room_name: String) -> Result<()> {
+        let conn = &self.get_db_connection();
+        let queue = db::queues::find_by_name(conn, &room_name)?;
         let mut rooms: RefMut<_> = self.rooms.borrow_mut();
-        rooms.entry(room.clone()).or_insert_with(Vec::new);
-        rooms.get_mut(&room).unwrap().push(self.out.clone());
-        println!("Joining room: {}, {}", &room, self.out.connection_id());
-        self.room_name = room;
+        rooms.entry(room_name.clone()).or_insert_with(Vec::new);
+        rooms.get_mut(&room_name).unwrap().push(self.out.clone());
+        println!("Joining room: {}, {}", &room_name, self.out.connection_id());
+        self.current_queue = Some(queue);
+        Ok(())
     }
 
-    fn leave_room(&mut self, room: String) {
-        let mut rooms: RefMut<_> = self.rooms.borrow_mut();
-        rooms.entry(room.clone()).or_insert_with(Vec::new);
-        rooms.get_mut(&room).unwrap().retain(|x| x != &self.out);
-        self.room_name = "".to_string();
-        println!("Leaving room: {}, {}", room, self.out.connection_id());
+    fn leave_room(&mut self) {
+        println!("Leaving room");
+        if let Some(queue) = &self.current_queue {
+            let mut rooms: RefMut<_> = self.rooms.borrow_mut();
+            //TODO won't be needed soon?
+            rooms.entry(queue.name.clone()).or_insert_with(Vec::new);
+            rooms
+                .get_mut(&queue.name)
+                .unwrap()
+                .retain(|x| x != &self.out);
+        }
+        self.current_queue = None;
     }
     //     fn send(&mut self, message: String, name: String) {
     //         let id = self.members[&name];
@@ -308,7 +342,7 @@ pub fn websocket() -> () {
         out: out,
         count: count.clone(),
         rooms: rooms.clone(),
-        room_name: "".to_string(),
+        current_queue: None,
         secret: get_secret().into_bytes(),
         auth: Option::None,
         pool: pool.clone(),
