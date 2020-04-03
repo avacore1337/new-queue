@@ -77,6 +77,12 @@ struct JoinQueue {
     help: bool,
     location: String,
 }
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct Kick {
+    ugkthid: String,
+}
+
 // RoomHandler web application handler
 struct RoomHandler {
     out: Sender,
@@ -192,8 +198,8 @@ impl RoomHandler {
         match self.auth.clone() {
             Some(auth) => match auth_level {
                 AuthLevel::Any => Ok(auth),
-                AuthLevel::Assistant => Ok(auth),
-                AuthLevel::Teacher => Ok(auth),
+                AuthLevel::Assistant => Ok(auth), //TODO
+                AuthLevel::Teacher => Ok(auth),   //TODO
             },
             None => Err(Box::new(NotLoggedInError)),
         }
@@ -220,6 +226,9 @@ impl RoomHandler {
             "/leave" => self.leave_route(),
             "/joinQueue" => {
                 self.auth_deserialize(wrapper, RoomHandler::join_queue_route, AuthLevel::Any)
+            }
+            "/kick" => {
+                self.auth_deserialize(wrapper, RoomHandler::kick_route, AuthLevel::Assistant)
             }
             _ => Ok(()),
         }
@@ -250,6 +259,10 @@ impl RoomHandler {
         Ok(())
     }
 
+    fn kick_route(&mut self, _auth: Auth, _kick: Kick) -> Result<()> {
+        Ok(())
+    }
+
     fn join_queue_route(&mut self, auth: Auth, join_queue: JoinQueue) -> Result<()> {
         let queue = self
             .current_queue
@@ -272,11 +285,7 @@ impl RoomHandler {
         self.broadcast_room(
             &queue.name,
             &json!({"path": "join/".to_string() + &queue.name,
-                "content": {
-                "location": join_queue.location,
-                "help": join_queue.help,
-                "comment": join_queue.comment,
-                }
+                "content": queue_entry.to_sendable(conn)
             })
             .to_string(),
         );
