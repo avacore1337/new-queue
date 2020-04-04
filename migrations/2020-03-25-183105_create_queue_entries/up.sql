@@ -9,5 +9,5 @@ CREATE TABLE queue_entries (
   gettinghelp BOOLEAN NOT NULL DEFAULT 'f',
   help BOOLEAN NOT NULL DEFAULT 'f',
   badlocation BOOLEAN NOT NULL DEFAULT 'f',
-  CONSTRAINT unq_user_idqueue_id UNIQUE(user_id,queue_id)
+  CONSTRAINT unq_entry_user_idqueue_id UNIQUE(user_id,queue_id)
 )

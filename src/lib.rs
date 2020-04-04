@@ -16,6 +16,9 @@ use rocket_cors;
 extern crate diesel;
 
 #[macro_use]
+extern crate diesel_derive_enum;
+
+#[macro_use]
 extern crate validator_derive;
 
 use dotenv::dotenv;
@@ -27,6 +30,7 @@ mod errors;
 mod models;
 mod routes;
 mod schema;
+mod sql_types;
 mod wsroutes;
 
 use rocket_contrib::json::JsonValue;

@@ -1,4 +1,19 @@
 table! {
+    use diesel::sql_types::*;
+    use crate::sql_types::*;
+
+    admins (id) {
+        id -> Int4,
+        user_id -> Int4,
+        queue_id -> Int4,
+        admin_type -> Admin_enum,
+    }
+}
+
+table! {
+    use diesel::sql_types::*;
+    use crate::sql_types::*;
+
     queue_entries (id) {
         id -> Int4,
         user_id -> Int4,
@@ -13,6 +28,9 @@ table! {
 }
 
 table! {
+    use diesel::sql_types::*;
+    use crate::sql_types::*;
+
     queues (id) {
         id -> Int4,
         name -> Varchar,
@@ -24,6 +42,9 @@ table! {
 }
 
 table! {
+    use diesel::sql_types::*;
+    use crate::sql_types::*;
+
     users (id) {
         id -> Int4,
         username -> Text,
@@ -32,10 +53,13 @@ table! {
     }
 }
 
+joinable!(admins -> queues (queue_id));
+joinable!(admins -> users (user_id));
 joinable!(queue_entries -> queues (queue_id));
 joinable!(queue_entries -> users (user_id));
 
 allow_tables_to_appear_in_same_query!(
+    admins,
     queue_entries,
     queues,
     users,
