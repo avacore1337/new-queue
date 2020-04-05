@@ -349,7 +349,7 @@ impl RoomHandler {
 
         self.broadcast_room(
             &queue.name,
-            &json!({"path": "/join/".to_string() + &queue.name,
+            &json!({"path": "/joinQueue/".to_string() + &queue.name,
                 "content": queue_entry.to_sendable(conn)
             })
             .to_string(),
