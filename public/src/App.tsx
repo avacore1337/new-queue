@@ -21,12 +21,12 @@ export default function App(props: any) {
 
   const socket: SocketConnection = props.socket;
 
-  // useEffect(() => {
-  //   fetch('http://localhost:8000/api/queues')
-  //     .then(response => response.json())
-  //     .then((response: any) => response.queues.map((res: any) => new Queue(res)))
-  //     .then((response: Queue[]) => setQueues(response));
-  // }, []);
+  useEffect(() => {
+    fetch('http://localhost:8000/api/queues')
+      .then(response => response.json())
+      .then((response: any) => response.queues.map((res: any) => new Queue(res)))
+      .then((response: Queue[]) => setQueues(response));
+  }, []);
 
   return (
     <Router>
