@@ -55,7 +55,7 @@ struct Wrapper {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-struct Join {
+struct SubscribeQueue {
     room: String,
 }
 
@@ -231,10 +231,12 @@ impl RoomHandler {
         println!("wrapper.path {:#?}", &wrapper.path);
         println!("wrapper.content {:#?}", &wrapper.content);
         match wrapper.path.as_str() {
-            "/join" => self.deserialize(wrapper, RoomHandler::join_route),
+            "/subscribeQueue" => self.deserialize(wrapper, RoomHandler::subscribe_queue_route),
+            "/subscribeLobby" => self.subscribe_lobby_route(),
             "/login" => self.deserialize(wrapper, RoomHandler::login_route),
             "/logout" => self.logout_route(),
-            "/leave" => self.leave_route(),
+            "/unsubscribeQueue" => self.unsubscribe_queue_route(),
+            "/unsubscribeLobby" => self.unsubscribe_queue_route(),
             "/joinQueue" => {
                 self.auth_deserialize(wrapper, RoomHandler::join_queue_route, AuthLevel::Any)
             }
@@ -269,12 +271,17 @@ impl RoomHandler {
         Ok(())
     }
 
-    fn join_route(&mut self, join: Join) -> Result<()> {
+    fn subscribe_queue_route(&mut self, join: SubscribeQueue) -> Result<()> {
         println!("joining room {}", &join.room);
-        self.join_room(join.room)
+        self.join_room(&("room_".to_string() + &join.room))
     }
 
-    fn leave_route(&mut self) -> Result<()> {
+    fn subscribe_lobby_route(&mut self) -> Result<()> {
+        println!("joining lobby ");
+        self.join_room("lobby")
+    }
+
+    fn unsubscribe_queue_route(&mut self) -> Result<()> {
         self.leave_room();
         Ok(())
     }
@@ -314,6 +321,13 @@ impl RoomHandler {
         println!("Leaving queue: {}", &queue.name);
         let conn = &self.get_db_connection();
         db::queue_entries::remove(&conn, queue.id, auth.id)?;
+        self.broadcast_room(
+            &queue.name,
+            &json!({"path": "/leaveQueue/".to_string() + &queue.name,
+                "content": { "ugkthid": &auth.ugkthid }
+            })
+            .to_string(),
+        );
         Ok(())
     }
 
@@ -354,13 +368,13 @@ impl RoomHandler {
         }
     }
 
-    fn join_room(&mut self, room_name: String) -> Result<()> {
+    fn join_room(&mut self, room_name: &str) -> Result<()> {
         let conn = &self.get_db_connection();
-        let queue = db::queues::find_by_name(conn, &room_name)?;
+        let queue = db::queues::find_by_name(conn, room_name)?;
         let mut rooms: RefMut<_> = self.rooms.borrow_mut();
-        rooms.entry(room_name.clone()).or_insert_with(Vec::new);
-        rooms.get_mut(&room_name).unwrap().push(self.out.clone());
-        println!("Joining room: {}, {}", &room_name, self.out.connection_id());
+        rooms.entry(room_name.to_string()).or_insert_with(Vec::new);
+        rooms.get_mut(room_name).unwrap().push(self.out.clone());
+        println!("Joining room: {}, {}", room_name, self.out.connection_id());
         self.current_queue = Some(queue);
         Ok(())
     }

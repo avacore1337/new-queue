@@ -15,6 +15,7 @@ pub struct Auth {
     /// user id
     pub id: i32,
     pub username: String,
+    pub ugkthid: String,
 }
 
 impl Auth {

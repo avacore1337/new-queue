@@ -32,6 +32,7 @@ impl User {
         let token = Auth {
             id: self.id,
             username: self.username.clone(),
+            ugkthid: self.ugkthid.clone(),
             exp: exp.timestamp(),
         }
         .token(secret);
