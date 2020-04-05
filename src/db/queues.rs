@@ -29,8 +29,6 @@ pub fn name_to_id(conn: &PgConnection, name: &str) -> Result<i32, diesel::result
 }
 
 pub fn find_by_name(conn: &PgConnection, name: &str) -> Result<Queue, diesel::result::Error> {
-    // let tess_id = users.filter(name.eq("Tess")).select(id)
-    // .first(&connection);
     queues::table
         .filter(queues::name.eq(name))
         .get_result::<Queue>(&*conn)
@@ -42,10 +40,6 @@ pub fn all(conn: &PgConnection) -> Vec<Queue> {
         .load::<Queue>(&*conn)
         .expect("Could not get queues")
 }
-
-// pub fn get(id: i32, connection: &PgConnection) -> QueryResult<Queue> {
-//     queues::table.find(id).get_result::<Queue>(connection)
-// }
 
 pub fn create(conn: &PgConnection, name: &str) -> Result<Queue, QueueCreationError> {
     let new_queue = &NewQueue { name };

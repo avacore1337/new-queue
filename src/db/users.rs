@@ -70,28 +70,3 @@ pub fn find(conn: &PgConnection, id: i32) -> Option<User> {
         .map_err(|err| println!("find_user: {}", err))
         .ok()
 }
-
-// // TODO: remove clone when diesel will allow skipping fields
-// #[derive(Deserialize, AsChangeset, Default, Clone)]
-// #[table_name = "users"]
-// pub struct UpdateUserData {
-//     username: Option<String>,
-//     email: Option<String>,
-//     bio: Option<String>,
-//     image: Option<String>,
-
-//     // hack to skip the field
-//     #[column_name = "hash"]
-//     password: Option<String>,
-// }
-
-// pub fn update(conn: &PgConnection, id: i32, data: &UpdateUserData) -> Option<User> {
-//     let data = &UpdateUserData {
-//         password: None,
-//         ..data.clone()
-//     };
-//     diesel::update(users::table.find(id))
-//         .set(data)
-//         .get_result(conn)
-//         .ok()
-// }

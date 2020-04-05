@@ -9,7 +9,7 @@ use serde::Serialize;
 use chrono::{DateTime, Utc};
 
 #[derive(Identifiable, Queryable, Serialize, Associations)]
-// #[belongs_to(parent = "User")]
+#[belongs_to(parent = "User")]
 #[belongs_to(parent = "Queue")]
 #[table_name = "queue_entries"]
 pub struct QueueEntry {

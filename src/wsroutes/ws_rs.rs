@@ -47,9 +47,6 @@ impl error::Error for NotLoggedInError {
 }
 
 use serde_json::Value as Json;
-// #[macro_use] serde_json::json!;
-
-// type Users = Rc<RefCell<HashSet<String>>>;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct Wrapper {
@@ -90,7 +87,6 @@ struct Kick {
     ugkthid: String,
 }
 
-// RoomHandler web application handler
 struct RoomHandler {
     out: Sender,
     count: Rc<Cell<u32>>,
@@ -363,22 +359,11 @@ impl RoomHandler {
         }
         self.current_queue = None;
     }
-    //     fn send(&mut self, message: String, name: String) {
-    //         let id = self.members[&name];
-    //             // TODO
-    //             // send?
-    //             println!("{}, {}", id, message);
-    //     }
 }
 
 pub fn websocket() -> () {
     println!("Web Socket RoomHandler is ready at ws://127.0.0.1:7777/ws");
     println!("RoomHandler is ready at http://127.0.0.1:7777/");
-
-    // Rc is a reference-counted box for sharing the count between handlers
-    // since each handler needs to own its contents.
-    // Cell gives us interior mutability so we can increment
-    // or decrement the count between handlers.
 
     // Listen on an address and call the closure for each connection
     let count = Rc::new(Cell::new(0));

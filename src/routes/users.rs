@@ -79,19 +79,3 @@ pub fn post_users_login(
 pub fn get_user(auth: Auth, conn: db::DbConn, state: State<AppState>) -> Option<JsonValue> {
     db::users::find(&conn, auth.id).map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
 }
-
-// #[derive(Deserialize)]
-// pub struct UpdateUser {
-//     user: db::users::UpdateUserData,
-// }
-
-// #[put("/user", format = "json", data = "<user>")]
-// pub fn put_user(
-//     user: Json<UpdateUser>,
-//     auth: Auth,
-//     conn: db::DbConn,
-//     state: State<AppState>,
-// ) -> Option<JsonValue> {
-//     db::users::update(&conn, auth.id, &user.user)
-//         .map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
-// }
