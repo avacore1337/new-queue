@@ -3,7 +3,7 @@ use ws::{listen, CloseCode, Handler, Handshake, Message, Request, Response, Send
 use crate::auth::{decode_token, Auth};
 use crate::config::get_secret;
 use crate::db;
-use crate::db::{queue_entries, queues};
+use crate::db::queue_entries;
 use crate::models::queue::Queue;
 use crate::sql_types::AdminEnum;
 use serde::{Deserialize, Serialize};
@@ -37,7 +37,7 @@ impl fmt::Display for NotLoggedInError {
 
 impl error::Error for NotLoggedInError {
     fn description(&self) -> &str {
-        "invalid first item to double"
+        "User is not logged in"
     }
 
     fn cause(&self) -> Option<&(dyn error::Error)> {
@@ -197,6 +197,14 @@ impl RoomHandler {
         fun(self, auth, v)
     }
 
+    fn auth<F>(&mut self, fun: F, auth_level: AuthLevel) -> Result<()>
+    where
+        F: Fn(&mut Self, Auth) -> Result<()>,
+    {
+        let auth = self.get_auth(auth_level)?;
+        fun(self, auth)
+    }
+
     fn get_auth(&mut self, auth_level: AuthLevel) -> Result<Auth> {
         match self.auth.clone() {
             Some(auth) => match auth_level {
@@ -230,9 +238,7 @@ impl RoomHandler {
             "/joinQueue" => {
                 self.auth_deserialize(wrapper, RoomHandler::join_queue_route, AuthLevel::Any)
             }
-            "/leaveQueue" => {
-                self.auth_deserialize(wrapper, RoomHandler::leave_queue_route, AuthLevel::Any)
-            }
+            "/leaveQueue" => self.auth(RoomHandler::leave_queue_route, AuthLevel::Any),
             "/kick" => {
                 self.auth_deserialize(wrapper, RoomHandler::kick_route, AuthLevel::Assistant)
             }
@@ -299,32 +305,15 @@ impl RoomHandler {
         Ok(())
     }
 
-    fn leave_queue_route(&mut self, auth: Auth, join_queue: JoinQueue) -> Result<()> {
+    fn leave_queue_route(&mut self, auth: Auth) -> Result<()> {
         let queue = self
             .current_queue
             .as_ref()
             .ok_or_else(|| NotLoggedInError)?
             .clone();
         println!("Leaving queue: {}", &queue.name);
-        // let conn = &self.get_db_connection();
-        // let queue_id = queues::name_to_id(&conn, &queue.name)?;
-        // println!("Joining queue with id: {}", &queue_id);
-        // let queue_entry = queue_entries::create(
-        //     &conn,
-        //     auth.id,
-        //     queue_id,
-        //     &join_queue.location,
-        //     &join_queue.comment,
-        // )?;
-        // println!("QueueEntry ID: {}", queue_entry.id);
-
-        // self.broadcast_room(
-        //     &queue.name,
-        //     &json!({"path": "/join/".to_string() + &queue.name,
-        //         "content": queue_entry.to_sendable(conn)
-        //     })
-        //     .to_string(),
-        // );
+        let conn = &self.get_db_connection();
+        db::queue_entries::remove(&conn, queue.id, auth.id)?;
         Ok(())
     }
 
@@ -336,12 +325,10 @@ impl RoomHandler {
             .clone();
         println!("Joining queue: {}", &queue.name);
         let conn = &self.get_db_connection();
-        let queue_id = queues::name_to_id(&conn, &queue.name)?;
-        println!("Joining queue with id: {}", &queue_id);
         let queue_entry = queue_entries::create(
             &conn,
             auth.id,
-            queue_id,
+            queue.id,
             &join_queue.location,
             &join_queue.comment,
         )?;
