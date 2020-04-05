@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Queue from '../../models/Queue';
 import QueueEntry from '../../models/QueueEntry';
 import QueueEntryRowViewComponent from './QueueEntryRow';
-import SearchViewComponent from '../Search';
+import SearchViewComponent from '../../viewcomponents/Search';
 
 export default function QueueEntryTableViewComponent(props: any) {
 

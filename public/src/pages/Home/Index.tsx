@@ -4,15 +4,22 @@ import SocketConnection from '../../utils/SocketConnection';
 import User from '../../models/User';
 import Queue from '../../models/Queue';
 import QueueCardViewComponent from './QueueCard';
-import SearchViewComponent from '../Search';
+import SearchViewComponent from '../../viewcomponents/Search';
 
 export default function HomeViewComponent(props: any) {
 
+  let [queues, setQueues] = useState(Queue.InitialValue);
   let [filter, setFilter] = useState('');
 
-  let queues: Queue[] = props.queues;
   let user: User | null = props.user;
   let socket: SocketConnection = props.socket;
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/queues')
+      .then(response => response.json())
+      .then((response: any) => response.queues.map((res: any) => new Queue(res)))
+      .then((response: Queue[]) => setQueues(response));
+  }, []);
 
   function messageHandler(data: any) {
   }
@@ -32,7 +39,7 @@ export default function HomeViewComponent(props: any) {
   }
 
   return (
-    <div className="container">
+    <div className="container mb-5">
       <div className="row">
         <div className="col-lg-4 offset-lg-8 p-0">
           <SearchViewComponent

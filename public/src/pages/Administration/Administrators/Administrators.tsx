@@ -1,9 +1,9 @@
 import React from 'react';
 import { Redirect, Link } from "react-router-dom";
-import SocketConnection from '../../utils/SocketConnection';
-import RequestMessage from '../../utils/RequestMessage';
-import User from '../../models/User';
-import Administrator from '../../models/Administrator';
+import SocketConnection from '../../../utils/SocketConnection';
+import RequestMessage from '../../../utils/RequestMessage';
+import User from '../../../models/User';
+import Administrator from '../../../models/Administrator';
 import AddAdminViewModel from './AddAdmin';
 import AdministratorListViewComponent from './AdministratorList';
 

@@ -4,29 +4,21 @@ import './App.css';
 import SocketConnection from './utils/SocketConnection';
 import User from './models/User';
 import Queue from './models/Queue';
-import HomeViewComponent from './viewcomponents/Home/Home';
-import QueueViewComponent from './viewcomponents/Queue/Queue';
+import HomeViewComponent from './pages/Home/Index';
+import QueueViewComponent from './pages/Queue/Index';
 import NavBarViewComponent from './viewcomponents/NavBar';
-import AboutViewComponent from './viewcomponents/About/About';
-import NoMatchViewComponent from './viewcomponents/NoMatch';
+import AboutViewComponent from './pages/About/Index';
+import NoMatchViewComponent from './pages/NoMatch/Index';
 import DebugViewComponent from './viewcomponents/Debug';
-import LoginViewComponent from './viewcomponents/Login/Login';
-import LogoutViewComponent from './viewcomponents/Logout/Logout';
-import AdministrationViewComponent from './viewcomponents/Administration/Administration';
+import LoginViewComponent from './pages/Login/Index';
+import LogoutViewComponent from './pages/Logout/Index';
+import AdministrationViewComponent from './pages/Administration/Index';
 
 export default function App(props: any) {
 
   let [user, setUser] = useState(props.user as User | null);
-  let [queues, setQueues] = useState(Queue.InitialValue);
 
   const socket: SocketConnection = props.socket;
-
-  useEffect(() => {
-    fetch('http://localhost:8000/api/queues')
-      .then(response => response.json())
-      .then((response: any) => response.queues.map((res: any) => new Queue(res)))
-      .then((response: Queue[]) => setQueues(response));
-  }, []);
 
   return (
     <Router>
@@ -36,12 +28,10 @@ export default function App(props: any) {
         <Route exact path="/">
           <HomeViewComponent
             socket={socket}
-            queues={queues}
             user={user} />
         </Route>
         <Route path="/Queue/:queueName">
           <QueueViewComponent
-            queues={queues}
             socket={socket} />
         </Route>
         <Route exact path="/About">

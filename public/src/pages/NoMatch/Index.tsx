@@ -1,10 +1,10 @@
 import React from 'react';
-import Coffee from '../img/Coffee.png';
-import DarthVader from '../img/DarthVader.png';
-import Inside from '../img/Inside.png';
-import Panda from '../img/Panda.png';
-import Penguin from '../img/Penguin.png';
-import Rabbit from '../img/Rabbit.png';
+import Coffee from '../../img/Coffee.png';
+import DarthVader from '../../img/DarthVader.png';
+import Inside from '../../img/Inside.png';
+import Panda from '../../img/Panda.png';
+import Penguin from '../../img/Penguin.png';
+import Rabbit from '../../img/Rabbit.png';
 
 export default function NotFoundViewComponent() {
 
@@ -16,6 +16,8 @@ export default function NotFoundViewComponent() {
     maxHeight: '80vh',
     maxWidth: '80vw'
   };
+
+  console.log(image);
 
   return (
     <div className="container h-100">
