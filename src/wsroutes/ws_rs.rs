@@ -5,6 +5,7 @@ use crate::config::get_secret;
 use crate::db;
 use crate::db::{queue_entries, queues};
 use crate::models::queue::Queue;
+use crate::sql_types::AdminEnum;
 use serde::{Deserialize, Serialize};
 use serde_json::{from_str, from_value, json};
 use std::cell::{Cell, RefCell, RefMut};
@@ -73,6 +74,7 @@ struct Login {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct AddUser {
+    queue: String,
     username: String,
 }
 
@@ -277,42 +279,24 @@ impl RoomHandler {
     }
 
     fn add_teacher_route(&mut self, _auth: Auth, add_user: AddUser) -> Result<()> {
-        let queue = self
-            .current_queue
-            .as_ref()
-            .ok_or_else(|| NotLoggedInError)?
-            .clone();
-        // println!("Joining queue: {}", &queue.name);
-        // let conn = &self.get_db_connection();
-        // let queue_id = queues::name_to_id(&conn, &queue.name)?;
-        // println!("Joining queue with id: {}", &queue_id);
-        // let queue_entry = queue_entries::create(
-        //     &conn,
-        //     auth.id,
-        //     queue_id,
-        //     &join_queue.location,
-        //     &join_queue.comment,
-        // )?;
+        let conn = &self.get_db_connection();
+        let _admin = db::admins::create(
+            conn,
+            &add_user.queue,
+            &add_user.username,
+            AdminEnum::Teacher,
+        )?;
         Ok(())
     }
 
-    fn add_assistant_route(&mut self, auth: Auth, add_user: AddUser) -> Result<()> {
-        // let queue = self
-        //     .current_queue
-        //     .as_ref()
-        //     .ok_or_else(|| NotLoggedInError)?
-        //     .clone();
-        // println!("Joining queue: {}", &queue.name);
-        // let conn = &self.get_db_connection();
-        // let queue_id = queues::name_to_id(&conn, &queue.name)?;
-        // println!("Joining queue with id: {}", &queue_id);
-        // let queue_entry = queue_entries::create(
-        //     &conn,
-        //     auth.id,
-        //     queue_id,
-        //     &join_queue.location,
-        //     &join_queue.comment,
-        // )?;
+    fn add_assistant_route(&mut self, _auth: Auth, add_user: AddUser) -> Result<()> {
+        let conn = &self.get_db_connection();
+        let _admin = db::admins::create(
+            conn,
+            &add_user.queue,
+            &add_user.username,
+            AdminEnum::Teacher,
+        )?;
         Ok(())
     }
 

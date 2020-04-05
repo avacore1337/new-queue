@@ -55,6 +55,14 @@ pub fn login(conn: &PgConnection, username: &str) -> Option<User> {
     Some(user)
 }
 
+pub fn username_to_id(conn: &PgConnection, username: &str) -> Result<i32, diesel::result::Error> {
+    users::table
+        .filter(users::username.eq(username))
+        .select(users::id)
+        .first(&*conn)
+        .map_err(Into::into)
+}
+
 pub fn find(conn: &PgConnection, id: i32) -> Option<User> {
     users::table
         .find(id)
