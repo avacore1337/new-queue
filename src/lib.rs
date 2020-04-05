@@ -71,6 +71,7 @@ pub fn rocket() -> rocket::Rocket {
                 routes::users::get_user,
                 routes::queues::post_queues,
                 routes::queues::get_queues,
+                routes::queues::get_queue,
                 routes::queue_entries::get_queue_entries,
                 // routes::articles::post_articles,
                 // routes::articles::put_articles,
