@@ -273,12 +273,12 @@ impl RoomHandler {
 
     fn subscribe_queue_route(&mut self, join: SubscribeQueue) -> Result<()> {
         println!("joining room {}", &join.room);
-        self.join_room(&("room_".to_string() + &join.room))
+        self.join_room(&join.room)
     }
 
     fn subscribe_lobby_route(&mut self) -> Result<()> {
         println!("joining lobby ");
-        self.join_room("lobby")
+        self.join_lobby()
     }
 
     fn unsubscribe_queue_route(&mut self) -> Result<()> {
@@ -371,11 +371,28 @@ impl RoomHandler {
     fn join_room(&mut self, room_name: &str) -> Result<()> {
         let conn = &self.get_db_connection();
         let queue = db::queues::find_by_name(conn, room_name)?;
+        let internal_name = "room_".to_string() + room_name;
         let mut rooms: RefMut<_> = self.rooms.borrow_mut();
-        rooms.entry(room_name.to_string()).or_insert_with(Vec::new);
-        rooms.get_mut(room_name).unwrap().push(self.out.clone());
-        println!("Joining room: {}, {}", room_name, self.out.connection_id());
+        rooms.entry(internal_name.clone()).or_insert_with(Vec::new);
+        rooms
+            .get_mut(&internal_name)
+            .unwrap()
+            .push(self.out.clone());
+        println!(
+            "Joining room: {}, {}",
+            &internal_name,
+            self.out.connection_id()
+        );
         self.current_queue = Some(queue);
+        Ok(())
+    }
+
+    fn join_lobby(&mut self) -> Result<()> {
+        let mut rooms: RefMut<_> = self.rooms.borrow_mut();
+        rooms.entry("lobby".to_string()).or_insert_with(Vec::new);
+        rooms.get_mut("lobby").unwrap().push(self.out.clone());
+        println!("Joining lobby",);
+        // TODO join the lobby struct
         Ok(())
     }
 
