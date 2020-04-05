@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
 import SocketConnection from '../../utils/SocketConnection';
 import RequestMessage from '../../utils/RequestMessage';
 import User from '../../models/User';
@@ -30,14 +31,22 @@ export default function AdministrationViewComponent(props: any) {
       ? <NotFoundViewComponent />
       : <div className="container">
           <AdministrationInformationViewComponent user={user} />
+          {
+            user.isAdministrator
+              ? <div className="row mb-3">
+                  <h2>Administrators of Stay A While <Link to="/help#administrator">?</Link></h2>
+                  <p>New administrators might have to log out and in again in order to get all of their new privileges.</p>
+                </div>
+              : null
+          }
           <div className="row">
-            <div className="col-12 col-lg-6">
+            <div className={user.isAdministrator ? 'col-12 col-lg-6' : 'col-12'}>
               <AdministratorsViewComponent
                 socket={socket}
                 user={user}
                 administrators={administrators} />
             </div>
-            <div className="col-12 col-lg-6">
+            <div className={user.isAdministrator ? 'col-12 col-lg-6' : 'col-12'}>
               <QueuesViewComponent
                 socket={socket}
                 user={user}

@@ -18,7 +18,6 @@ export default function AddAdministratorViewComponent(props: any) {
     user === null || !user.isAdministrator
       ? null
       : <>
-          <h6 className="mb-3">New administrators might have to log out and in again in order to get all of their new privileges.</h6>
           <p>Insert the new administrator's username</p>
           <div className="col-12 col-lg-8 p-0">
             <AddInputViewComponent

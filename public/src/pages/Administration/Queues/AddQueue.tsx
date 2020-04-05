@@ -18,7 +18,6 @@ export default function AddQueueViewComponent(props: any) {
     user === null || !user.isAdministrator
       ? null
       : <>
-          <h6 className="mb-3">New administrators might have to log out and in again in order to get all of their new privileges.</h6>
           <p>Insert the name of the new queue</p>
           <div className="col-12 col-lg-8 p-0">
             <AddInputViewComponent

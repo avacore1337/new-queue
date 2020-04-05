@@ -1,5 +1,4 @@
 import React from 'react';
-import { Redirect, Link } from "react-router-dom";
 import SocketConnection from '../../../utils/SocketConnection';
 import RequestMessage from '../../../utils/RequestMessage';
 import User from '../../../models/User';
@@ -17,9 +16,6 @@ export default function AdministratorsViewComponent(props: any) {
     user === null || !user.isAdministrator
       ? null
       : <>
-          <div className="row">
-            <h2>Administrators of Stay A While <Link to="/help#administrator">?</Link></h2>
-          </div>
           <div className="row mb-5">
             <AddAdminViewModel
               socket={socket}

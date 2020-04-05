@@ -18,8 +18,12 @@ export default function QueueViewComponent(props: any) {
   let [queue, setQueue] = useState(Queue.InitialValue[0]);
   let [doesNotExist, setDoesNotExist] = useState(false);
 
-  function messageHandler(data: any) {
+  function onJoin(data: any) {
     console.log(queueName + ': ' + JSON.stringify(data));
+
+    fetch(`http://localhost:8000/api/queues/${queueName}/queue_entries`)
+      .then(response => response.json())
+      .then((response: any) => console.log(response));
   }
 
   function errorHandler(data: any) {
@@ -28,15 +32,8 @@ export default function QueueViewComponent(props: any) {
 
   let socket: SocketConnection = props.socket;
   useEffect(() => {
-    // TODO: Get the queue here and redirect to error page if queue does not exist
-    // fetch('http://localhost:8000/api/queues')
-    //   .then(response => response.json())
-    //   .then((response: any) => response.queues.map((res: any) => new Queue(res)))
-    //   .then((response: Queue[]) => setQueues(response));
-    // setDoesNotExist(true);
-
     if (queueName !== undefined) {
-      socket.joinRoom(queueName as string, messageHandler, errorHandler);
+      socket.joinRoom(queueName as string, onJoin, errorHandler);
 
       return () => { socket.leaveRoom(queueName as string); };
     }
