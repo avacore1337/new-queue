@@ -6,7 +6,7 @@ import SearchViewComponent from '../../viewcomponents/Search';
 
 export default function QueueEntryTableViewComponent(props: any) {
 
-  let queue: Queue = props.queue;
+  let queueEntries: QueueEntry[] = props.queueEntries;
   let filter: string = props.filter;
 
   function filterUsers(entry: QueueEntry) {
@@ -25,7 +25,7 @@ export default function QueueEntryTableViewComponent(props: any) {
   return (
     <div className="col-12 col-lg-9 row pr-lg-0">
       {
-        queue.queueEntries.length === 0
+        queueEntries.length === 0
           ? <h3>This queue is empty</h3>
           : <table className="table table-hover table-striped table-responsive-lg">
               <thead>
@@ -40,7 +40,7 @@ export default function QueueEntryTableViewComponent(props: any) {
               </thead>
               <tbody>
                 {
-                  queue.queueEntries.filter(filterUsers).map((queueEntry, index) =>
+                  queueEntries.filter(filterUsers).map((queueEntry, index) =>
                     <QueueEntryRowViewComponent
                       index={index}
                       queueEntry={queueEntry} />)

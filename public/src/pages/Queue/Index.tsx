@@ -15,25 +15,47 @@ export default function QueueViewComponent(props: any) {
   let user: User = props.user;
 
   let [filter, setFilter] = useState('');
-  let [queue, setQueue] = useState(Queue.InitialValue[0]);
   let [doesNotExist, setDoesNotExist] = useState(false);
 
-  function onJoin(data: any) {
-    console.log(queueName + ': ' + JSON.stringify(data));
+  let [showPage, setShowPage] = useState(false);
+  let [queueInfo, setQueueInfo] = useState('');
+  let [queueEntries, setQueueEntries] = useState([] as QueueEntry[]);
 
-    fetch(`http://localhost:8000/api/queues/${queueName}/queue_entries`)
-      .then(response => response.json())
-      .then((response: any) => console.log(response));
+  function handleMetadataResponse(response: any) {
+    setShowPage(true);
+
+    if ('status' in response) {
+      setDoesNotExist(true);
+    }
+    else {
+      setQueueInfo(response.info);
+      if (response.motd !== '') {
+        alert(response.motd);
+      }
+    }
   }
 
-  function errorHandler(data: any) {
-    setDoesNotExist(true);
+  function handleEntryResponse(response: any) {
+    if ('status' in response) {
+      return;
+    }
+
+    console.log(response);
+    setQueueEntries(response.map((entryInformation: any) => new QueueEntry(entryInformation)));
   }
 
   let socket: SocketConnection = props.socket;
   useEffect(() => {
     if (queueName !== undefined) {
-      socket.joinRoom(queueName as string, onJoin, errorHandler);
+      fetch(`http://localhost:8000/api/queues/${queueName}/queue_entries`)
+        .then(response => response.json())
+        .then((response: any) => handleEntryResponse(response));
+
+      fetch(`http://localhost:8000/api/queues/${queueName}`)
+        .then(response => response.json())
+        .then((response: any) => handleMetadataResponse(response));
+
+      socket.joinRoom(queueName as string);
 
       return () => { socket.leaveRoom(queueName as string); };
     }
@@ -41,33 +63,32 @@ export default function QueueViewComponent(props: any) {
 
   let isInQueue: boolean =
         user !== undefined
-        && queue !== null
-        && queue.queueEntries.filter((entry: QueueEntry) => entry.ugkthid === user.ugkthid).length > 0;
+        && queueEntries.filter((entry: QueueEntry) => entry.ugkthid === user.ugkthid).length > 0;
 
   return (
-    doesNotExist
-      ? <NotFoundViewComponent />
-      : queue === null
-          ? null
-          : <div className="page container col-10">
-              <div className="row">
-                <h1 className="col-12 col-lg-3">{queue.name}</h1>
-                <p className="col-12 col-lg-6">{queue.info}</p>
-                <div className="col-12 col-lg-3">
-                  <SearchViewComponent
-                    filter={filter}
-                    setFilter={setFilter} />
-                </div>
-              </div>
-              <div className="row" style={{marginTop: '5em'}}>
-                <EnterQueueViewComponent
-                  socket={socket}
-                  isInQueue={isInQueue} />
-                <QueueEntryTableViewComponent
-                  queue={queue}
-                  filter={filter} />
+    !showPage
+      ? null
+      : doesNotExist
+        ? <NotFoundViewComponent />
+        : <div className="page container col-10">
+            <div className="row">
+              <h1 className="col-12 col-lg-3">{queueName}</h1>
+              <p className="col-12 col-lg-6">{queueInfo}</p>
+              <div className="col-12 col-lg-3">
+                <SearchViewComponent
+                  filter={filter}
+                  setFilter={setFilter} />
               </div>
             </div>
+            <div className="row" style={{marginTop: '5em'}}>
+              <EnterQueueViewComponent
+                socket={socket}
+                isInQueue={isInQueue} />
+              <QueueEntryTableViewComponent
+                queueEntries={queueEntries}
+                filter={filter} />
+            </div>
+          </div>
   );
 
 }

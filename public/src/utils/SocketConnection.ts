@@ -42,7 +42,7 @@ export default class SocketConnection {
     };
   }
 
-  public joinRoom(room: string, onSuccess: (data: any) => void, onError?: (data: any) => void): void {
+  public joinRoom(room: string, onSuccess?: (data: any) => void, onError?: (data: any) => void): void {
     this._callbacks['/join'] = onSuccess;
     this._errorCallbacks['/join'] = onError;
 
