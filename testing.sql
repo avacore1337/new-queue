@@ -19,3 +19,4 @@ INSERT INTO queue_entries (user_id, queue_id, location, usercomment) VALUES ((se
 INSERT INTO queue_entries (user_id, queue_id, location, usercomment) VALUES ((select id from users where username = 'tester3' ), (select id from queues where name = 'INDA' ), '','');
 INSERT INTO queue_entries (user_id, queue_id, location, usercomment) VALUES ((select id from users where username = 'tester5' ), (select id from queues where name = 'INDA' ), '','');
 UPDATE queues SET hiding = true WHERE name = 'test1';
+UPDATE queues SET motd = '';

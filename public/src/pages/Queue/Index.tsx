@@ -29,7 +29,7 @@ export default function QueueViewComponent(props: any) {
     }
     else {
       setQueueInfo(response.info);
-      if (response.motd !== '') {
+      if (response.motd) {
         alert(response.motd);
       }
     }

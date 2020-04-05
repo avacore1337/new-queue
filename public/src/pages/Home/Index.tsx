@@ -8,8 +8,8 @@ import SearchViewComponent from '../../viewcomponents/Search';
 
 export default function HomeViewComponent(props: any) {
 
-  let [queues, setQueues] = useState(Queue.InitialValue);
   let [filter, setFilter] = useState('');
+  let [queues, setQueues] = useState([] as Queue[]);
 
   let user: User | null = props.user;
   let socket: SocketConnection = props.socket;
@@ -18,14 +18,18 @@ export default function HomeViewComponent(props: any) {
     fetch('http://localhost:8000/api/queues')
       .then(response => response.json())
       .then((response: any) => response.queues.map((res: any) => new Queue(res)))
-      .then((response: Queue[]) => setQueues(response));
+      .then((response: Queue[]) => {
+        response.sort((queue1: Queue, queue2: Queue) => {
+          if (queue1.hiding && !queue2.hiding) { return 1; }
+          if (!queue1.hiding && queue2.hiding) { return -1; }
+          return queue1.name < queue2.name ? -1 : 1;
+        });
+        setQueues(response)
+      });
   }, []);
 
-  function messageHandler(data: any) {
-  }
-
   useEffect(() => {
-    socket.joinRoom('lobby', messageHandler);
+    socket.joinRoom('lobby');
 
     return () => { socket.leaveRoom('lobby'); };
   }, []);
