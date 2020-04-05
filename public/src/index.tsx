@@ -22,7 +22,7 @@ const user = userData === null
 if (user !== null) {
   const token = localStorage.getItem('Authorization');
   if (token) {
-    socket.send(new RequestMessage('/login', { token: token.substring(6) }));
+    socket.login(token.substring(6));
   }
 }
 

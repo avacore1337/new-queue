@@ -45,7 +45,15 @@ export default function QueueViewComponent(props: any) {
     updateIsInQueue(entries)
   }
 
-  function messageHandler(data: any): void {
+  function onJoin(data: any): void {
+    console.log(data);
+  }
+
+  function onLeave(data: any): void {
+    console.log(data);
+  }
+
+  function onUpdate(data: any): void {
     console.log(data);
   }
 
@@ -60,9 +68,9 @@ export default function QueueViewComponent(props: any) {
         .then(response => response.json())
         .then((response: any) => handleMetadataResponse(response));
 
-      socket.joinRoom(queueName as string, messageHandler);
+      socket.joinQueue(queueName as string, onJoin, onLeave, onUpdate);
 
-      return () => { socket.leaveRoom(queueName as string); };
+      return () => { socket.leaveQueue(queueName as string); };
     }
   }, []);
 

@@ -28,10 +28,19 @@ export default function HomeViewComponent(props: any) {
       });
   }, []);
 
-  useEffect(() => {
-    socket.joinRoom('lobby');
 
-    return () => { socket.leaveRoom('lobby'); };
+  function onJoin(data: any): void {
+    console.log(data);
+  }
+
+  function onLeave(data: any): void {
+    console.log(data);
+  }
+
+  useEffect(() => {
+    socket.joinLobby(onJoin, onLeave);
+
+    return () => { socket.leaveLobby(); };
   }, []);
 
   function canSee(queue: Queue): boolean {
