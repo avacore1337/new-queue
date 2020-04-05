@@ -230,6 +230,9 @@ impl RoomHandler {
             "/joinQueue" => {
                 self.auth_deserialize(wrapper, RoomHandler::join_queue_route, AuthLevel::Any)
             }
+            "/leaveQueue" => {
+                self.auth_deserialize(wrapper, RoomHandler::leave_queue_route, AuthLevel::Any)
+            }
             "/kick" => {
                 self.auth_deserialize(wrapper, RoomHandler::kick_route, AuthLevel::Assistant)
             }
@@ -296,6 +299,35 @@ impl RoomHandler {
         Ok(())
     }
 
+    fn leave_queue_route(&mut self, auth: Auth, join_queue: JoinQueue) -> Result<()> {
+        let queue = self
+            .current_queue
+            .as_ref()
+            .ok_or_else(|| NotLoggedInError)?
+            .clone();
+        println!("Leaving queue: {}", &queue.name);
+        // let conn = &self.get_db_connection();
+        // let queue_id = queues::name_to_id(&conn, &queue.name)?;
+        // println!("Joining queue with id: {}", &queue_id);
+        // let queue_entry = queue_entries::create(
+        //     &conn,
+        //     auth.id,
+        //     queue_id,
+        //     &join_queue.location,
+        //     &join_queue.comment,
+        // )?;
+        // println!("QueueEntry ID: {}", queue_entry.id);
+
+        // self.broadcast_room(
+        //     &queue.name,
+        //     &json!({"path": "/join/".to_string() + &queue.name,
+        //         "content": queue_entry.to_sendable(conn)
+        //     })
+        //     .to_string(),
+        // );
+        Ok(())
+    }
+
     fn join_queue_route(&mut self, auth: Auth, join_queue: JoinQueue) -> Result<()> {
         let queue = self
             .current_queue
@@ -317,7 +349,7 @@ impl RoomHandler {
 
         self.broadcast_room(
             &queue.name,
-            &json!({"path": "join/".to_string() + &queue.name,
+            &json!({"path": "/join/".to_string() + &queue.name,
                 "content": queue_entry.to_sendable(conn)
             })
             .to_string(),
