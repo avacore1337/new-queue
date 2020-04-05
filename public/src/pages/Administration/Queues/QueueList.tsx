@@ -2,18 +2,15 @@ import React from 'react';
 import SocketConnection from '../../../utils/SocketConnection';
 import RequestMessage from '../../../utils/RequestMessage';
 import User from '../../../models/User';
+import Queue from '../../../models/Queue';
 
 export default function QueueListViewComponent(props: any) {
 
-  let queueNames: string[] = props.queueNames;
-  let user: User = props.user;
-
-  function removeQueue(queueName: string): void | undefined {
-    alert('Not yet implemented');
-  }
+  let queues: Queue[] = props.queues;
+  queues.sort((queue1: Queue, queue2: Queue) => queue1.name.toLowerCase() < queue2.name.toLowerCase() ? -1 : 1);
 
   return (
-    queueNames.length
+    queues.length
       ? <div>
           <table className="table table-striped">
             <thead>
@@ -23,9 +20,9 @@ export default function QueueListViewComponent(props: any) {
             </thead>
             <tbody>
               {
-                queueNames.map(queueName =>
-                  <tr key={queueName}>
-                    <td>{ queueName }</td>
+                queues.map(queue =>
+                  <tr key={queue.name}>
+                    <td style={{color: queue.hiding ? 'gray' : 'inherit'}}>{ queue.name }</td>
                   </tr>)
               }
             </tbody>

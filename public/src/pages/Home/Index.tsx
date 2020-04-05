@@ -39,7 +39,7 @@ export default function HomeViewComponent(props: any) {
   }
 
   return (
-    <div className="container mb-5">
+    <div className="page container">
       <div className="row">
         <div className="col-lg-4 offset-lg-8 p-0">
           <SearchViewComponent

@@ -29,7 +29,7 @@ export default function AdministrationViewComponent(props: any) {
   return (
     user === null || !user.isAdministrator && !user.isTeacher
       ? <NotFoundViewComponent />
-      : <div className="container">
+      : <div className="page container">
           <AdministrationInformationViewComponent user={user} />
           {
             user.isAdministrator
@@ -39,20 +39,32 @@ export default function AdministrationViewComponent(props: any) {
                 </div>
               : null
           }
-          <div className="row">
-            <div className={user.isAdministrator ? 'col-12 col-lg-6' : 'col-12'}>
+          <div className="row mb-5">
+            <div className="col-12 col-lg-6">
               <AdministratorsViewComponent
                 socket={socket}
                 user={user}
                 administrators={administrators} />
             </div>
-            <div className={user.isAdministrator ? 'col-12 col-lg-6' : 'col-12'}>
+            <div className="col-12 col-lg-6">
               <QueuesViewComponent
                 socket={socket}
                 user={user}
-                queueNames={queues.map(queue => queue.name)} />
+                queues={queues} />
             </div>
           </div>
+          {
+            !user.isAdministrator && !user.isTeacher
+              ? null
+              : <div className="row">
+                  <div className="col-12 col-lg-6">
+                      <h1>TODO</h1>
+                    </div>
+                    <div className="col-12 col-lg-6">
+                      <h1>TODO</h1>
+                    </div>
+                  </div>
+          }
         </div>
   );
 }

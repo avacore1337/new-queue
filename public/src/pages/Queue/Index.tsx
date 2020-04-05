@@ -49,7 +49,7 @@ export default function QueueViewComponent(props: any) {
       ? <NotFoundViewComponent />
       : queue === null
           ? null
-          : <div className="container col-10">
+          : <div className="page container col-10">
               <div className="row">
                 <h1 className="col-12 col-lg-3">{queue.name}</h1>
                 <p className="col-12 col-lg-6">{queue.info}</p>
