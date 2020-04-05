@@ -29,13 +29,14 @@ export default function AdministrationListViewComponent(props: any) {
                   <tr key={administrator.username}>
                     <td>{ administrator.realname }</td>
                     <td>
-                      { administrator.username }
                       {
                         administrators.length <= 1
-                          ? null
-                          : <span className="text-red clickable" title="Remove admin" onClick={() => removeAdministrator(administrator)}>
-                              <i className="fas fa-times"></i>
-                            </span>
+                          ? administrator.username
+                          : <>
+                              {administrator.username} <span className="text-danger clickable" title="Remove admin" onClick={() => removeAdministrator(administrator)}>
+                                <i className="fas fa-times"></i>
+                              </span>
+                            </>
                       }
                     </td>
                     <td>{ administrator.addedBy }</td>

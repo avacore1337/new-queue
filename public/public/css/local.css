@@ -10,6 +10,14 @@
   cursor: pointer;
 }
 
+.non-clickable {
+  cursor: default;
+}
+
+.gray {
+  background-color: #A9A9A9;
+}
+
 .blue {
   background-color: #0275d8;
 }

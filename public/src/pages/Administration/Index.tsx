@@ -8,6 +8,7 @@ import AddInputViewComponent from '../../viewcomponents/AddInput';
 import AdministrationInformationViewComponent from './Administrators/AdministrationInformation';
 import AdministratorsViewComponent from './Administrators/Administrators';
 import QueuesViewComponent from './Queues/Queues';
+import QueueOptionsViewComponent from './Queues/QueueOptions';
 import Administrator from '../../models/Administrator';
 import Queue from '../../models/Queue';
 
@@ -35,7 +36,7 @@ export default function AdministrationViewComponent(props: any) {
             user.isAdministrator
               ? <div className="row mb-3">
                   <h2>Administrators of Stay A While <Link to="/help#administrator">?</Link></h2>
-                  <p>New administrators might have to log out and in again in order to get all of their new privileges.</p>
+                  <p>New administrators will have to log out and in again in order to get all of their new privileges.</p>
                 </div>
               : null
           }
@@ -53,18 +54,10 @@ export default function AdministrationViewComponent(props: any) {
                 queues={queues} />
             </div>
           </div>
-          {
-            !user.isAdministrator && !user.isTeacher
-              ? null
-              : <div className="row">
-                  <div className="col-12 col-lg-6">
-                      <h1>TODO</h1>
-                    </div>
-                    <div className="col-12 col-lg-6">
-                      <h1>TODO</h1>
-                    </div>
-                  </div>
-          }
+          <QueueOptionsViewComponent
+            queues={queues}
+            user={user}
+            socket={socket} />
         </div>
   );
 }

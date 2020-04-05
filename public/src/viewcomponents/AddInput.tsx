@@ -3,19 +3,24 @@ import React, { useState } from 'react';
 export default function AddInputViewComponent(props: any) {
 
   let callback = props.callback;
+  let isDisabled: boolean = props.isDisabled;
 
   let [content, setContent] = useState('');
   let [placeholder, setPlaceholder] = useState(props.placeholder as string);
 
   function changeContent(event: any): void {
-    setContent(event.target.value);
+    if (!isDisabled) {
+      setContent(event.target.value);
+    }
   }
 
   function runCallback(event: any): void {
-    if (content !== '') {
-      if (event === undefined || event.key === 'Enter') {
-        callback(content);
-        setContent('');
+    if (!isDisabled) {
+      if (content !== '') {
+        if (event === undefined || event.key === 'Enter') {
+          callback(content);
+          setContent('');
+        }
       }
     }
   }
@@ -30,14 +35,16 @@ export default function AddInputViewComponent(props: any) {
         onChange={changeContent}
         onKeyUp={runCallback}
         onFocus={() => {setPlaceholder('')}}
-        onBlur={() => {setPlaceholder(props.placeholder as string)}} />
+        onBlur={() => {setPlaceholder(props.placeholder as string)}}
+        disabled={isDisabled} />
 
       <div className="input-group-append">
 
         <button
-          className="btn blue clickable text-white"
+          className={isDisabled ? 'btn gray text-white' : 'btn blue clickable text-white'}
           type="button"
-          onClick={runCallback}>
+          onClick={runCallback}
+          disabled={isDisabled}>
 
           <i className="fas fa-plus"></i>
           Add
