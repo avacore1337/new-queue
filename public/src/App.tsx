@@ -32,6 +32,7 @@ export default function App(props: any) {
         </Route>
         <Route path="/Queue/:queueName">
           <QueueViewComponent
+            user={user}
             socket={socket} />
         </Route>
         <Route exact path="/About">

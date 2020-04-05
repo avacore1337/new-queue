@@ -6,6 +6,7 @@ export default function QueueEntryRowViewComponent(props: any) {
 
   let index: number = props.index;
   let queueEntry: QueueEntry = props.queueEntry;
+  let ugkthid: string | null = props.ugkthid;
 
   let [lastClicked, setLastClicked] = useState(null as null | number);
   let [displayTAOptions, setDisplayTAOptions] = useState('none');
@@ -38,7 +39,13 @@ export default function QueueEntryRowViewComponent(props: any) {
     <>
       <tr onClick={click} onTouchEnd={touch}>
         <th scope="row">{index + 1}</th>
-        <td>{queueEntry.realname}</td>
+        <td>
+          {
+            !ugkthid || queueEntry.ugkthid !== ugkthid
+              ? queueEntry.realname
+              : <><span className="text-primary"><i className="fas fa-star"></i></span> {queueEntry.realname}</>
+          }
+        </td>
         <td>{queueEntry.location}</td>
         <td>{queueEntry.help ? 'help' : 'presentation'}</td>
         <td>{queueEntry.comment}</td>

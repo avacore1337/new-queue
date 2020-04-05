@@ -20,6 +20,7 @@ export default function QueueViewComponent(props: any) {
   let [showPage, setShowPage] = useState(false);
   let [queueInfo, setQueueInfo] = useState('');
   let [queueEntries, setQueueEntries] = useState([] as QueueEntry[]);
+  let [isInQueue, setIsInQueue] = useState(false);
 
   function handleMetadataResponse(response: any) {
     setShowPage(true);
@@ -40,8 +41,9 @@ export default function QueueViewComponent(props: any) {
       return;
     }
 
-    console.log(response);
-    setQueueEntries(response.map((entryInformation: any) => new QueueEntry(entryInformation)));
+    const entries = response.map((entryInformation: any) => new QueueEntry(entryInformation));
+    setQueueEntries(entries);
+    updateIsInQueue(entries)
   }
 
   let socket: SocketConnection = props.socket;
@@ -61,9 +63,14 @@ export default function QueueViewComponent(props: any) {
     }
   }, []);
 
-  let isInQueue: boolean =
-        user !== undefined
-        && queueEntries.filter((entry: QueueEntry) => entry.ugkthid === user.ugkthid).length > 0;
+  function updateIsInQueue(entries: QueueEntry[]): void {
+    console.log(user);
+    console.log(entries.map(a => a.ugkthid));
+
+    setIsInQueue(
+      user !== undefined
+      && entries.filter((entry: QueueEntry) => entry.ugkthid === user.ugkthid).length > 0);
+  }
 
   return (
     !showPage
@@ -86,7 +93,8 @@ export default function QueueViewComponent(props: any) {
                 isInQueue={isInQueue} />
               <QueueEntryTableViewComponent
                 queueEntries={queueEntries}
-                filter={filter} />
+                filter={filter}
+                ugkthid={user ? user.ugkthid : null} />
             </div>
           </div>
   );

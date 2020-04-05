@@ -8,6 +8,7 @@ export default function QueueEntryTableViewComponent(props: any) {
 
   let queueEntries: QueueEntry[] = props.queueEntries;
   let filter: string = props.filter;
+  let ugkthid: string | null = props.ugkthid;
 
   function filterUsers(entry: QueueEntry) {
     const lowerCaseFilter = filter.toLowerCase();
@@ -43,7 +44,8 @@ export default function QueueEntryTableViewComponent(props: any) {
                   queueEntries.filter(filterUsers).map((queueEntry, index) =>
                     <QueueEntryRowViewComponent
                       index={index}
-                      queueEntry={queueEntry} />)
+                      queueEntry={queueEntry}
+                      ugkthid={ugkthid} />)
                 }
               </tbody>
             </table>
