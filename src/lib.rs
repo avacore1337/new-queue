@@ -72,6 +72,8 @@ pub fn rocket() -> rocket::Rocket {
                 routes::queues::get_queues,
                 routes::queues::get_queue,
                 routes::queue_entries::get_queue_entries,
+                routes::admins::get_assistants,
+                routes::admins::get_teachers,
             ],
         )
         .attach(cors_fairing())

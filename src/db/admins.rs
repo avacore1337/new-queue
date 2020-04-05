@@ -1,6 +1,7 @@
 use crate::db;
 use crate::models::admin::Admin;
-use crate::schema::admins;
+use crate::models::user::User;
+use crate::schema::*;
 use crate::sql_types::AdminEnum;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
@@ -31,4 +32,32 @@ pub struct NewAdmin {
     user_id: i32,
     queue_id: i32,
     admin_type: AdminEnum,
+}
+
+pub fn teachers_for_queue(conn: &PgConnection, name: &str) -> Option<Vec<(Admin, User)>> {
+    let admins = admins::table
+        .inner_join(queues::table)
+        .inner_join(users::table)
+        .filter(
+            queues::name
+                .eq(name)
+                .and(admins::admin_type.eq(AdminEnum::Teacher)),
+        )
+        .select((users::id, users::username, users::ugkthid, users::realname))
+        .load::<User>(conn);
+    None
+}
+
+pub fn assistants_for_queue(conn: &PgConnection, name: &str) -> Option<Vec<(Admin, User)>> {
+    let admins = admins::table
+        .inner_join(queues::table)
+        .inner_join(users::table)
+        .filter(
+            queues::name
+                .eq(name)
+                .and(admins::admin_type.eq(AdminEnum::Assistant)),
+        )
+        .select((users::id, users::username, users::ugkthid, users::realname))
+        .load::<User>(conn);
+    None
 }
