@@ -1,5 +1,5 @@
 use crate::db::queues;
-use crate::models::queue_entry::QueueEntry;
+use crate::models::queue_entry::{QueueEntry, SendableQueueEntry};
 use crate::schema::queue_entries;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
@@ -21,11 +21,18 @@ impl From<Error> for QueueEntryCreationError {
     }
 }
 
-pub fn for_queue(conn: &PgConnection, queue_name: &str) -> Option<Vec<QueueEntry>> {
+pub fn for_queue(conn: &PgConnection, queue_name: &str) -> Option<Vec<SendableQueueEntry>> {
     let queue = queues::find_by_name(conn, queue_name).ok()?;
-    QueueEntry::belonging_to(&queue).load(conn).ok()
+    QueueEntry::belonging_to(&queue)
+        .load(conn)
+        .map(|entries: Vec<QueueEntry>| {
+            entries
+                .into_iter()
+                .map(|entry| entry.to_sendable(conn))
+                .collect()
+        })
+        .ok()
 }
-
 pub fn create(
     conn: &PgConnection,
     user_id: i32,

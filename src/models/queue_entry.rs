@@ -8,7 +8,7 @@ use serde::Serialize;
 
 use chrono::{DateTime, Utc};
 
-#[derive(Identifiable, Queryable, Serialize, Associations)]
+#[derive(Identifiable, Queryable, Associations)]
 #[belongs_to(parent = "User")]
 #[belongs_to(parent = "Queue")]
 #[table_name = "queue_entries"]
