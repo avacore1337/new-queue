@@ -15,11 +15,10 @@ export default function QueueViewComponent(props: any) {
 
   let [filter, setFilter] = useState('');
   let [doesNotExist, setDoesNotExist] = useState(false);
-
   let [showPage, setShowPage] = useState(false);
+
   let [queueInfo, setQueueInfo] = useState('');
   let [queueEntries, setQueueEntries] = useState([] as QueueEntry[]);
-  let [isInQueue, setIsInQueue] = useState(false);
 
   function handleMetadataResponse(response: any) {
     setShowPage(true);
@@ -40,9 +39,7 @@ export default function QueueViewComponent(props: any) {
       return;
     }
 
-    const entries = response.map((entryInformation: any) => new QueueEntry(entryInformation));
-    setQueueEntries(entries);
-    updateIsInQueue(entries)
+    setQueueEntries(response.map((entryInformation: any) => new QueueEntry(entryInformation)));
   }
 
   function onJoin(data: any): void {
@@ -79,12 +76,6 @@ export default function QueueViewComponent(props: any) {
     }
   }, []);
 
-  function updateIsInQueue(entries: QueueEntry[]): void {
-    setIsInQueue(
-      user !== undefined
-      && entries.filter((entry: QueueEntry) => entry.ugkthid === user.ugkthid).length > 0);
-  }
-
   return (
     !showPage
       ? null
@@ -103,8 +94,7 @@ export default function QueueViewComponent(props: any) {
             <div className="row" style={{marginTop: '5em'}}>
               <EnterQueueViewComponent
                 socket={socket}
-                isInQueue={isInQueue}
-                yourself={isInQueue ? queueEntries.filter((entry: QueueEntry) => entry.ugkthid === user.ugkthid)[0] : null} />
+                yourself={queueEntries.filter((entry: QueueEntry) => entry.ugkthid === user.ugkthid)[0] || null} />
               <QueueEntryTableViewComponent
                 queueEntries={queueEntries}
                 filter={filter}

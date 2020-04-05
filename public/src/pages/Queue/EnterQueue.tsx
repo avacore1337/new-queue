@@ -7,7 +7,6 @@ import QueueEntry from '../../models/QueueEntry';
 export default function EnterQueueViewComponent(props: any) {
 
   let socket: SocketConnection = props.socket;
-  let isInQueue: boolean = props.isInQueue;
   let yourself: QueueEntry | null = props.yourself;
 
   let [location, setLocation] = useState(yourself !== null ? yourself.location : '');
@@ -84,7 +83,7 @@ export default function EnterQueueViewComponent(props: any) {
         <br />
 
         {
-          isInQueue
+          yourself
             ? null
             : <>
                 <div className="row text-center">
@@ -113,7 +112,7 @@ export default function EnterQueueViewComponent(props: any) {
         }
 
         {
-          isInQueue
+          yourself
             ? <>
                 <div
                   className="col-12 text-center yellow clickable"
