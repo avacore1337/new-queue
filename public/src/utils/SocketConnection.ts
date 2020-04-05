@@ -33,8 +33,9 @@ export default class SocketConnection {
         this.send(this._lastJoinRequest);
       }
 
-      for (const request of this._pendingRequests) {
-        this.send(request);
+      while (this._pendingRequests.length > 0) {
+        this.send(this._pendingRequests[0]);
+        this._pendingRequests.shift();
       }
     };
 
