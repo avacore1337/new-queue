@@ -4,19 +4,29 @@ export default class SocketConnection {
 
   private _socket: WebSocket;
   private _callbacks: any;
-  private _errorCallbacks: any;
   private _connectionEstablished: boolean;
   private _pendingRequests: RequestMessage[];
+  private _lastJoinRequest: RequestMessage | null;
 
   public constructor(serverUrl: string) {
     this._callbacks = {};
-    this._errorCallbacks = {};
     this._pendingRequests = [];
-
+    this._lastJoinRequest = null;
     this._connectionEstablished = false;
+    this._socket = new WebSocket(serverUrl);
+
+    this.connect(serverUrl);
+  }
+
+  private connect(serverUrl: string): void {
     this._socket = new WebSocket(serverUrl);
     this._socket.onopen = () => {
       this._connectionEstablished = true;
+
+      if (this._lastJoinRequest !== null) {
+        this.send(this._lastJoinRequest);
+      }
+
       for (const request of this._pendingRequests) {
         this.send(request);
       }
@@ -26,33 +36,29 @@ export default class SocketConnection {
       const data = JSON.parse(event.data);
       const path: string = data.path;
 
-      if (path === '/error') {
-        const callingPath = data.content.substring(21).substring(0, data.content.substring(21).indexOf('\\"'));
-        let errorCallback = this._errorCallbacks[callingPath];
-        if (errorCallback !== undefined) {
-          errorCallback(data.content);
-        }
+      let callback = this._callbacks[path];
+      if (callback !== undefined) {
+        callback(data.content);
       }
-      else {
-        let callback = this._callbacks[path];
-        if (callback !== undefined) {
-          callback(data.content);
-        }
-      }
+    };
+
+    this._socket.onclose = (event: CloseEvent): any | undefined => {
+      this._connectionEstablished = false;
+      this.connect(serverUrl);
     };
   }
 
-  public joinRoom(room: string, onSuccess?: (data: any) => void, onError?: (data: any) => void): void {
-    this._callbacks['/join'] = onSuccess;
-    this._errorCallbacks['/join'] = onError;
+  public joinRoom(room: string, callback?: (data: any) => void): void {
+    this._callbacks[`/join/${room}`] = callback;
 
     const message = new RequestMessage('/join', { room: room });
+    this._lastJoinRequest = message;
+
     this.send(message);
   }
 
   public leaveRoom(room: string): void {
-    delete this._callbacks['/join'];
-    delete this._errorCallbacks['/join'];
+    delete this._callbacks[`/join/${room}`];
 
     const message = new RequestMessage('/leave', { room: room });
     this.send(message);
@@ -62,13 +68,9 @@ export default class SocketConnection {
     this._socket.close();
   }
 
-  public send(message: RequestMessage, onSuccess?: (data: any) => void, onError?: (data: any) => void): void {
-    if (onSuccess !== undefined) {
-      this._callbacks[message.path] = onSuccess;
-    }
-
-    if (onError !== undefined) {
-      this._errorCallbacks[message.path] = onError;
+  public send(message: RequestMessage, callback?: (data: any) => void): void {
+    if (callback !== undefined) {
+      this._callbacks[message.path] = callback;
     }
 
     if (this._connectionEstablished) {

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams,  } from "react-router-dom";
 import SocketConnection from '../../utils/SocketConnection';
-import Queue from '../../models/Queue';
 import QueueEntry from '../../models/QueueEntry';
 import User from '../../models/User';
 import EnterQueueViewComponent from './EnterQueue';
@@ -46,6 +45,10 @@ export default function QueueViewComponent(props: any) {
     updateIsInQueue(entries)
   }
 
+  function messageHandler(data: any): void {
+    console.log(data);
+  }
+
   let socket: SocketConnection = props.socket;
   useEffect(() => {
     if (queueName !== undefined) {
@@ -57,16 +60,13 @@ export default function QueueViewComponent(props: any) {
         .then(response => response.json())
         .then((response: any) => handleMetadataResponse(response));
 
-      socket.joinRoom(queueName as string);
+      socket.joinRoom(queueName as string, messageHandler);
 
       return () => { socket.leaveRoom(queueName as string); };
     }
   }, []);
 
   function updateIsInQueue(entries: QueueEntry[]): void {
-    console.log(user);
-    console.log(entries.map(a => a.ugkthid));
-
     setIsInQueue(
       user !== undefined
       && entries.filter((entry: QueueEntry) => entry.ugkthid === user.ugkthid).length > 0);
@@ -90,7 +90,8 @@ export default function QueueViewComponent(props: any) {
             <div className="row" style={{marginTop: '5em'}}>
               <EnterQueueViewComponent
                 socket={socket}
-                isInQueue={isInQueue} />
+                isInQueue={isInQueue}
+                yourself={isInQueue ? queueEntries.filter((entry: QueueEntry) => entry.ugkthid === user.ugkthid)[0] : null} />
               <QueueEntryTableViewComponent
                 queueEntries={queueEntries}
                 filter={filter}

@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import debounce from 'lodash.debounce';
 import SocketConnection from '../../utils/SocketConnection';
 import RequestMessage from '../../utils/RequestMessage';
+import QueueEntry from '../../models/QueueEntry';
 
 export default function EnterQueueViewComponent(props: any) {
 
-  let [location, setLocation] = useState('');
-  let [comment, setComment] = useState('');
-  let [typeOfCommunication, setTypeOfCommunication] = useState('help');
-
   let socket: SocketConnection = props.socket;
   let isInQueue: boolean = props.isInQueue;
+  let yourself: QueueEntry | null = props.yourself;
+
+  let [location, setLocation] = useState(yourself !== null ? yourself.location : '');
+  let [comment, setComment] = useState(yourself !== null ? yourself.comment : '');
+  let [typeOfCommunication, setTypeOfCommunication] = useState(yourself !== null ? yourself.help : 'help');
 
   function changeLocation(event: any): void {
     setLocation(event.target.value);
