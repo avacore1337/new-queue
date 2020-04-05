@@ -46,15 +46,20 @@ export default function QueueViewComponent(props: any) {
   }
 
   function onJoin(data: any): void {
-    console.log(data);
+    setQueueEntries([...queueEntries, new QueueEntry(data)]);
   }
 
   function onLeave(data: any): void {
-    console.log(data);
+    setQueueEntries(queueEntries.filter(entry => entry.ugkthid !== data.ugkthid));
   }
 
   function onUpdate(data: any): void {
-    console.log(data);
+    for (let i = 0; i < queueEntries.length; i++) {
+        if (queueEntries[i].ugkthid === data.ugkthid) {
+          queueEntries[i] = new QueueEntry(data);
+        }
+    }
+    setQueueEntries(queueEntries);
   }
 
   let socket: SocketConnection = props.socket;
