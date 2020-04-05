@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import SocketConnection from './utils/SocketConnection';
+import RequestMessage from './utils/RequestMessage';
 import User from './models/User';
 
 const SERVER_URL = 'ws://localhost:7777/ws';
@@ -17,6 +18,13 @@ const userData = localStorage.getItem('User');
 const user = userData === null
   ? null
   : new User(JSON.parse(userData));
+
+if (user !== null) {
+  const token = localStorage.getItem('Authorization');
+  if (token !== undefined) {
+    socket.send(new RequestMessage('/login', { token: token }));
+  }
+}
 
 ReactDOM.render(
   <React.StrictMode>
