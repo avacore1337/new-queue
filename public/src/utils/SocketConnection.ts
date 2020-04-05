@@ -34,7 +34,11 @@ export default class SocketConnection {
       }
 
       while (this._pendingRequests.length > 0) {
-        this.send(this._pendingRequests[0]);
+        const request = this._pendingRequests[0];
+        if (request.path.startsWith('/subscribe') || request.path.startsWith('/login')) {
+          continue;
+        }
+        this.send(request);
         this._pendingRequests.shift();
       }
     };
