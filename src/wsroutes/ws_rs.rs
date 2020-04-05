@@ -361,7 +361,8 @@ impl RoomHandler {
     fn broadcast_room(&self, room: &str, message: &str) {
         let rooms = self.rooms.borrow();
         println!("broadcasting in room: {}", room);
-        for sender in &rooms[room] {
+        let internal_name = "room_".to_string() + room;
+        for sender in &rooms[&internal_name] {
             // TODO deal with errors
             println!("Sending: '{}' to {}", &message, sender.connection_id());
             sender.send(Message::Text(message.to_string())).unwrap();
