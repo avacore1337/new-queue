@@ -72,6 +72,11 @@ struct Login {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+struct AddUser {
+    username: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 struct JoinQueue {
     comment: String,
     help: bool,
@@ -230,6 +235,14 @@ impl RoomHandler {
             "/kick" => {
                 self.auth_deserialize(wrapper, RoomHandler::kick_route, AuthLevel::Assistant)
             }
+            "/addTeacher" => {
+                self.auth_deserialize(wrapper, RoomHandler::add_teacher_route, AuthLevel::Teacher)
+            }
+            "/addAssistant" => self.auth_deserialize(
+                wrapper,
+                RoomHandler::add_assistant_route,
+                AuthLevel::Teacher,
+            ),
             _ => Ok(()),
         }
     }
@@ -260,6 +273,46 @@ impl RoomHandler {
     }
 
     fn kick_route(&mut self, _auth: Auth, _kick: Kick) -> Result<()> {
+        Ok(())
+    }
+
+    fn add_teacher_route(&mut self, _auth: Auth, add_user: AddUser) -> Result<()> {
+        let queue = self
+            .current_queue
+            .as_ref()
+            .ok_or_else(|| NotLoggedInError)?
+            .clone();
+        // println!("Joining queue: {}", &queue.name);
+        // let conn = &self.get_db_connection();
+        // let queue_id = queues::name_to_id(&conn, &queue.name)?;
+        // println!("Joining queue with id: {}", &queue_id);
+        // let queue_entry = queue_entries::create(
+        //     &conn,
+        //     auth.id,
+        //     queue_id,
+        //     &join_queue.location,
+        //     &join_queue.comment,
+        // )?;
+        Ok(())
+    }
+
+    fn add_assistant_route(&mut self, auth: Auth, add_user: AddUser) -> Result<()> {
+        // let queue = self
+        //     .current_queue
+        //     .as_ref()
+        //     .ok_or_else(|| NotLoggedInError)?
+        //     .clone();
+        // println!("Joining queue: {}", &queue.name);
+        // let conn = &self.get_db_connection();
+        // let queue_id = queues::name_to_id(&conn, &queue.name)?;
+        // println!("Joining queue with id: {}", &queue_id);
+        // let queue_entry = queue_entries::create(
+        //     &conn,
+        //     auth.id,
+        //     queue_id,
+        //     &join_queue.location,
+        //     &join_queue.comment,
+        // )?;
         Ok(())
     }
 

@@ -1,6 +1,7 @@
+use crate::schema::queues;
 use serde::Serialize;
 
-#[derive(Queryable, Serialize, Clone)]
+#[derive(Identifiable, Queryable, Serialize, Clone)]
 pub struct Queue {
     pub id: i32,
     pub name: String,

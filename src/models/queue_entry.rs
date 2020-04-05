@@ -8,8 +8,8 @@ use serde::Serialize;
 
 use chrono::{DateTime, Utc};
 
-#[derive(Queryable, Serialize, Associations)]
-#[belongs_to(parent = "User")]
+#[derive(Identifiable, Queryable, Serialize, Associations)]
+// #[belongs_to(parent = "User")]
 #[belongs_to(parent = "Queue")]
 #[table_name = "queue_entries"]
 pub struct QueueEntry {
@@ -26,6 +26,7 @@ pub struct QueueEntry {
 
 #[derive(Serialize)]
 pub struct SendableQueueEntry {
+    pub id: i32,
     pub username: String,
     pub ugkthid: String,
     pub realname: String,
@@ -39,15 +40,12 @@ pub struct SendableQueueEntry {
 
 impl QueueEntry {
     pub fn to_sendable(&self, conn: &PgConnection) -> SendableQueueEntry {
-        // let queue = queues
-        //     .find(self.queue_id)
-        //     .get_result::<Queue>(conn)
-        //     .unwrap();
         let user = users::table
             .find(self.user_id)
             .get_result::<User>(conn)
             .unwrap();
         SendableQueueEntry {
+            id: self.id,
             username: user.username,
             ugkthid: user.ugkthid,
             realname: user.realname,

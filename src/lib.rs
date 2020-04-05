@@ -29,11 +29,13 @@ mod db;
 mod errors;
 mod models;
 mod routes;
+#[allow(unused_imports)]
 mod schema;
 mod sql_types;
 mod wsroutes;
 
 use rocket_contrib::json::JsonValue;
+use rocket_contrib::serve::StaticFiles;
 use rocket_cors::Cors;
 
 #[catch(404)]
@@ -59,7 +61,7 @@ pub fn rocket() -> rocket::Rocket {
         .unwrap();
     rocket::custom(config::from_env())
         .manage(db::init_pool())
-        .mount("/", routes![routes::static_files::file,])
+        .mount("/public", StaticFiles::from("/public/public"))
         .mount(
             "/api",
             routes![
@@ -69,6 +71,7 @@ pub fn rocket() -> rocket::Rocket {
                 routes::users::get_user,
                 routes::queues::post_queues,
                 routes::queues::get_queues,
+                routes::queue_entries::get_queue_entries,
                 // routes::articles::post_articles,
                 // routes::articles::put_articles,
                 // routes::articles::get_article,

@@ -1,3 +1,5 @@
+use crate::db::queues;
+use crate::models::queue::Queue;
 use crate::models::queue_entry::QueueEntry;
 use crate::schema::queue_entries;
 use diesel::pg::PgConnection;
@@ -28,6 +30,11 @@ impl From<Error> for QueueEntryCreationError {
 // pub fn get(id: i32, connection: &PgConnection) -> QueryResult<Queue> {
 //     queues::table.find(id).get_result::<Queue>(connection)
 // }
+
+pub fn for_queue(conn: &PgConnection, queue_name: &str) -> Option<Vec<QueueEntry>> {
+    let queue = queues::find_by_name(conn, queue_name).ok()?;
+    QueueEntry::belonging_to(&queue).load(conn).ok()
+}
 
 pub fn create(
     conn: &PgConnection,

@@ -1,5 +1,6 @@
 use rocket_contrib::databases::diesel;
 
+pub mod admin;
 pub mod queue_entries;
 pub mod queues;
 pub mod users;
