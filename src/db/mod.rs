@@ -3,6 +3,7 @@ use rocket_contrib::databases::diesel;
 pub mod admins;
 pub mod queue_entries;
 pub mod queues;
+pub mod super_admins;
 pub mod users;
 
 // #[database("diesel_postgres_pool")]

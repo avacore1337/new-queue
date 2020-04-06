@@ -18,6 +18,8 @@ enum AuthLevel {
     Any,
     Assistant,
     Teacher,
+    SuperOrTeacher,
+    Super,
 }
 
 // Change the alias to `Box<error::Error>`.
@@ -72,6 +74,11 @@ struct Login {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct AddUser {
     queue: String,
+    username: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct AddSuper {
     username: String,
 }
 
@@ -216,6 +223,7 @@ impl RoomHandler {
     }
 
     fn get_auth(&mut self, auth_level: AuthLevel) -> Result<Auth> {
+        let conn = &self.get_db_connection();
         match self.auth.clone() {
             Some(auth) => match auth_level {
                 AuthLevel::Any => Ok(auth),
@@ -226,6 +234,11 @@ impl RoomHandler {
                 AuthLevel::Teacher => match self.auth_admins(&auth) {
                     Some(AdminEnum::Teacher) => Ok(auth),
                     _ => Err(Box::new(NotLoggedInError)),
+                },
+                AuthLevel::SuperOrTeacher => Ok(auth),
+                AuthLevel::Super => match db::super_admins::is_super(conn, &auth) {
+                    Some(_) => Ok(auth),
+                    None => Err(Box::new(NotLoggedInError)),
                 },
             },
             None => Err(Box::new(NotLoggedInError)),
@@ -260,14 +273,19 @@ impl RoomHandler {
             "/kick" => {
                 self.auth_deserialize(wrapper, RoomHandler::kick_route, AuthLevel::Assistant)
             }
-            "/addTeacher" => {
-                self.auth_deserialize(wrapper, RoomHandler::add_teacher_route, AuthLevel::Teacher)
-            }
+            "/addTeacher" => self.auth_deserialize(
+                wrapper,
+                RoomHandler::add_teacher_route,
+                AuthLevel::SuperOrTeacher,
+            ),
             "/addAssistant" => self.auth_deserialize(
                 wrapper,
                 RoomHandler::add_assistant_route,
-                AuthLevel::Teacher,
+                AuthLevel::SuperOrTeacher,
             ),
+            "/addSuperAdmin" => {
+                self.auth_deserialize(wrapper, RoomHandler::add_super_route, AuthLevel::Super)
+            }
             _ => Ok(()),
         }
     }
@@ -325,6 +343,12 @@ impl RoomHandler {
             &add_user.username,
             AdminEnum::Teacher,
         )?;
+        Ok(())
+    }
+
+    fn add_super_route(&mut self, _auth: Auth, add_user: AddSuper) -> Result<()> {
+        let conn = &self.get_db_connection();
+        let _admin = db::super_admins::create(conn, &add_user.username)?;
         Ok(())
     }
 

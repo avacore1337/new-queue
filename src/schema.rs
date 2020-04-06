@@ -45,6 +45,16 @@ table! {
     use diesel::sql_types::*;
     use crate::sql_types::*;
 
+    super_admins (id) {
+        id -> Int4,
+        user_id -> Int4,
+    }
+}
+
+table! {
+    use diesel::sql_types::*;
+    use crate::sql_types::*;
+
     users (id) {
         id -> Int4,
         username -> Text,
@@ -57,10 +67,12 @@ joinable!(admins -> queues (queue_id));
 joinable!(admins -> users (user_id));
 joinable!(queue_entries -> queues (queue_id));
 joinable!(queue_entries -> users (user_id));
+joinable!(super_admins -> users (user_id));
 
 allow_tables_to_appear_in_same_query!(
     admins,
     queue_entries,
     queues,
+    super_admins,
     users,
 );
