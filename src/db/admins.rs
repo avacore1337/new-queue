@@ -1,3 +1,4 @@
+use crate::auth::Auth;
 use crate::db;
 use crate::models::admin::Admin;
 use crate::models::user::User;
@@ -34,8 +35,17 @@ pub struct NewAdmin {
     admin_type: AdminEnum,
 }
 
-pub fn teachers_for_queue(conn: &PgConnection, name: &str) -> Option<Vec<(Admin, User)>> {
-    let admins = admins::table
+pub fn admin_for_queue(conn: &PgConnection, queue_name: &str, auth: &Auth) -> Option<AdminEnum> {
+    admins::table
+        .inner_join(queues::table)
+        .filter(queues::name.eq(queue_name).and(admins::user_id.eq(auth.id)))
+        .select(admins::admin_type)
+        .first(conn)
+        .ok()
+}
+
+pub fn teachers_for_queue(conn: &PgConnection, name: &str) -> Option<Vec<User>> {
+    admins::table
         .inner_join(queues::table)
         .inner_join(users::table)
         .filter(
@@ -44,12 +54,12 @@ pub fn teachers_for_queue(conn: &PgConnection, name: &str) -> Option<Vec<(Admin,
                 .and(admins::admin_type.eq(AdminEnum::Teacher)),
         )
         .select((users::id, users::username, users::ugkthid, users::realname))
-        .load::<User>(conn);
-    None
+        .load::<User>(conn)
+        .ok()
 }
 
-pub fn assistants_for_queue(conn: &PgConnection, name: &str) -> Option<Vec<(Admin, User)>> {
-    let admins = admins::table
+pub fn assistants_for_queue(conn: &PgConnection, name: &str) -> Option<Vec<User>> {
+    admins::table
         .inner_join(queues::table)
         .inner_join(users::table)
         .filter(
@@ -58,6 +68,6 @@ pub fn assistants_for_queue(conn: &PgConnection, name: &str) -> Option<Vec<(Admi
                 .and(admins::admin_type.eq(AdminEnum::Assistant)),
         )
         .select((users::id, users::username, users::ugkthid, users::realname))
-        .load::<User>(conn);
-    None
+        .load::<User>(conn)
+        .ok()
 }

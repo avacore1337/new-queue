@@ -205,12 +205,28 @@ impl RoomHandler {
         fun(self, auth)
     }
 
+    fn auth_admins(&mut self, auth: &Auth) -> Option<AdminEnum> {
+        let conn = &self.get_db_connection();
+        let queue = self
+            .current_queue
+            .as_ref()
+            .ok_or_else(|| NotLoggedInError)
+            .ok()?;
+        db::admins::admin_for_queue(conn, &queue.name, auth)
+    }
+
     fn get_auth(&mut self, auth_level: AuthLevel) -> Result<Auth> {
         match self.auth.clone() {
             Some(auth) => match auth_level {
                 AuthLevel::Any => Ok(auth),
-                AuthLevel::Assistant => Ok(auth), //TODO
-                AuthLevel::Teacher => Ok(auth),   //TODO
+                AuthLevel::Assistant => match self.auth_admins(&auth) {
+                    Some(_) => Ok(auth),
+                    None => Err(Box::new(NotLoggedInError)),
+                },
+                AuthLevel::Teacher => match self.auth_admins(&auth) {
+                    Some(AdminEnum::Teacher) => Ok(auth),
+                    _ => Err(Box::new(NotLoggedInError)),
+                },
             },
             None => Err(Box::new(NotLoggedInError)),
         }
