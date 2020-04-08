@@ -26,9 +26,9 @@ enum AuthLevel {
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 #[derive(Debug, Clone)]
-struct NotLoggedInError;
+struct BadAuth;
 
-impl fmt::Display for NotLoggedInError {
+impl fmt::Display for BadAuth {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
@@ -37,7 +37,7 @@ impl fmt::Display for NotLoggedInError {
     }
 }
 
-impl error::Error for NotLoggedInError {
+impl error::Error for BadAuth {
     fn description(&self) -> &str {
         "User is not logged in"
     }
@@ -53,6 +53,7 @@ use serde_json::Value as Json;
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct Wrapper {
     path: String,
+    token: String,
     content: Json,
 }
 
@@ -64,11 +65,6 @@ struct SubscribeQueue {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct Leave {
     room: String,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct Login {
-    token: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -100,7 +96,7 @@ struct RoomHandler {
     rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>>,
     current_queue: Option<Queue>,
     secret: Vec<u8>,
-    auth: Option<Auth>,
+    // auth: Option<Auth>,
     pool: Rc<RefCell<db::Pool>>,
 }
 
@@ -200,48 +196,44 @@ impl RoomHandler {
         F: Fn(&mut Self, Auth, T) -> Result<()>,
     {
         let v = from_value::<T>(wrapper.content.clone())?;
-        let auth = self.get_auth(auth_level)?;
+        let auth = self.get_auth(&wrapper.token, auth_level)?;
         fun(self, auth, v)
     }
 
-    fn auth<F>(&mut self, fun: F, auth_level: AuthLevel) -> Result<()>
+    fn auth<F>(&mut self, wrapper: Wrapper, fun: F, auth_level: AuthLevel) -> Result<()>
     where
         F: Fn(&mut Self, Auth) -> Result<()>,
     {
-        let auth = self.get_auth(auth_level)?;
+        let auth = self.get_auth(&wrapper.token, auth_level)?;
         fun(self, auth)
     }
 
     fn auth_admins(&mut self, auth: &Auth) -> Option<AdminEnum> {
         let conn = &self.get_db_connection();
-        let queue = self
-            .current_queue
-            .as_ref()
-            .ok_or_else(|| NotLoggedInError)
-            .ok()?;
+        let queue = self.current_queue.as_ref().ok_or_else(|| BadAuth).ok()?;
         db::admins::admin_for_queue(conn, &queue.name, auth)
     }
 
-    fn get_auth(&mut self, auth_level: AuthLevel) -> Result<Auth> {
+    fn get_auth(&mut self, token: &str, auth_level: AuthLevel) -> Result<Auth> {
         let conn = &self.get_db_connection();
-        match self.auth.clone() {
+        match decode_token(token, &self.secret) {
             Some(auth) => match auth_level {
                 AuthLevel::Any => Ok(auth),
                 AuthLevel::Assistant => match self.auth_admins(&auth) {
                     Some(_) => Ok(auth),
-                    None => Err(Box::new(NotLoggedInError)),
+                    None => Err(Box::new(BadAuth)),
                 },
                 AuthLevel::Teacher => match self.auth_admins(&auth) {
                     Some(AdminEnum::Teacher) => Ok(auth),
-                    _ => Err(Box::new(NotLoggedInError)),
+                    _ => Err(Box::new(BadAuth)),
                 },
                 AuthLevel::SuperOrTeacher => Ok(auth),
                 AuthLevel::Super => match db::super_admins::is_super(conn, &auth) {
                     Some(_) => Ok(auth),
-                    None => Err(Box::new(NotLoggedInError)),
+                    None => Err(Box::new(BadAuth)),
                 },
             },
-            None => Err(Box::new(NotLoggedInError)),
+            None => Err(Box::new(BadAuth)),
         }
     }
 
@@ -262,14 +254,13 @@ impl RoomHandler {
         match wrapper.path.as_str() {
             "/subscribeQueue" => self.deserialize(wrapper, RoomHandler::subscribe_queue_route),
             "/subscribeLobby" => self.subscribe_lobby_route(),
-            "/login" => self.deserialize(wrapper, RoomHandler::login_route),
-            "/logout" => self.logout_route(),
+            // "/logout" => self.logout_route(),
             "/unsubscribeQueue" => self.unsubscribe_queue_route(),
             "/unsubscribeLobby" => self.unsubscribe_queue_route(),
             "/joinQueue" => {
                 self.auth_deserialize(wrapper, RoomHandler::join_queue_route, AuthLevel::Any)
             }
-            "/leaveQueue" => self.auth(RoomHandler::leave_queue_route, AuthLevel::Any),
+            "/leaveQueue" => self.auth(wrapper, RoomHandler::leave_queue_route, AuthLevel::Any),
             "/kick" => {
                 self.auth_deserialize(wrapper, RoomHandler::kick_route, AuthLevel::Assistant)
             }
@@ -290,20 +281,20 @@ impl RoomHandler {
         }
     }
 
-    fn login_route(&mut self, login: Login) -> Result<()> {
-        println!("Logged in");
-        self.auth = decode_token(&login.token, &self.secret);
-        if let Some(auth) = &self.auth {
-            println!("Logged in as {}", auth.username)
-        }
-        Ok(())
-    }
+    // fn login_route(&mut self, login: Login) -> Result<()> {
+    //     println!("Logged in");
+    //     self.auth = decode_token(&login.token, &self.secret);
+    //     if let Some(auth) = &self.auth {
+    //         println!("Logged in as {}", auth.username)
+    //     }
+    //     Ok(())
+    // }
 
-    fn logout_route(&mut self) -> Result<()> {
-        println!("Logged out");
-        self.auth = Option::None;
-        Ok(())
-    }
+    // fn logout_route(&mut self) -> Result<()> {
+    //     println!("Logged out");
+    //     self.auth = Option::None;
+    //     Ok(())
+    // }
 
     fn subscribe_queue_route(&mut self, join: SubscribeQueue) -> Result<()> {
         println!("joining room {}", &join.room);
@@ -353,11 +344,7 @@ impl RoomHandler {
     }
 
     fn leave_queue_route(&mut self, auth: Auth) -> Result<()> {
-        let queue = self
-            .current_queue
-            .as_ref()
-            .ok_or_else(|| NotLoggedInError)?
-            .clone();
+        let queue = self.current_queue.as_ref().ok_or_else(|| BadAuth)?.clone();
         println!("Leaving queue: {}", &queue.name);
         let conn = &self.get_db_connection();
         db::queue_entries::remove(&conn, queue.id, auth.id)?;
@@ -372,11 +359,7 @@ impl RoomHandler {
     }
 
     fn join_queue_route(&mut self, auth: Auth, join_queue: JoinQueue) -> Result<()> {
-        let queue = self
-            .current_queue
-            .as_ref()
-            .ok_or_else(|| NotLoggedInError)?
-            .clone();
+        let queue = self.current_queue.as_ref().ok_or_else(|| BadAuth)?.clone();
         println!("Joining queue: {}", &queue.name);
         let conn = &self.get_db_connection();
         let queue_entry = queue_entries::create(
@@ -466,7 +449,6 @@ pub fn websocket() -> () {
         rooms: rooms.clone(),
         current_queue: None,
         secret: get_secret().into_bytes(),
-        auth: Option::None,
         pool: pool.clone(),
     })
     .unwrap()
