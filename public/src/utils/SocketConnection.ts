@@ -46,11 +46,30 @@ export default class SocketConnection {
       const data = JSON.parse(event.data);
       const path: string = data.path;
 
-      console.log(event);
-
       let callback = this._callbacks[path];
       if (callback !== undefined) {
         callback(data.content);
+      }
+      else {
+        let backUp = JSON.stringify(data.content);
+
+        for (let property in this._callbacks) {
+          let regex = new RegExp(`^${property.split(new RegExp(':[^/]+')).join('[^/]+')}$`);
+          if (property.match(regex) !== null) {
+            data.content = JSON.parse(backUp);
+            
+            const parts = path.split('/');
+            const propertyParts = property.split('/');
+
+            for (let i = 0; i < propertyParts.length; i++) {
+              if (propertyParts[i].startsWith(':')) {
+                data.content[propertyParts[i].substring(1)] = parts[i];
+              }
+            }
+
+            this._callbacks[property](data.content);
+          }
+        }
       }
     };
 

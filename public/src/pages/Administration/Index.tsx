@@ -54,12 +54,12 @@ export default function AdministrationViewComponent(props: any) {
   useEffect(() => {
     socket.listen('addSuperAdmin', onAdministratorAdded);
     socket.listen('deleteSuperAdmin', onAdministratorDeleted);
-    socket.listen('addTeacher', onTeacherAdded);
-    socket.listen('deleteTeacher', onTeacherDeleted);
-    socket.listen('addAssistant', onAssistantAdded);
-    socket.listen('deleteAssistant', onAssistantDeleted);
-    socket.listen('addQueue', onQueueAdded);
-    socket.listen('deleteQueue', onQueueDeleted);
+    socket.listen('addTeacher/:queueName', onTeacherAdded);
+    socket.listen('deleteTeacher/:queueName', onTeacherDeleted);
+    socket.listen('addAssistant/:queueName', onAssistantAdded);
+    socket.listen('deleteAssistant/:queueName', onAssistantDeleted);
+    socket.listen('addQueue/:queueName', onQueueAdded);
+    socket.listen('deleteQueue/:queueName', onQueueDeleted);
 
     fetch('http://localhost:8000/api/queues')
       .then(response => response.json())
@@ -72,14 +72,14 @@ export default function AdministrationViewComponent(props: any) {
     .then(response => setAdministrators(response.data.map((admin: any) => new Administrator(admin))));
 
     return (() => {
-      socket.quitListening('addQueue');
-      socket.quitListening('deleteQueue');
+      socket.quitListening('addQueue/:queueName');
+      socket.quitListening('deleteQueue/:queueName');
       socket.quitListening('addSuperAdmin');
       socket.quitListening('deleteSuperAdmin');
-      socket.quitListening('addTeacher');
-      socket.quitListening('deleteTeacher');
-      socket.quitListening('addAssistant');
-      socket.quitListening('deleteAssistant');
+      socket.quitListening('addTeacher/:queueName');
+      socket.quitListening('deleteTeacher/:queueName');
+      socket.quitListening('addAssistant/:queueName');
+      socket.quitListening('deleteAssistant/:queueName');
     });
   }, []);
 

@@ -1,4 +1,6 @@
 import QueueEntry from './QueueEntry';
+import Assistant from './TeachingAssistant';
+import Teacher from './Teacher';
 
 export default class Queue {
 
@@ -23,6 +25,12 @@ export default class Queue {
   private _queueEntries: QueueEntry[];
   public get queueEntries() { return this._queueEntries; }
 
+  private _assistants: Assistant[];
+  public get assistants() { return this._assistants; }
+
+  private _teachers: Teacher[];
+  public get teachers() { return this._teachers; }
+
   public constructor(data: any) {
     this._id = data.id;
     this._name = data.name;
@@ -30,7 +38,25 @@ export default class Queue {
     this._motd = data.motd;
     this._locked = data.locked;
     this._hiding = data.hiding;
+    this._assistants = data.assistants || [];
+    this._teachers = data.teachers || [];
     this._queueEntries = [QueueEntry.InitialValue];
+  }
+
+  public addAssistant(assistant: Assistant): void {
+    this._assistants.push(assistant);
+  }
+
+  public removeAssistant(assistant: Assistant): void {
+    this._assistants = this._assistants.filter(a => a.username !== assistant.username);
+  }
+
+  public addTeacher(teacher: Teacher): void {
+    this._teachers.push(teacher);
+  }
+
+  public removeTeacher(teacher: Teacher): void {
+    this._teachers = this._teachers.filter(a => a.username !== teacher.username);
   }
 
   // public add(user: QueueEntry) {
