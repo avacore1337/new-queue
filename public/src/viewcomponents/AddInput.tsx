@@ -17,7 +17,7 @@ export default function AddInputViewComponent(props: any) {
   function runCallback(event: any): void {
     if (!isDisabled) {
       if (content !== '') {
-        if (event === undefined || event.key === 'Enter') {
+        if (event.key === 'Enter' || event.button === 0) {
           callback(content);
           setContent('');
         }
