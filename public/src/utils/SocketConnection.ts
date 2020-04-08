@@ -98,6 +98,10 @@ export default class SocketConnection {
     delete this._callbacks[`leaveQueue/${room}`];
     delete this._callbacks[`updateQueue/${room}`];
 
+    if (this._lastJoinRequest?.path === `subscribeQueue/${room}`) {
+      this._lastJoinRequest = null;
+    }
+
     const message = new RequestMessage(`unsubscribeQueue/${room}`);
     this.send(message);
   }
@@ -105,6 +109,10 @@ export default class SocketConnection {
   public leaveLobby(): void {
     delete this._callbacks['joinQueue/lobby'];
     delete this._callbacks['leaveQueue/lobby'];
+
+    if (this._lastJoinRequest?.path === 'subscribeLobby') {
+      this._lastJoinRequest = null;
+    }
 
     const message = new RequestMessage('unsubscribeLobby');
     this.send(message);
