@@ -330,14 +330,20 @@ impl RoomHandler {
     fn add_teacher_route(&mut self, _auth: Auth, add_user: AddUser, queue: &Queue) -> Result<()> {
         let conn = &self.get_db_connection();
         let admin = db::admins::create(conn, &queue.name, &add_user.username, AdminEnum::Teacher)?;
-        self.send_self("addTeacher", json!(db::users::find(conn, admin.user_id)));
+        self.send_self(
+            &("addTeacher/".to_string() + &queue.name),
+            json!(db::users::find(conn, admin.user_id)),
+        );
         Ok(())
     }
 
     fn add_assistant_route(&mut self, _auth: Auth, add_user: AddUser, queue: &Queue) -> Result<()> {
         let conn = &self.get_db_connection();
         let admin = db::admins::create(conn, &queue.name, &add_user.username, AdminEnum::Teacher)?;
-        self.send_self("addAssistant", json!(db::users::find(conn, admin.user_id)));
+        self.send_self(
+            &("addAssistant/".to_string() + &queue.name),
+            json!(db::users::find(conn, admin.user_id)),
+        );
         Ok(())
     }
 
