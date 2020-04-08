@@ -8,16 +8,16 @@ export default class SocketConnection {
   private _connectionEstablished: boolean;
   private _pendingRequests: RequestMessage[];
   private _lastJoinRequest: RequestMessage | null;
-  private _user: User | null;
+  private _token: string | null;
 
-  public constructor(serverUrl: string, user: User | null) {
+  public constructor(serverUrl: string) {
     this._callbacks = {};
     this._pendingRequests = [];
     this._lastJoinRequest = null;
     this._connectionEstablished = false;
     this._socket = new WebSocket(serverUrl);
 
-    this._user = user;
+    this._token = null;
 
     this.connect(serverUrl);
   }
@@ -58,6 +58,10 @@ export default class SocketConnection {
       this._connectionEstablished = false;
       this.connect(serverUrl);
     };
+  }
+
+  public setToken(token: string | null): void {
+    this._token = token;
   }
 
   public joinQueue(room: string, onJoin?: (data: any) => void, onLeave?: (data: any) => void, onUpdate?: (data: any) => void): void {
@@ -108,7 +112,7 @@ export default class SocketConnection {
     }
 
     if (this._connectionEstablished) {
-      message.token = this._user?.token || "";
+      message.token = this._token || "";
       this._socket.send(message.stringify());
     }
     else {

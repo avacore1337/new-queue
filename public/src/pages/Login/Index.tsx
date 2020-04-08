@@ -36,6 +36,8 @@ export default function LoginViewComponent(props: any) {
         localStorage.setItem('User', JSON.stringify(userData));
         setUser(new User(userData));
 
+        socket.setToken(userData.token);
+
         setShouldRedirect(true);
       })
       .catch(error => {

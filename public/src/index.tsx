@@ -4,25 +4,21 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import SocketConnection from './utils/SocketConnection';
-import RequestMessage from './utils/RequestMessage';
 import User from './models/User';
 
 const SERVER_URL = 'ws://localhost:7777/ws';
+const socket: SocketConnection = new SocketConnection(SERVER_URL);
 
 const userData = localStorage.getItem('User');
-const initialUser = userData === null
-  ? null
-  : new User(JSON.parse(userData));
+if (userData) {
+  socket.setToken(JSON.parse(userData).token);
+}
 
 function LifeCycle() {
-  let [user, setUser] = useState(initialUser);
-
-  const socket = new SocketConnection(SERVER_URL, user);
+  let [user, setUser] = useState(userData ? new User(JSON.parse(userData)) : null);
 
   useEffect(() => {
-    return () => {
-      socket.close();
-    };
+    return () => { socket.close(); };
   }, []);
 
   return (
@@ -31,7 +27,6 @@ function LifeCycle() {
       user={user}
       setUser={setUser} />
   );
-
 }
 
 ReactDOM.render(
