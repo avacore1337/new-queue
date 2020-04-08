@@ -76,6 +76,10 @@ export default function AdministrationViewComponent(props: any) {
       socket.quitListening('deleteQueue');
       socket.quitListening('addSuperAdmin');
       socket.quitListening('deleteSuperAdmin');
+      socket.quitListening('addTeacher');
+      socket.quitListening('deleteTeacher');
+      socket.quitListening('addAssistant');
+      socket.quitListening('deleteAssistant');
     });
   }, []);
 
