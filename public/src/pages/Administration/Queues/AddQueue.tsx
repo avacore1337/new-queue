@@ -1,5 +1,6 @@
 import React from 'react';
 import SocketConnection from '../../../utils/SocketConnection';
+import RequestMessage from '../../../utils/RequestMessage';
 import User from '../../../models/User';
 import AddInputViewComponent from '../../../viewcomponents/AddInput';
 
@@ -9,7 +10,7 @@ export default function AddQueueViewComponent(props: any) {
   let socket: SocketConnection = props.socket;
 
   function addQueue(newQueue: string): void {
-    alert('Not yet implemented');
+    socket.send(new RequestMessage(`addQueue/${newQueue}`));
   }
 
   return (

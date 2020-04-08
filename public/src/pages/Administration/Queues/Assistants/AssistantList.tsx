@@ -19,7 +19,6 @@ export default function AssistantListViewComponent(props: any) {
               <tr>
                 <th>Name</th>
                 <th>Username</th>
-                <th>Added by</th>
               </tr>
             </thead>
             <tbody>
@@ -32,7 +31,6 @@ export default function AssistantListViewComponent(props: any) {
                         <i className="fas fa-times">
                       </i></span>
                     </td>
-                    <td>{ assistant.addedBy }</td>
                   </tr>)
               }
             </tbody>

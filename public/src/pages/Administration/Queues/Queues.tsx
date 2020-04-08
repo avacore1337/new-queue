@@ -24,7 +24,7 @@ export default function QueuesViewComponent(props: any) {
           <div className="row">
             <h6>Queues</h6>
             <br />
-            <div className="col-12">
+            <div className="col-12 pl-0">
               <QueueListViewComponent
                 queues={queues} />
             </div>

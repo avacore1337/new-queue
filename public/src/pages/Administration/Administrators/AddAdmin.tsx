@@ -10,8 +10,8 @@ export default function AddAdministratorViewComponent(props: any) {
   let user: User = props.user;
   let socket: SocketConnection = props.socket;
 
-  function addAdmin(newAdmin: string): void {
-    alert('Not yet implemented');
+  function addAdministrator(newAdministrator: string): void {
+    socket.send(new RequestMessage('addSuperAdmin', { username: newAdministrator }));
   }
 
   return (
@@ -21,7 +21,7 @@ export default function AddAdministratorViewComponent(props: any) {
           <p>Insert the new administrator's username</p>
           <div className="col-12 col-lg-8 p-0">
             <AddInputViewComponent
-              callback={addAdmin}
+              callback={addAdministrator}
               placeholder={'Add admin'} />
           </div>
           <br />

@@ -17,7 +17,6 @@ export default function AdministrationListViewComponent(props: any) {
               <tr>
                 <th>Name</th>
                 <th>Username</th>
-                <th>Added by</th>
               </tr>
             </thead>
             <tbody>
@@ -36,7 +35,6 @@ export default function AdministrationListViewComponent(props: any) {
                             </>
                       }
                     </td>
-                    <td>{ administrator.addedBy }</td>
                   </tr>)
               }
             </tbody>

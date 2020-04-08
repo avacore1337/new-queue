@@ -19,7 +19,6 @@ export default function TeacherListViewComponent(props: any) {
               <tr>
                 <th>Name</th>
                 <th>Username</th>
-                <th>Added by</th>
               </tr>
             </thead>
             <tbody>
@@ -32,7 +31,6 @@ export default function TeacherListViewComponent(props: any) {
                         <i className="fas fa-times">
                       </i></span>
                     </td>
-                    <td>{ teacher.addedBy }</td>
                   </tr>)
               }
             </tbody>

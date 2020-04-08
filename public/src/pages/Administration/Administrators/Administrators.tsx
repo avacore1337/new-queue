@@ -23,7 +23,7 @@ export default function AdministratorsViewComponent(props: any) {
           <div className="row">
             <h6>Administrators</h6>
             <br />
-            <div className="col-12">
+            <div className="col-12 pl-0">
               <AdministratorListViewComponent
                 socket={socket}
                 user={user}

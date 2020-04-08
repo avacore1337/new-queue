@@ -64,6 +64,14 @@ export default class SocketConnection {
     this._token = token;
   }
 
+  public listen(path: string, callback: (data: any) => void): void {
+    this._callbacks[path] = callback;
+  }
+
+  public quitListening(path: string): void {
+    delete this._callbacks[path];
+  }
+
   public enterQueue(room: string, onJoin?: (data: any) => void, onLeave?: (data: any) => void, onUpdate?: (data: any) => void): void {
     this._callbacks[`joinQueue/${room}`] = onJoin;
     this._callbacks[`leaveQueue/${room}`] = onLeave;
@@ -102,10 +110,6 @@ export default class SocketConnection {
     this.send(message);
   }
 
-  public close(): void {
-    this._socket.close();
-  }
-
   public send(message: RequestMessage, callback?: (data: any) => void): void {
     if (callback !== undefined) {
       this._callbacks[message.path] = callback;
@@ -118,5 +122,9 @@ export default class SocketConnection {
     else {
       this._pendingRequests.push(message);
     }
+  }
+
+  public close(): void {
+    this._socket.close();
   }
 }

@@ -15,11 +15,32 @@ export default function AdministrationViewComponent(props: any) {
 
   let user: User = props.user;
   let socket: SocketConnection = props.socket;
-  let administrators: Administrator[] = [];
 
   let [queues, setQueues] = useState([] as Queue[]);
+  let [administrators, setAdministrators] = useState([] as Administrator[]);
+
+  function onAdministratorAdded(data: any): void {
+    setAdministrators([...administrators, new Administrator(data)]);
+  }
+
+  function onAdministratorDeleted(data: any): void {
+    setAdministrators(administrators.filter(q => q.username !== data.username));
+  }
+
+  function onQueueAdded(data: any): void {
+    setQueues([...queues, new Queue(data)]);
+  }
+
+  function onQueueDeleted(data: any): void {
+    setQueues(queues.filter(q => q.name !== data.name));
+  }
 
   useEffect(() => {
+    socket.listen('addSuperAdmin', onAdministratorAdded);
+    socket.listen('deleteSuperAdmin', onAdministratorDeleted);
+    socket.listen('addQueue', onQueueAdded);
+    socket.listen('deleteQueue', onQueueDeleted);
+
     fetch('http://localhost:8000/api/queues')
       .then(response => response.json())
       .then((response: any) => response.queues.map((res: any) => new Queue(res)))
@@ -28,7 +49,14 @@ export default function AdministrationViewComponent(props: any) {
     axios.get('http://localhost:8000/api/superadmins', {
       headers: { 'Authorization': `Token ${user.token}` }
     })
-    .then(response => console.log(response));
+    .then(response => setAdministrators(response.data.map((admin: any) => new Administrator(admin))));
+
+    return (() => {
+      socket.quitListening('addQueue');
+      socket.quitListening('deleteQueue');
+      socket.quitListening('addSuperAdmin');
+      socket.quitListening('deleteSuperAdmin');
+    });
   }, []);
 
   return (
