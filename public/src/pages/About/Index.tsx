@@ -7,7 +7,7 @@ export default function AboutViewComponent() {
   let contributors: Contributor[] = Contributors.Contributors.map(contributor => new Contributor(contributor));
 
   return (
-    <div className="page container">
+    <div className="container">
       <div className="card" style={{marginTop: '5%', padding: '2em'}}>
         <h2>About Stay A While 2</h2>
         <p>

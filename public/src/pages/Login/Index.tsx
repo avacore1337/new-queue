@@ -55,7 +55,7 @@ export default function LoginViewComponent(props: any) {
   return (
     shouldRedirect
       ? <Redirect to="/" />
-      : <div className="page container">
+      : <div className="container">
           <div className="row">
             <div className="col-12 col-lg-6 p-2">
               <input

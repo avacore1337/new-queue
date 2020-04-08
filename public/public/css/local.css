@@ -6,10 +6,6 @@ body {
   margin-top: 5%;
 }
 
-.page.container {
-  margin-bottom: 5%;
-}
-
 .clickable {
   cursor: pointer;
 }

@@ -86,7 +86,7 @@ export default function AdministrationViewComponent(props: any) {
   return (
     user === null || !user.isAdministrator && !user.isTeacher
       ? <NotFoundViewComponent />
-      : <div className="page container">
+      : <div className="container">
           <AdministrationInformationViewComponent user={user} />
           {
             user.isAdministrator
