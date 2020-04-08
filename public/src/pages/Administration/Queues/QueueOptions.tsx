@@ -38,7 +38,7 @@ export default function QueueOptionsViewComponent(props: any) {
                     <button
                       className="dropdown-item"
                       type="button"
-                      key={queue.name}
+                      key={'QueueOptionsViewComponent_' + queue.name}
                       onClick={(e) => setSelectedQueue(queue)} >
                         {queue.name}
                       </button>

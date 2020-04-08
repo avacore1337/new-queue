@@ -18,7 +18,7 @@ export default function QueueListViewComponent(props: any) {
             <tbody>
               {
                 queues.map(queue =>
-                  <tr key={queue.name}>
+                  <tr key={'QueueListViewComponent_' + queue.name}>
                     <td style={{color: queue.hiding ? 'gray' : 'inherit'}}>{ queue.name }</td>
                   </tr>)
               }

@@ -29,7 +29,7 @@ export default function TeachersViewComponent(props: any) {
         <div className="col-12 pl-0">
           <TeacherListViewComponent
             queueName={queue.name}
-            teachers={[]}
+            teachers={queue.teachers}
             socket={socket} />
         </div>
       </div>

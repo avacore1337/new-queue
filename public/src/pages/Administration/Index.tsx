@@ -9,6 +9,8 @@ import AdministratorsViewComponent from './Administrators/Administrators';
 import QueuesViewComponent from './Queues/Queues';
 import QueueOptionsViewComponent from './Queues/QueueOptions';
 import Administrator from '../../models/Administrator';
+import Teacher from '../../models/Teacher';
+import Assistant from '../../models/TeachingAssistant';
 import Queue from '../../models/Queue';
 
 export default function AdministrationViewComponent(props: any) {
@@ -36,7 +38,12 @@ export default function AdministrationViewComponent(props: any) {
   }
 
   function onTeacherAdded(data: any): void {
-    console.log(JSON.stringify(data));
+    // TOOD: Find bug in this code
+    let tempQueues = [...queues];
+    for (let queue of tempQueues.filter(q => q.name === data.queueName)) {
+        queue.addTeacher(new Teacher(data));
+    }
+    setQueues(tempQueues);
   }
 
   function onTeacherDeleted(data: any): void {
