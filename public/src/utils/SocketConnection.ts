@@ -33,7 +33,7 @@ export default class SocketConnection {
 
       while (this._pendingRequests.length > 0) {
         const request = this._pendingRequests[0];
-        if (request.path.startsWith('/subscribe')) {
+        if (request.path.startsWith('subscribe')) {
           this._pendingRequests.shift();
           continue;
         }
@@ -65,40 +65,40 @@ export default class SocketConnection {
   }
 
   public enterQueue(room: string, onJoin?: (data: any) => void, onLeave?: (data: any) => void, onUpdate?: (data: any) => void): void {
-    this._callbacks[`/joinQueue/${room}`] = onJoin;
-    this._callbacks[`/leaveQueue/${room}`] = onLeave;
-    this._callbacks[`/updateQueue/${room}`] = onUpdate;
+    this._callbacks[`joinQueue/${room}`] = onJoin;
+    this._callbacks[`leaveQueue/${room}`] = onLeave;
+    this._callbacks[`updateQueue/${room}`] = onUpdate;
 
-    const message = new RequestMessage(`/subscribeQueue/${room}`);
+    const message = new RequestMessage(`subscribeQueue/${room}`);
     this._lastJoinRequest = message;
 
     this.send(message);
   }
 
   public enterLobby(onJoin?: (data: any) => void, onLeave?: (data: any) => void): void {
-    this._callbacks['/joinQueue/lobby'] = onJoin;
-    this._callbacks['/leaveQueue/lobby'] = onLeave;
+    this._callbacks['joinQueue/lobby'] = onJoin;
+    this._callbacks['leaveQueue/lobby'] = onLeave;
 
-    const message = new RequestMessage('/subscribeLobby');
+    const message = new RequestMessage('subscribeLobby');
     this._lastJoinRequest = message;
 
     this.send(message);
   }
 
   public leaveQueue(room: string): void {
-    delete this._callbacks[`/joinQueue/${room}`];
-    delete this._callbacks[`/leaveQueue/${room}`];
-    delete this._callbacks[`/updateQueue/${room}`];
+    delete this._callbacks[`joinQueue/${room}`];
+    delete this._callbacks[`leaveQueue/${room}`];
+    delete this._callbacks[`updateQueue/${room}`];
 
-    const message = new RequestMessage(`/unsubscribeQueue/${room}`);
+    const message = new RequestMessage(`unsubscribeQueue/${room}`);
     this.send(message);
   }
 
   public leaveLobby(): void {
-    delete this._callbacks['/joinQueue/lobby'];
-    delete this._callbacks['/leaveQueue/lobby'];
+    delete this._callbacks['joinQueue/lobby'];
+    delete this._callbacks['leaveQueue/lobby'];
 
-    const message = new RequestMessage('/unsubscribeLobby');
+    const message = new RequestMessage('unsubscribeLobby');
     this.send(message);
   }
 

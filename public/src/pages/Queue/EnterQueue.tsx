@@ -27,7 +27,7 @@ export default function EnterQueueViewComponent(props: any) {
   }
 
   function enterQueue(): void {
-    socket.send(new RequestMessage(`/joinQueue/${queueName}`, {
+    socket.send(new RequestMessage(`joinQueue/${queueName}`, {
       location: location,
       comment: comment,
       help: typeOfCommunication === 'help'
@@ -35,11 +35,11 @@ export default function EnterQueueViewComponent(props: any) {
   }
 
   function leaveQueue(): void {
-    socket.send(new RequestMessage(`/leaveQueue/${queueName}`));
+    socket.send(new RequestMessage(`leaveQueue/${queueName}`));
   }
 
   function recievingHelp(): void {
-    socket.send(new RequestMessage(`/recievingHelp/${queueName}`));
+    socket.send(new RequestMessage(`recievingHelp/${queueName}`));
   }
 
   return (

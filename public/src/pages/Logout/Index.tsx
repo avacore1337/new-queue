@@ -11,7 +11,7 @@ export default function LogoutViewComponent(props: any) {
 
   setUser(null);
 
-  socket.send(new RequestMessage('/logout'));
+  socket.send(new RequestMessage('logout'));
 
   localStorage.removeItem('User');
 
