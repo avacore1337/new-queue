@@ -15,6 +15,14 @@ export default function LoginViewComponent(props: any) {
 
   function changeUsername(event: any): void { setUsername(event.target.value); }
 
+  function runCallback(event: any): void {
+    if (username !== '') {
+      if (event === undefined || event.key === 'Enter') {
+        login();
+      }
+    }
+  }
+
   function login(): void {
     const user = {
       user: {
@@ -56,7 +64,8 @@ export default function LoginViewComponent(props: any) {
                 placeholder="Username"
                 style={{width: '100%', borderRadius: 0, lineHeight: '5em'}}
                 value={username}
-                onChange={changeUsername} />
+                onChange={changeUsername}
+                onKeyUp={runCallback} />
             </div>
             <div
               className="blue clickable col-12 col-lg-6 text-center"
