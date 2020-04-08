@@ -50,7 +50,13 @@ impl error::Error for BadAuth {
 
 use serde_json::Value as Json;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Debug, Clone)]
+struct SendWrapper {
+    path: String,
+    content: Json,
+}
+
+#[derive(Deserialize, Debug, Clone)]
 struct Wrapper {
     path: String,
     token: String,
@@ -59,11 +65,6 @@ struct Wrapper {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct AddUser {
-    username: String,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct AddSuper {
     username: String,
 }
 
@@ -175,7 +176,7 @@ impl RoomHandler {
     fn auth_deserialize<T, F>(
         &mut self,
         wrapper: Wrapper,
-        room_name: String,
+        room_name: &str,
         fun: F,
         auth_level: AuthLevel,
     ) -> Result<()>
@@ -185,7 +186,7 @@ impl RoomHandler {
     {
         let v = from_value::<T>(wrapper.content.clone())?;
         let conn = &self.get_db_connection();
-        let queue = db::queues::find_by_name(conn, &room_name)?;
+        let queue = db::queues::find_by_name(conn, room_name)?;
         let auth = self.get_auth(&wrapper.token, auth_level, &queue)?;
         fun(self, auth, v, &queue)
     }
@@ -193,7 +194,7 @@ impl RoomHandler {
     fn auth<F>(
         &mut self,
         wrapper: Wrapper,
-        room_name: String,
+        room_name: &str,
         fun: F,
         auth_level: AuthLevel,
     ) -> Result<()>
@@ -201,7 +202,7 @@ impl RoomHandler {
         F: Fn(&mut Self, Auth, &Queue) -> Result<()>,
     {
         let conn = &self.get_db_connection();
-        let queue = db::queues::find_by_name(conn, &room_name)?;
+        let queue = db::queues::find_by_name(conn, room_name)?;
         let auth = self.get_auth(&wrapper.token, auth_level, &queue)?;
         fun(self, auth, &queue)
     }
@@ -252,51 +253,58 @@ impl RoomHandler {
         println!("wrapper.content {:#?}", &wrapper.content);
 
         let path = wrapper.path.clone();
-        let v: Vec<&str> = path.split('/').collect();
-        println!("{:?}", v);
-        match v.as_slice() {
+        match path.split('/').collect::<Vec<&str>>().as_slice() {
             ["subscribeLobby"] => self.subscribe_lobby_route(),
             // "/logout" => self.logout_route(),
-            ["unsubscribeQueue"] => self.unsubscribe_queue_route(),
             ["unsubscribeLobby"] => self.unsubscribe_queue_route(),
+            ["unsubscribeQueue", _queue_name] => self.unsubscribe_queue_route(),
             ["subscribeQueue", queue_name] => self.subscribe_queue_route(queue_name),
             ["joinQueue", queue_name] => self.auth_deserialize(
                 wrapper,
-                queue_name.to_string(),
+                queue_name,
                 RoomHandler::join_queue_route,
                 AuthLevel::Any,
             ),
             ["leaveQueue", queue_name] => self.auth(
                 wrapper,
-                queue_name.to_string(),
+                queue_name,
                 RoomHandler::leave_queue_route,
                 AuthLevel::Any,
             ),
             ["kick", queue_name] => self.auth_deserialize(
                 wrapper,
-                queue_name.to_string(),
+                queue_name,
                 RoomHandler::kick_route,
                 AuthLevel::Assistant,
             ),
             ["addTeacher", queue_name] => self.auth_deserialize(
                 wrapper,
-                queue_name.to_string(),
+                queue_name,
                 RoomHandler::add_teacher_route,
                 AuthLevel::SuperOrTeacher,
             ),
             ["addAssistant", queue_name] => self.auth_deserialize(
                 wrapper,
-                queue_name.to_string(),
+                queue_name,
                 RoomHandler::add_assistant_route,
                 AuthLevel::SuperOrTeacher,
             ),
             ["addSuperAdmin", queue_name] => self.auth_deserialize(
                 wrapper,
-                queue_name.to_string(),
+                queue_name,
                 RoomHandler::add_super_route,
                 AuthLevel::Super,
             ),
-            _ => Ok(()),
+            ["addQueue", queue_name] => self.auth(
+                wrapper,
+                queue_name,
+                RoomHandler::add_queue,
+                AuthLevel::Super,
+            ),
+            _ => {
+                println!("Route does not exist");
+                Ok(())
+            }
         }
     }
 
@@ -321,19 +329,27 @@ impl RoomHandler {
 
     fn add_teacher_route(&mut self, _auth: Auth, add_user: AddUser, queue: &Queue) -> Result<()> {
         let conn = &self.get_db_connection();
-        let _admin = db::admins::create(conn, &queue.name, &add_user.username, AdminEnum::Teacher)?;
+        let admin = db::admins::create(conn, &queue.name, &add_user.username, AdminEnum::Teacher)?;
+        self.send_self("addTeacher", json!(db::users::find(conn, admin.user_id)));
         Ok(())
     }
 
     fn add_assistant_route(&mut self, _auth: Auth, add_user: AddUser, queue: &Queue) -> Result<()> {
         let conn = &self.get_db_connection();
-        let _admin = db::admins::create(conn, &queue.name, &add_user.username, AdminEnum::Teacher)?;
+        let admin = db::admins::create(conn, &queue.name, &add_user.username, AdminEnum::Teacher)?;
+        self.send_self("addAssistant", json!(db::users::find(conn, admin.user_id)));
         Ok(())
     }
 
-    fn add_super_route(&mut self, _auth: Auth, add_user: AddSuper, _queue: &Queue) -> Result<()> {
+    fn add_super_route(&mut self, _auth: Auth, add_user: AddUser, _queue: &Queue) -> Result<()> {
         let conn = &self.get_db_connection();
         let _admin = db::super_admins::create(conn, &add_user.username)?;
+        Ok(())
+    }
+
+    fn add_queue(&mut self, _auth: Auth, _queue: &Queue) -> Result<()> {
+        // let conn = &self.get_db_connection();
+        // let _admin = db::super_admins::create(conn, &add_user.username)?;
         Ok(())
     }
 
@@ -344,10 +360,8 @@ impl RoomHandler {
         db::queue_entries::remove(&conn, queue.id, auth.id)?;
         self.broadcast_room(
             &queue.name,
-            &json!({"path": "leaveQueue/".to_string() + &queue.name,
-                "content": { "ugkthid": &auth.ugkthid }
-            })
-            .to_string(),
+            "leaveQueue",
+            json!({ "ugkthid": &auth.ugkthid }),
         );
         Ok(())
     }
@@ -366,18 +380,30 @@ impl RoomHandler {
 
         self.broadcast_room(
             &queue.name,
-            &json!({"path": "joinQueue/".to_string() + &queue.name,
-                "content": queue_entry.to_sendable(conn)
-            })
-            .to_string(),
+            "joinQueue",
+            json!(queue_entry.to_sendable(conn)),
         );
         Ok(())
     }
 
-    fn broadcast_room(&self, room: &str, message: &str) {
+    fn send_self(&self, path: &str, content: Json) {
+        let message = &json!(SendWrapper {
+            path: path.to_string(),
+            content: content,
+        })
+        .to_string();
+        self.out.send(Message::Text(message.to_string())).unwrap();
+    }
+
+    fn broadcast_room(&self, room: &str, path: &str, content: Json) {
         let rooms = self.rooms.borrow();
         println!("broadcasting in room: {}", room);
         let internal_name = "room_".to_string() + room;
+        let message = &json!(SendWrapper {
+            path: path.to_string() + "/" + room,
+            content: content,
+        })
+        .to_string();
         for sender in &rooms[&internal_name] {
             // TODO deal with errors
             println!("Sending: '{}' to {}", &message, sender.connection_id());
