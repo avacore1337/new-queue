@@ -3,7 +3,6 @@ import { Redirect } from "react-router-dom";
 import axios from 'axios';
 import User from "../../models/User";
 import SocketConnection from "../../utils/SocketConnection";
-import RequestMessage from "../../utils/RequestMessage";
 
 export default function LoginViewComponent(props: any) {
 

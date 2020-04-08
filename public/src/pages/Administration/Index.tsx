@@ -35,9 +35,29 @@ export default function AdministrationViewComponent(props: any) {
     setQueues(queues.filter(q => q.name !== data.name));
   }
 
+  function onTeacherAdded(data: any): void {
+    console.log(JSON.stringify(data));
+  }
+
+  function onTeacherDeleted(data: any): void {
+    console.log(JSON.stringify(data));
+  }
+
+  function onAssistantAdded(data: any): void {
+    console.log(JSON.stringify(data));
+  }
+
+  function onAssistantDeleted(data: any): void {
+    console.log(JSON.stringify(data));
+  }
+
   useEffect(() => {
     socket.listen('addSuperAdmin', onAdministratorAdded);
     socket.listen('deleteSuperAdmin', onAdministratorDeleted);
+    socket.listen('addTeacher', onTeacherAdded);
+    socket.listen('deleteTeacher', onTeacherDeleted);
+    socket.listen('addAssistant', onAssistantAdded);
+    socket.listen('deleteAssistant', onAssistantDeleted);
     socket.listen('addQueue', onQueueAdded);
     socket.listen('deleteQueue', onQueueDeleted);
 

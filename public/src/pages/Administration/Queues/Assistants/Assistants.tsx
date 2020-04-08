@@ -30,6 +30,7 @@ export default function AssistantsViewComponent(props: any) {
       <div className="row">
         <div className="col-12 pl-0">
           <AssistantListViewComponent
+            queueName={queue.name}
             assistants={[]}
             socket={socket} />
         </div>

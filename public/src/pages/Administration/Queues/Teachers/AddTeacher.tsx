@@ -1,5 +1,6 @@
 import React from 'react';
 import SocketConnection from '../../../../utils/SocketConnection';
+import RequestMessage from '../../../../utils/RequestMessage';
 import User from '../../../../models/User';
 import Queue from '../../../../models/Queue';
 import AddInputViewComponent from '../../../../viewcomponents/AddInput';
@@ -11,7 +12,7 @@ export default function AddTeacherViewComponent(props: any) {
   let socket: SocketConnection = props.socket;
 
   function addTeacher(newTeacher: string): void {
-    alert('Not yet implemented');
+    socket.send(new RequestMessage(`addTeacher/${queue.name}`, { username: newTeacher }));
   }
 
   return (

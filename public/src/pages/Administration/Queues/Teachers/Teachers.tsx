@@ -28,6 +28,7 @@ export default function TeachersViewComponent(props: any) {
       <div className="row">
         <div className="col-12 pl-0">
           <TeacherListViewComponent
+            queueName={queue.name}
             teachers={[]}
             socket={socket} />
         </div>

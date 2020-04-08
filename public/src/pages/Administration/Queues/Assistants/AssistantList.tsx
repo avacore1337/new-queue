@@ -1,14 +1,17 @@
 import React from 'react';
 import SocketConnection from '../../../../utils/SocketConnection';
+import RequestMessage from '../../../../utils/RequestMessage';
 import Assistant from '../../../../models/TeachingAssistant';
+import Queue from '../../../../models/Queue';
 
 export default function AssistantListViewComponent(props: any) {
 
+  let queueName: string = props.queueName;
   let assistants: Assistant[] = props.assistants;
   let socket: SocketConnection = props.socket;
 
   function removeAssistant(assistant: Assistant): void | undefined {
-    alert('Not yet implemented');
+    socket.send(new RequestMessage(`deleteAssistant/${queueName}`, { username: assistant }));
   }
 
   return (

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Redirect } from "react-router-dom";
 import SocketConnection from '../../../../utils/SocketConnection';
+import RequestMessage from '../../../../utils/RequestMessage';
 import User from '../../../../models/User';
 import Queue from '../../../../models/Queue';
 import AddInputViewComponent from '../../../../viewcomponents/AddInput';
@@ -12,7 +13,7 @@ export default function AddAssistantViewComponent(props: any) {
   let socket: SocketConnection = props.socket;
 
   function addAssistant(newAssistant: string): void {
-    alert('Not yet implemented');
+    socket.send(new RequestMessage(`addAssistant/${queue.name}`, { username: newAssistant }));
   }
 
   return (

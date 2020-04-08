@@ -1,14 +1,16 @@
 import React from 'react';
 import SocketConnection from '../../../../utils/SocketConnection';
+import RequestMessage from '../../../../utils/RequestMessage';
 import Teacher from '../../../../models/Teacher';
 
 export default function TeacherListViewComponent(props: any) {
 
+  let queueName: string = props.queueName;
   let teachers: Teacher[] = props.teachers;
   let socket: SocketConnection = props.socket;
 
   function removeTeacher(teacher: Teacher): void | undefined {
-    alert('Not yet implemented');
+    socket.send(new RequestMessage(`deleteTeacher/${queueName}`, { username: teacher }));
   }
 
   return (
