@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
+import axios from 'axios';
 import SocketConnection from '../../utils/SocketConnection';
-import RequestMessage from '../../utils/RequestMessage';
 import User from '../../models/User';
 import NotFoundViewComponent from '../NoMatch/Index';
-import AddInputViewComponent from '../../viewcomponents/AddInput';
 import AdministrationInformationViewComponent from './Administrators/AdministrationInformation';
 import AdministratorsViewComponent from './Administrators/Administrators';
 import QueuesViewComponent from './Queues/Queues';
@@ -25,6 +24,11 @@ export default function AdministrationViewComponent(props: any) {
       .then(response => response.json())
       .then((response: any) => response.queues.map((res: any) => new Queue(res)))
       .then((response: Queue[]) => setQueues(response));
+
+    axios.get('http://localhost:8000/api/superadmins', {
+      headers: { 'Authorization': `Token ${user.token}` }
+    })
+    .then(response => console.log(response));
   }, []);
 
   return (

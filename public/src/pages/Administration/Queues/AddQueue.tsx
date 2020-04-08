@@ -1,7 +1,5 @@
 import React from 'react';
-import { Redirect } from "react-router-dom";
 import SocketConnection from '../../../utils/SocketConnection';
-import RequestMessage from '../../../utils/RequestMessage';
 import User from '../../../models/User';
 import AddInputViewComponent from '../../../viewcomponents/AddInput';
 

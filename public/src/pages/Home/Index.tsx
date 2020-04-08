@@ -38,7 +38,7 @@ export default function HomeViewComponent(props: any) {
   }
 
   useEffect(() => {
-    socket.joinLobby(onJoin, onLeave);
+    socket.enterLobby(onJoin, onLeave);
 
     return () => { socket.leaveLobby(); };
   }, []);

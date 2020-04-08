@@ -1,10 +1,10 @@
 import React from 'react';
-import Coffee from '../../img/Coffee.png';
-import DarthVader from '../../img/DarthVader.png';
-import Inside from '../../img/Inside.png';
-import Panda from '../../img/Panda.png';
-import Penguin from '../../img/Penguin.png';
-import Rabbit from '../../img/Rabbit.png';
+import Coffee from '../../img/404/Coffee.png';
+import DarthVader from '../../img/404/DarthVader.png';
+import Inside from '../../img/404/Inside.png';
+import Panda from '../../img/404/Panda.png';
+import Penguin from '../../img/404/Penguin.png';
+import Rabbit from '../../img/404/Rabbit.png';
 
 export default function NotFoundViewComponent() {
 
@@ -13,8 +13,8 @@ export default function NotFoundViewComponent() {
   const image = images[Math.floor(Math.random() * images.length)];
 
   const styles = {
-    maxHeight: '80vh',
-    maxWidth: '80vw'
+    maxHeight: '60vh',
+    maxWidth: '60vw'
   };
 
   console.log(image);

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import SocketConnection from '../../../utils/SocketConnection';
-import RequestMessage from '../../../utils/RequestMessage';
 import User from '../../../models/User';
 import Queue from '../../../models/Queue';
 import TeachersViewComponent from './Teachers/Teachers';

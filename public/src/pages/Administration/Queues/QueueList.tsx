@@ -1,7 +1,4 @@
 import React from 'react';
-import SocketConnection from '../../../utils/SocketConnection';
-import RequestMessage from '../../../utils/RequestMessage';
-import User from '../../../models/User';
 import Queue from '../../../models/Queue';
 
 export default function QueueListViewComponent(props: any) {

@@ -64,22 +64,22 @@ export default class SocketConnection {
     this._token = token;
   }
 
-  public joinQueue(room: string, onJoin?: (data: any) => void, onLeave?: (data: any) => void, onUpdate?: (data: any) => void): void {
+  public enterQueue(room: string, onJoin?: (data: any) => void, onLeave?: (data: any) => void, onUpdate?: (data: any) => void): void {
     this._callbacks[`/joinQueue/${room}`] = onJoin;
     this._callbacks[`/leaveQueue/${room}`] = onLeave;
     this._callbacks[`/updateQueue/${room}`] = onUpdate;
 
-    const message = new RequestMessage('/subscribeQueue', { room: room });
+    const message = new RequestMessage(`/subscribeQueue/${room}`);
     this._lastJoinRequest = message;
 
     this.send(message);
   }
 
-  public joinLobby(onJoin?: (data: any) => void, onLeave?: (data: any) => void): void {
+  public enterLobby(onJoin?: (data: any) => void, onLeave?: (data: any) => void): void {
     this._callbacks['/joinQueue/lobby'] = onJoin;
     this._callbacks['/leaveQueue/lobby'] = onLeave;
 
-    const message = new RequestMessage('/subscribeLobby', { room: 'lobby' });
+    const message = new RequestMessage('/subscribeLobby');
     this._lastJoinRequest = message;
 
     this.send(message);
@@ -90,7 +90,7 @@ export default class SocketConnection {
     delete this._callbacks[`/leaveQueue/${room}`];
     delete this._callbacks[`/updateQueue/${room}`];
 
-    const message = new RequestMessage('/unsubscribeQueue', { room: room });
+    const message = new RequestMessage(`/unsubscribeQueue/${room}`);
     this.send(message);
   }
 
@@ -98,7 +98,7 @@ export default class SocketConnection {
     delete this._callbacks['/joinQueue/lobby'];
     delete this._callbacks['/leaveQueue/lobby'];
 
-    const message = new RequestMessage('/unsubscribeLobby', { room: 'lobby' });
+    const message = new RequestMessage('/unsubscribeLobby');
     this.send(message);
   }
 

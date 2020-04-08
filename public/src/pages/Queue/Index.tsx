@@ -70,7 +70,7 @@ export default function QueueViewComponent(props: any) {
         .then(response => response.json())
         .then((response: any) => handleMetadataResponse(response));
 
-      socket.joinQueue(queueName as string, onJoin, onLeave, onUpdate);
+      socket.enterQueue(queueName as string, onJoin, onLeave, onUpdate);
 
       return () => { socket.leaveQueue(queueName as string); };
     }
@@ -94,7 +94,8 @@ export default function QueueViewComponent(props: any) {
             <div className="row" style={{marginTop: '5em'}}>
               <EnterQueueViewComponent
                 socket={socket}
-                yourself={queueEntries.filter((entry: QueueEntry) => entry.ugkthid === user.ugkthid)[0] || null} />
+                yourself={queueEntries.filter((entry: QueueEntry) => entry.ugkthid === user.ugkthid)[0] || null}
+                queueName={queueName} />
               <QueueEntryTableViewComponent
                 queueEntries={queueEntries}
                 filter={filter}

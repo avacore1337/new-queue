@@ -1,7 +1,5 @@
 import React from 'react';
 import SocketConnection from '../../../../utils/SocketConnection';
-import RequestMessage from '../../../../utils/RequestMessage';
-import User from '../../../../models/User';
 import Teacher from '../../../../models/Teacher';
 
 export default function TeacherListViewComponent(props: any) {

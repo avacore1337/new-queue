@@ -1,7 +1,6 @@
 import React from 'react';
 import { Redirect, Link } from "react-router-dom";
 import SocketConnection from '../../../utils/SocketConnection';
-import RequestMessage from '../../../utils/RequestMessage';
 import User from '../../../models/User';
 import Queue from '../../../models/Queue';
 import AddQueueViewModel from './AddQueue';

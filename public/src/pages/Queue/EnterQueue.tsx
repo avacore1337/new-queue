@@ -6,6 +6,7 @@ import QueueEntry from '../../models/QueueEntry';
 
 export default function EnterQueueViewComponent(props: any) {
 
+  let queueName: string = props.queueName;
   let socket: SocketConnection = props.socket;
   let yourself: QueueEntry | null = props.yourself;
 
@@ -26,7 +27,7 @@ export default function EnterQueueViewComponent(props: any) {
   }
 
   function enterQueue(): void {
-    socket.send(new RequestMessage('/joinQueue', {
+    socket.send(new RequestMessage(`/joinQueue/${queueName}`, {
       location: location,
       comment: comment,
       help: typeOfCommunication === 'help'
@@ -34,11 +35,11 @@ export default function EnterQueueViewComponent(props: any) {
   }
 
   function leaveQueue(): void {
-    socket.send(new RequestMessage('/leaveQueue'));
+    socket.send(new RequestMessage(`/leaveQueue/${queueName}`));
   }
 
   function recievingHelp(): void {
-    socket.send(new RequestMessage('/recievingHelp'));
+    socket.send(new RequestMessage(`/recievingHelp/${queueName}`));
   }
 
   return (

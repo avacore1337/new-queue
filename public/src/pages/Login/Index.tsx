@@ -28,7 +28,7 @@ export default function LoginViewComponent(props: any) {
           ugkthid: res.data.user.ugkthid,
           name: res.data.user.realname,
           username: res.data.user.username,
-          token: `Token ${res.data.user.token}`,
+          token: res.data.user.token,
           isAdministrator: true,
           teacherIn: ['TestQueue 1', 'TestQueue 2', 'TestQueue 3', 'TestQueue 4'],
           teachingAssistantIn: ['TestQueue 1', 'TestQueue 2', 'TestQueue 3', 'TestQueue 4'],

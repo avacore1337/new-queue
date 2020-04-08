@@ -25,7 +25,7 @@ export default function DebugViewComponent(props: any) {
   }
 
   return (
-    <div className="container">
+    <div>
       <div className="alert alert-info">
         <div className="row">
           <div className="col-6">

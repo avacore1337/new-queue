@@ -1,6 +1,5 @@
 import React from 'react';
 import SocketConnection from '../../../utils/SocketConnection';
-import RequestMessage from '../../../utils/RequestMessage';
 import User from '../../../models/User';
 import Administrator from '../../../models/Administrator';
 import AddAdminViewModel from './AddAdmin';

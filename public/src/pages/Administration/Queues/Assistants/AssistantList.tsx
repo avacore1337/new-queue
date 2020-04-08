@@ -1,7 +1,5 @@
 import React from 'react';
 import SocketConnection from '../../../../utils/SocketConnection';
-import RequestMessage from '../../../../utils/RequestMessage';
-import User from '../../../../models/User';
 import Assistant from '../../../../models/TeachingAssistant';
 
 export default function AssistantListViewComponent(props: any) {
