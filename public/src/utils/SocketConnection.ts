@@ -1,4 +1,5 @@
 import RequestMessage from './RequestMessage';
+import User from '../models/User';
 
 export default class SocketConnection {
 
@@ -7,15 +8,16 @@ export default class SocketConnection {
   private _connectionEstablished: boolean;
   private _pendingRequests: RequestMessage[];
   private _lastJoinRequest: RequestMessage | null;
-  private _lastLoginRequest: RequestMessage | null;
+  private _user: User | null;
 
-  public constructor(serverUrl: string) {
+  public constructor(serverUrl: string, user: User | null) {
     this._callbacks = {};
     this._pendingRequests = [];
     this._lastJoinRequest = null;
-    this._lastLoginRequest = null;
     this._connectionEstablished = false;
     this._socket = new WebSocket(serverUrl);
+
+    this._user = user;
 
     this.connect(serverUrl);
   }
@@ -25,17 +27,13 @@ export default class SocketConnection {
     this._socket.onopen = (): void => {
       this._connectionEstablished = true;
 
-      if (this._lastLoginRequest !== null) {
-        this.send(this._lastLoginRequest);
-      }
-
       if (this._lastJoinRequest !== null) {
         this.send(this._lastJoinRequest);
       }
 
       while (this._pendingRequests.length > 0) {
         const request = this._pendingRequests[0];
-        if (request.path.startsWith('/subscribe') || request.path.startsWith('/login')) {
+        if (request.path.startsWith('/subscribe')) {
           this._pendingRequests.shift();
           continue;
         }
@@ -100,12 +98,6 @@ export default class SocketConnection {
     this.send(message);
   }
 
-  public login(token: string): void {
-    const message = new RequestMessage('/login', { token: token });
-    this._lastLoginRequest = message;
-    this.send(message);
-  }
-
   public close(): void {
     this._socket.close();
   }
@@ -116,6 +108,7 @@ export default class SocketConnection {
     }
 
     if (this._connectionEstablished) {
+      message.content.token = this._user?.token || "";
       this._socket.send(message.stringify());
     }
     else {

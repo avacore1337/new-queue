@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
@@ -8,29 +8,35 @@ import RequestMessage from './utils/RequestMessage';
 import User from './models/User';
 
 const SERVER_URL = 'ws://localhost:7777/ws';
-const socket = new SocketConnection(SERVER_URL);
-
-window.onbeforeunload = () => {
-  socket.close();
-};
 
 const userData = localStorage.getItem('User');
-const user = userData === null
+const initialUser = userData === null
   ? null
   : new User(JSON.parse(userData));
 
-if (user !== null) {
-  const token = localStorage.getItem('Authorization');
-  if (token) {
-    socket.login(token.substring(6));
-  }
+function LifeCycle() {
+  let [user, setUser] = useState(initialUser);
+
+  const socket = new SocketConnection(SERVER_URL, user);
+
+  useEffect(() => {
+    return () => {
+      socket.close();
+    };
+  }, []);
+
+  return (
+    <App
+      socket={socket}
+      user={user}
+      setUser={setUser} />
+  );
+
 }
 
 ReactDOM.render(
   <React.StrictMode>
-    <App
-      socket={socket}
-      user={user} />
+    <LifeCycle />
   </React.StrictMode>,
   document.getElementById('root')
 );

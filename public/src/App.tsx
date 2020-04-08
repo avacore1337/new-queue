@@ -16,8 +16,8 @@ import AdministrationViewComponent from './pages/Administration/Index';
 
 export default function App(props: any) {
 
-  let [user, setUser] = useState(props.user as User | null);
-
+  let user: User | null = props.user;
+  let setUser: React.Dispatch<React.SetStateAction<User | null>> = props.setUser;
   const socket: SocketConnection = props.socket;
 
   return (

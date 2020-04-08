@@ -3,6 +3,9 @@ export default class User {
   private _ugkthid: string;
   public get ugkthid() { return this._ugkthid; }
 
+  private _token: string;
+  public get token() { return this._token; }
+
   private _name: string;
   public get name() { return this._name; }
 
@@ -22,6 +25,7 @@ export default class User {
     this._isAdministrator = data.isAdministrator;
     this._teacherIn = data.teacherIn;
     this._teachingAssistantIn = data.teachingAssistantIn;
+    this._token = data.token;
   }
 
   public isTeacher(): boolean {
