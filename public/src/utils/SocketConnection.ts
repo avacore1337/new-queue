@@ -108,7 +108,7 @@ export default class SocketConnection {
     }
 
     if (this._connectionEstablished) {
-      message.content.token = this._user?.token || "";
+      message.token = this._user?.token || "";
       this._socket.send(message.stringify());
     }
     else {
