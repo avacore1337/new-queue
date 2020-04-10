@@ -6,6 +6,7 @@ use crate::db;
 use crate::db::queue_entries;
 use crate::models::queue::Queue;
 use crate::sql_types::AdminEnum;
+use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use serde_json::{from_str, from_value, json};
 use std::cell::{Cell, RefCell, RefMut};
@@ -76,6 +77,11 @@ struct JoinQueue {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+struct GettingHelp {
+    status: bool,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 struct Kick {
     ugkthid: String,
 }
@@ -85,7 +91,7 @@ struct RoomHandler {
     count: Rc<Cell<u32>>,
     rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>>,
     secret: Vec<u8>,
-    pool: Rc<RefCell<db::Pool>>,
+    pool: Rc<RefCell<db::PgPool>>,
 }
 
 impl Handler for RoomHandler {
@@ -271,6 +277,12 @@ impl RoomHandler {
                 RoomHandler::leave_queue_route,
                 AuthLevel::Any,
             ),
+            ["gettingHelp", queue_name] => self.auth_deserialize(
+                wrapper,
+                queue_name,
+                RoomHandler::getting_help_route,
+                AuthLevel::Any,
+            ),
             ["kick", queue_name] => self.auth_deserialize(
                 wrapper,
                 queue_name,
@@ -323,7 +335,11 @@ impl RoomHandler {
         Ok(())
     }
 
-    fn kick_route(&mut self, _auth: Auth, _kick: Kick, _queue: &Queue) -> Result<()> {
+    fn kick_route(&mut self, _auth: Auth, kick: Kick, queue: &Queue) -> Result<()> {
+        let conn: &PgConnection = &*&self.get_db_connection();
+        let entry = db::queue_entries::find_by_ugkthid(conn, queue.id, &kick.ugkthid)?;
+        let _todo = diesel::delete(&entry).execute(conn);
+        self.broadcast_room(&queue.name, "leaveQueue", json!(kick));
         Ok(())
     }
 
@@ -369,6 +385,18 @@ impl RoomHandler {
             "leaveQueue",
             json!({ "ugkthid": &auth.ugkthid }),
         );
+        Ok(())
+    }
+
+    fn getting_help_route(
+        &mut self,
+        auth: Auth,
+        getting_help: GettingHelp,
+        queue: &Queue,
+    ) -> Result<()> {
+        let conn = &self.get_db_connection();
+        db::queue_entries::update_help_status(&conn, queue.id, auth.id, getting_help.status)?;
+        self.broadcast_room(&queue.name, "gettingHelp", json!(getting_help));
         Ok(())
     }
 
@@ -467,7 +495,7 @@ pub fn websocket() -> () {
     // Listen on an address and call the closure for each connection
     let count = Rc::new(Cell::new(0));
     let rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>> = Rc::new(RefCell::new(HashMap::new()));
-    let pool: Rc<RefCell<db::Pool>> = Rc::new(RefCell::new(db::init_pool()));
+    let pool: Rc<RefCell<db::PgPool>> = Rc::new(RefCell::new(db::init_pool()));
     listen("127.0.0.1:7777", |out| RoomHandler {
         out: out,
         count: count.clone(),

@@ -1,6 +1,6 @@
 use crate::db::queues;
 use crate::models::queue_entry::{QueueEntry, SendableQueueEntry};
-use crate::schema::queue_entries;
+use crate::schema::{queue_entries, users};
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use diesel::result::{DatabaseErrorKind, Error};
@@ -19,6 +19,48 @@ impl From<Error> for QueueEntryCreationError {
         }
         panic!("Error creating user: {:?}", err)
     }
+}
+
+pub fn update_help_status(
+    conn: &PgConnection,
+    queue_id: i32,
+    user_id: i32,
+    status: bool,
+) -> Result<QueueEntry, diesel::result::Error> {
+    let entry = queue_entries::table.filter(
+        queue_entries::queue_id
+            .eq(queue_id)
+            .and(queue_entries::user_id.eq(user_id)),
+    );
+    diesel::update(entry)
+        .set(queue_entries::gettinghelp.eq(status))
+        .get_result(conn)
+}
+
+pub fn find_by_ugkthid(
+    conn: &PgConnection,
+    queue_id: i32,
+    ugkthid: &str,
+) -> Result<QueueEntry, diesel::result::Error> {
+    queue_entries::table
+        .inner_join(users::table)
+        .filter(
+            queue_entries::queue_id
+                .eq(queue_id)
+                .and(users::ugkthid.eq(ugkthid)),
+        )
+        .select((
+            queue_entries::id,
+            queue_entries::user_id,
+            queue_entries::queue_id,
+            queue_entries::usercomment,
+            queue_entries::location,
+            queue_entries::starttime,
+            queue_entries::gettinghelp,
+            queue_entries::help,
+            queue_entries::badlocation,
+        ))
+        .first(conn)
 }
 
 pub fn for_queue(conn: &PgConnection, queue_name: &str) -> Option<Vec<SendableQueueEntry>> {

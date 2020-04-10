@@ -6,36 +6,35 @@ pub mod queues;
 pub mod super_admins;
 pub mod users;
 
-// #[database("diesel_postgres_pool")]
-// pub struct Conn(diesel::PgConnection);
-
 use diesel::pg::PgConnection;
-use r2d2;
-use r2d2_diesel::ConnectionManager;
 use rocket::http::Status;
 use rocket::request::{self, FromRequest};
 use rocket::{Outcome, Request, State};
 use std::env;
 use std::ops::Deref;
 
-pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
+// use diesel::r2d2::{ConnectionManager, Pool, PoolError, PooledConnection};
+use diesel::r2d2::{ConnectionManager, Pool, PooledConnection};
 
-pub fn init_pool() -> Pool {
+pub type PgPool = Pool<ConnectionManager<PgConnection>>;
+
+// fn init_pool() -> Result<PgPool, PoolError> {
+pub fn init_pool() -> PgPool {
     let manager = ConnectionManager::<PgConnection>::new(database_url());
-    Pool::new(manager).expect("db pool")
+    Pool::builder().build(manager).expect("db pool")
 }
 
 fn database_url() -> String {
     env::var("DATABASE_URL").expect("DATABASE_URL must be set")
 }
 
-pub struct DbConn(pub r2d2::PooledConnection<ConnectionManager<PgConnection>>);
+pub struct DbConn(pub PooledConnection<ConnectionManager<PgConnection>>);
 
 impl<'a, 'r> FromRequest<'a, 'r> for DbConn {
     type Error = ();
 
     fn from_request(request: &'a Request<'r>) -> request::Outcome<DbConn, Self::Error> {
-        let pool = request.guard::<State<Pool>>()?;
+        let pool = request.guard::<State<PgPool>>()?;
         match pool.get() {
             Ok(conn) => Outcome::Success(DbConn(conn)),
             Err(_) => Outcome::Failure((Status::ServiceUnavailable, ())),

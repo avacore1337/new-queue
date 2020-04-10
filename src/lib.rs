@@ -5,9 +5,6 @@ use std::thread;
 #[macro_use]
 extern crate rocket;
 
-extern crate r2d2;
-extern crate r2d2_diesel;
-
 #[macro_use]
 extern crate rocket_contrib;
 use rocket_cors;
