@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Plus } from './FontAwesome';
 
 export default function AddInputViewComponent(props: any) {
 
@@ -46,7 +47,7 @@ export default function AddInputViewComponent(props: any) {
           onClick={runCallback}
           disabled={isDisabled}>
 
-          <i className="fas fa-plus"></i>
+          <Plus />
           Add
 
         </button>

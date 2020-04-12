@@ -1,5 +1,6 @@
 import React from 'react';
 import Queue from '../../models/Queue';
+import { Invisible, Locked } from '../../viewcomponents/FontAwesome';
 
 export default function QueueCardViewComponent(props: any) {
 
@@ -17,8 +18,8 @@ export default function QueueCardViewComponent(props: any) {
   return (
     <div className="card row" style={styles}>
       <div className="card-body">
-        {queue.hiding ? <i className="fas fa-eye-slash" style={{marginRight: '1em'}}></i> : null}
-        {queue.locked ? <i className="fas fa-lock" style={{marginRight: '1em'}}></i> : null}
+        {queue.hiding ? <span style={{marginRight: '1em'}}><Invisible /></span> : null}
+        {queue.locked ? <span style={{marginRight: '1em'}}><Locked /></span> : null}
         {queue.name}
       </div>
     </div>

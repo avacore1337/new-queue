@@ -1,5 +1,6 @@
 import React from 'react';
 import Administrator from '../../../models/Administrator';
+import { Cross } from '../../../viewcomponents/FontAwesome';
 
 export default function AdministrationListViewComponent(props: any) {
 
@@ -29,9 +30,7 @@ export default function AdministrationListViewComponent(props: any) {
                         administrators.length <= 1
                           ? administrator.username
                           : <>
-                              {administrator.username} <span className="text-danger clickable" title="Remove admin" onClick={() => removeAdministrator(administrator)}>
-                                <i className="fas fa-times"></i>
-                              </span>
+                              {administrator.username} <Cross color="red" title="Remove administrator" onClick={() => removeAdministrator(administrator)} />
                             </>
                       }
                     </td>

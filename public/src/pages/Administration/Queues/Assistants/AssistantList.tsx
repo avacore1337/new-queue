@@ -2,7 +2,7 @@ import React from 'react';
 import SocketConnection from '../../../../utils/SocketConnection';
 import RequestMessage from '../../../../utils/RequestMessage';
 import Assistant from '../../../../models/TeachingAssistant';
-import Queue from '../../../../models/Queue';
+import { Cross } from '../../../../viewcomponents/FontAwesome';
 
 export default function AssistantListViewComponent(props: any) {
 
@@ -30,9 +30,7 @@ export default function AssistantListViewComponent(props: any) {
                   <tr key={assistant.username}>
                     <td>{ assistant.realname }</td>
                     <td>
-                      { assistant.username } <span className="text-danger clickable" title="Remove assistant" onClick={() => removeAssistant(assistant)}>
-                        <i className="fas fa-times">
-                      </i></span>
+                      { assistant.username } <Cross color="red" title="Remove assistant" onClick={() => removeAssistant(assistant)} />
                     </td>
                   </tr>)
               }

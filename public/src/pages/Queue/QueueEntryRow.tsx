@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import TimeAgo from 'react-timeago';
 import QueueEntry from '../../models/QueueEntry';
+import { Bookmark, CheckMark, Cross, Envelope, QuestionMark, Star, Tag } from '../../viewcomponents/FontAwesome';
 
 export default function QueueEntryRowViewComponent(props: any) {
 
@@ -37,7 +38,7 @@ export default function QueueEntryRowViewComponent(props: any) {
           {
             !ugkthid || queueEntry.ugkthid !== ugkthid
               ? queueEntry.realname
-              : <><span className="text-primary"><i className="fas fa-star"></i></span> {queueEntry.realname}</>
+              : <><Star color="blue" /> {queueEntry.realname}</>
           }
         </td>
         <td>{queueEntry.location}</td>
@@ -57,42 +58,42 @@ export default function QueueEntryRowViewComponent(props: any) {
                       <div
                         className="text-center red clickable"
                         style={{lineHeight: '2em'}}>
-                        <i className="fas fa-times"></i>
+                        <Cross />
                       </div>
                     </div>
                     <div title="kick user" className="col-12 col-lg-2 px-3 my-1">
                       <div
                         className="text-center yellow clickable"
                         style={{lineHeight: '2em'}}>
-                        <i className="fas fa-envelope"></i>
+                        <Envelope />
                       </div>
                     </div>
                     <div title="kick user" className="col-12 col-lg-2 px-3 my-1">
                       <div
                         className="text-center blue clickable"
                         style={{lineHeight: '2em'}}>
-                        <i className="fas fa-check"></i>
+                        <CheckMark />
                       </div>
                     </div>
                     <div title="kick user" className="col-12 col-lg-2 px-3 my-1">
                       <div
                         className="text-center yellow clickable"
                         style={{lineHeight: '2em'}}>
-                        <i className="fas fa-question"></i>
+                        <QuestionMark />
                       </div>
                     </div>
                     <div title="kick user" className="col-12 col-lg-2 px-3 my-1">
                       <div
                         className="text-center yellow clickable"
                         style={{lineHeight: '2em'}}>
-                        <i className="fas fa-bookmark"></i>
+                        <Bookmark />
                       </div>
                     </div>
                     <div title="kick user" className="col-12 col-lg-2 px-3 my-1">
                       <div
                         className="text-center yellow clickable"
                         style={{lineHeight: '2em'}}>
-                        <i className="fas fa-tag"></i>
+                        <Tag />
                       </div>
                     </div>
                   </div>

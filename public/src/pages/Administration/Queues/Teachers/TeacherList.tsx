@@ -2,6 +2,7 @@ import React from 'react';
 import SocketConnection from '../../../../utils/SocketConnection';
 import RequestMessage from '../../../../utils/RequestMessage';
 import Teacher from '../../../../models/Teacher';
+import { Cross } from '../../../../viewcomponents/FontAwesome';
 
 export default function TeacherListViewComponent(props: any) {
 
@@ -29,9 +30,7 @@ export default function TeacherListViewComponent(props: any) {
                   <tr key={teacher.username}>
                     <td>{ teacher.realname }</td>
                     <td>
-                      { teacher.username } <span className="text-danger clickable" title="Remove teacher" onClick={() => removeTeacher(teacher)}>
-                        <i className="fas fa-times">
-                      </i></span>
+                      { teacher.username } <Cross color="red" title="Remove teacher" onClick={() => removeTeacher(teacher)} />
                     </td>
                   </tr>)
               }
