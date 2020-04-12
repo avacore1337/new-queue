@@ -6,14 +6,15 @@ use crate::db;
 use crate::db::queue_entries;
 use crate::models::queue::Queue;
 use crate::sql_types::AdminEnum;
+use crate::wsroutes::routes::*;
+use crate::wsroutes::*;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use serde_json::{from_str, from_value, json};
 use std::cell::{Cell, RefCell, RefMut};
 use std::collections::HashMap;
-use std::error;
-use std::fmt;
 use std::rc::Rc;
+type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 enum AuthLevel {
     Any,
@@ -21,32 +22,6 @@ enum AuthLevel {
     Teacher,
     SuperOrTeacher,
     Super,
-}
-
-// Change the alias to `Box<error::Error>`.
-type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
-
-#[derive(Debug, Clone)]
-struct BadAuth;
-
-impl fmt::Display for BadAuth {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "User is not logged in but attempted to do action that requires login data"
-        )
-    }
-}
-
-impl error::Error for BadAuth {
-    fn description(&self) -> &str {
-        "User is not logged in"
-    }
-
-    fn cause(&self) -> Option<&(dyn error::Error)> {
-        // Generic error, underlying cause isn't tracked.
-        None
-    }
 }
 
 use serde_json::Value as Json;
@@ -62,11 +37,6 @@ struct Wrapper {
     path: String,
     token: String,
     content: Json,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-struct AddUser {
-    username: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -86,7 +56,7 @@ struct Kick {
     ugkthid: String,
 }
 
-struct RoomHandler {
+pub struct RoomHandler {
     out: Sender,
     count: Rc<Cell<u32>>,
     rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>>,
@@ -193,46 +163,56 @@ impl RoomHandler {
         let v = from_value::<T>(wrapper.content.clone())?;
         let conn = &self.get_db_connection();
         let queue = db::queues::find_by_name(conn, room_name)?;
-        let auth = self.get_auth(&wrapper.token, auth_level, &queue)?;
+        let auth = self.get_auth(&wrapper, auth_level)?;
         fun(self, auth, v, &queue)
     }
 
-    fn auth<F>(
-        &mut self,
-        wrapper: Wrapper,
-        room_name: &str,
-        fun: F,
-        auth_level: AuthLevel,
-    ) -> Result<()>
-    where
-        F: Fn(&mut Self, Auth, &Queue) -> Result<()>,
-    {
-        let conn = &self.get_db_connection();
-        let queue = db::queues::find_by_name(conn, room_name)?;
-        let auth = self.get_auth(&wrapper.token, auth_level, &queue)?;
-        fun(self, auth, &queue)
-    }
+    // fn auth<F>(
+    //     &mut self,
+    //     wrapper: Wrapper,
+    //     room_name: &str,
+    //     fun: F,
+    //     auth_level: AuthLevel,
+    // ) -> Result<()>
+    // where
+    //     F: Fn(&mut Self, Auth, &Queue) -> Result<()>,
+    // {
+    //     let conn = &self.get_db_connection();
+    //     let queue = db::queues::find_by_name(conn, room_name)?;
+    //     let auth = self.get_auth(&wrapper, auth_level)?;
+    //     fun(self, auth, &queue)
+    // }
 
     // fn auth_admins(&mut self, auth: &Auth, queue: &Queue) -> Option<AdminEnum> {
     //     let conn = &self.get_db_connection();
     //     db::admins::admin_for_queue(conn, &queue.name, auth)
     // }
 
-    fn get_auth(&mut self, token: &str, auth_level: AuthLevel, queue: &Queue) -> Result<Auth> {
+    fn get_auth(&mut self, wrapper: &Wrapper, auth_level: AuthLevel) -> Result<Auth> {
+        let token = &wrapper.token;
+
+        let queue_name = match wrapper.path.split('/').collect::<Vec<&str>>().as_slice() {
+            [_, queue_name] => Some(queue_name.to_string()),
+            _ => None,
+        };
         let conn = &self.get_db_connection();
         match decode_token(token, &self.secret) {
             Some(auth) => match auth_level {
                 AuthLevel::Any => Ok(auth),
                 AuthLevel::Assistant => {
-                    match db::admins::admin_for_queue(conn, &queue.name, &auth) {
+                    let queue_name = queue_name.ok_or_else(|| BadAuth)?;
+                    match db::admins::admin_for_queue(conn, &queue_name, &auth) {
                         Some(_) => Ok(auth),
                         None => Err(Box::new(BadAuth)),
                     }
                 }
-                AuthLevel::Teacher => match db::admins::admin_for_queue(conn, &queue.name, &auth) {
-                    Some(AdminEnum::Teacher) => Ok(auth),
-                    _ => Err(Box::new(BadAuth)),
-                },
+                AuthLevel::Teacher => {
+                    let queue_name = queue_name.ok_or_else(|| BadAuth)?;
+                    match db::admins::admin_for_queue(conn, &queue_name, &auth) {
+                        Some(AdminEnum::Teacher) => Ok(auth),
+                        _ => Err(Box::new(BadAuth)),
+                    }
+                }
                 AuthLevel::SuperOrTeacher => Ok(auth),
                 AuthLevel::Super => match db::super_admins::is_super(conn, &auth) {
                     Some(_) => Ok(auth),
@@ -258,6 +238,7 @@ impl RoomHandler {
         println!("wrapper.path {:#?}", &wrapper.path);
         println!("wrapper.content {:#?}", &wrapper.content);
 
+        let conn = self.get_db_connection();
         let path = wrapper.path.clone();
         match path.split('/').collect::<Vec<&str>>().as_slice() {
             ["subscribeLobby"] => self.subscribe_lobby_route(),
@@ -271,12 +252,19 @@ impl RoomHandler {
                 RoomHandler::join_queue_route,
                 AuthLevel::Any,
             ),
-            ["leaveQueue", queue_name] => self.auth(
-                wrapper,
-                queue_name,
-                RoomHandler::leave_queue_route,
-                AuthLevel::Any,
-            ),
+            ["leaveQueue", queue_name] => {
+                let auth = self.get_auth(&wrapper, AuthLevel::Any)?;
+                leave_queue_route(self, auth, &conn, queue_name)
+            }
+            ["addQueue", queue_name] => {
+                let auth = self.get_auth(&wrapper, AuthLevel::Super)?;
+                add_queue_route(self, auth, &conn, queue_name)
+            }
+            ["addSuperAdmin"] => {
+                let auth = self.get_auth(&wrapper, AuthLevel::Super)?;
+                let user = from_value::<AddUser>(wrapper.content.clone())?;
+                add_super_route(self, auth, &conn, user)
+            }
             ["gettingHelp", queue_name] => self.auth_deserialize(
                 wrapper,
                 queue_name,
@@ -300,18 +288,6 @@ impl RoomHandler {
                 queue_name,
                 RoomHandler::add_assistant_route,
                 AuthLevel::SuperOrTeacher,
-            ),
-            ["addSuperAdmin", queue_name] => self.auth_deserialize(
-                wrapper,
-                queue_name,
-                RoomHandler::add_super_route,
-                AuthLevel::Super,
-            ),
-            ["addQueue", queue_name] => self.auth(
-                wrapper,
-                queue_name,
-                RoomHandler::add_queue,
-                AuthLevel::Super,
             ),
             _ => {
                 println!("Route does not exist");
@@ -363,31 +339,6 @@ impl RoomHandler {
         Ok(())
     }
 
-    fn add_super_route(&mut self, _auth: Auth, add_user: AddUser, _queue: &Queue) -> Result<()> {
-        let conn = &self.get_db_connection();
-        let _admin = db::super_admins::create(conn, &add_user.username)?;
-        Ok(())
-    }
-
-    fn add_queue(&mut self, _auth: Auth, _queue: &Queue) -> Result<()> {
-        // let conn = &self.get_db_connection();
-        // let _admin = db::super_admins::create(conn, &add_user.username)?;
-        Ok(())
-    }
-
-    fn leave_queue_route(&mut self, auth: Auth, queue: &Queue) -> Result<()> {
-        // let queue = self.current_queue.as_ref().ok_or_else(|| BadAuth)?.clone();
-        // println!("Leaving queue: {}", &queue.name);
-        let conn = &self.get_db_connection();
-        db::queue_entries::remove(&conn, queue.id, auth.id)?;
-        self.broadcast_room(
-            &queue.name,
-            "leaveQueue",
-            json!({ "ugkthid": &auth.ugkthid }),
-        );
-        Ok(())
-    }
-
     fn getting_help_route(
         &mut self,
         auth: Auth,
@@ -420,7 +371,7 @@ impl RoomHandler {
         Ok(())
     }
 
-    fn send_self(&self, path: &str, content: Json) {
+    pub fn send_self(&self, path: &str, content: Json) {
         let message = &json!(SendWrapper {
             path: path.to_string(),
             content: content,
@@ -429,7 +380,7 @@ impl RoomHandler {
         self.out.send(Message::Text(message.to_string())).unwrap();
     }
 
-    fn broadcast_room(&self, room: &str, path: &str, content: Json) {
+    pub fn broadcast_room(&self, room: &str, path: &str, content: Json) {
         let rooms = self.rooms.borrow();
         println!("broadcasting in room: {}", room);
         let internal_name = "room_".to_string() + room;
