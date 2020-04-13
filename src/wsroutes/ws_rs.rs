@@ -3,12 +3,9 @@ use ws::{listen, CloseCode, Handler, Handshake, Message, Request, Response, Send
 use crate::auth::{decode_token, Auth};
 use crate::config::get_secret;
 use crate::db;
-use crate::db::queue_entries;
-use crate::models::queue::Queue;
 use crate::sql_types::AdminEnum;
 use crate::wsroutes::routes::*;
 use crate::wsroutes::*;
-use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use serde_json::{from_str, from_value, json};
 use std::cell::{Cell, RefCell, RefMut};
@@ -123,23 +120,23 @@ impl RoomHandler {
         db::DbConn(conn)
     }
 
-    fn auth_deserialize<T, F>(
-        &mut self,
-        wrapper: Wrapper,
-        room_name: &str,
-        fun: F,
-        auth_level: AuthLevel,
-    ) -> Result<()>
-    where
-        T: for<'de> serde::Deserialize<'de>,
-        F: Fn(&mut Self, Auth, T, &Queue) -> Result<()>,
-    {
-        let v = from_value::<T>(wrapper.content.clone())?;
-        let conn = &self.get_db_connection();
-        let queue = db::queues::find_by_name(conn, room_name)?;
-        let auth = self.get_auth(&wrapper, auth_level)?;
-        fun(self, auth, v, &queue)
-    }
+    // fn auth_deserialize<T, F>(
+    //     &mut self,
+    //     wrapper: Wrapper,
+    //     room_name: &str,
+    //     fun: F,
+    //     auth_level: AuthLevel,
+    // ) -> Result<()>
+    // where
+    //     T: for<'de> serde::Deserialize<'de>,
+    //     F: Fn(&mut Self, Auth, T, &Queue) -> Result<()>,
+    // {
+    //     let v = from_value::<T>(wrapper.content.clone())?;
+    //     let conn = &self.get_db_connection();
+    //     let queue = db::queues::find_by_name(conn, room_name)?;
+    //     let auth = self.get_auth(&wrapper, auth_level)?;
+    //     fun(self, auth, v, &queue)
+    // }
 
     fn get_auth(&mut self, wrapper: &Wrapper, auth_level: AuthLevel) -> Result<Auth> {
         let token = &wrapper.token;
@@ -191,7 +188,7 @@ impl RoomHandler {
         println!("wrapper.path {:#?}", &wrapper.path);
         println!("wrapper.content {:#?}", &wrapper.content);
 
-        let conn = self.get_db_connection();
+        let conn = &self.get_db_connection();
         let path = wrapper.path.clone();
         match path.split('/').collect::<Vec<&str>>().as_slice() {
             ["subscribeLobby"] => self.subscribe_lobby_route(),
@@ -199,45 +196,53 @@ impl RoomHandler {
             ["unsubscribeLobby"] => self.unsubscribe_lobby_route(),
             ["unsubscribeQueue", queue_name] => self.unsubscribe_queue_route(queue_name),
             ["subscribeQueue", queue_name] => self.subscribe_queue_route(queue_name),
-            ["joinQueue", queue_name] => self.auth_deserialize(
-                wrapper,
-                queue_name,
-                RoomHandler::join_queue_route,
-                AuthLevel::Any,
-            ),
+            ["updateQueueEntry", queue_name] => {
+                let auth = self.get_auth(&wrapper, AuthLevel::Any)?;
+                let join_queue = from_value::<QueueEntry>(wrapper.content.clone())?;
+                update_queue_entry_route(self, auth, conn, join_queue, queue_name)
+            }
+            ["SendMessage", queue_name] => {
+                let auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
+                let user_message = from_value::<UserMessage>(wrapper.content.clone())?;
+                send_message_route(self, auth, user_message, queue_name)
+            }
+            ["joinQueue", queue_name] => {
+                let auth = self.get_auth(&wrapper, AuthLevel::Any)?;
+                let join_queue = from_value::<QueueEntry>(wrapper.content.clone())?;
+                join_queue_route(self, auth, conn, join_queue, queue_name)
+            }
             ["leaveQueue", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Any)?;
-                leave_queue_route(self, auth, &conn, queue_name)
+                leave_queue_route(self, auth, conn, queue_name)
             }
             ["addQueue", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Super)?;
-                add_queue_route(self, auth, &conn, queue_name)
+                add_queue_route(self, auth, conn, queue_name)
             }
             ["addSuperAdmin"] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Super)?;
                 let user = from_value::<AddUser>(wrapper.content.clone())?;
-                add_super_route(self, auth, &conn, user)
+                add_super_route(self, auth, conn, user)
             }
-            ["gettingHelp", queue_name] => self.auth_deserialize(
-                wrapper,
-                queue_name,
-                RoomHandler::getting_help_route,
-                AuthLevel::Any,
-            ),
+            ["gettingHelp", queue_name] => {
+                let auth = self.get_auth(&wrapper, AuthLevel::Any)?;
+                let getting_help = from_value::<GettingHelp>(wrapper.content.clone())?;
+                getting_help_route(self, auth, conn, getting_help, queue_name)
+            }
             ["kick", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
                 let kick = from_value::<Kick>(wrapper.content.clone())?;
-                kick_route(self, auth, &conn, kick, queue_name)
+                kick_route(self, auth, conn, kick, queue_name)
             }
             ["addTeacher", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::SuperOrTeacher)?;
                 let user = from_value::<AddUser>(wrapper.content.clone())?;
-                add_teacher_route(self, auth, &conn, user, queue_name)
+                add_teacher_route(self, auth, conn, user, queue_name)
             }
             ["addAssistant", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::SuperOrTeacher)?;
                 let user = from_value::<AddUser>(wrapper.content.clone())?;
-                add_assistant_route(self, auth, &conn, user, queue_name)
+                add_assistant_route(self, auth, conn, user, queue_name)
             }
             _ => {
                 println!("Route does not exist");
@@ -266,36 +271,19 @@ impl RoomHandler {
         Ok(())
     }
 
-    fn getting_help_route(
+    pub fn send_user_message(
         &mut self,
-        auth: Auth,
-        getting_help: GettingHelp,
-        queue: &Queue,
-    ) -> Result<()> {
-        let conn = &self.get_db_connection();
-        db::queue_entries::update_help_status(&conn, queue.id, auth.id, getting_help.status)?;
-        self.broadcast_room(&queue.name, "gettingHelp", json!(getting_help));
-        Ok(())
-    }
-
-    fn join_queue_route(&mut self, auth: Auth, join_queue: JoinQueue, queue: &Queue) -> Result<()> {
-        println!("Joining queue: {}", &queue.name);
-        let conn = &self.get_db_connection();
-        let queue_entry = queue_entries::create(
-            &conn,
-            auth.id,
-            queue.id,
-            &join_queue.location,
-            &join_queue.comment,
-        )?;
-        println!("QueueEntry ID: {}", queue_entry.id);
-
-        self.broadcast_room(
-            &queue.name,
-            "joinQueue",
-            json!(queue_entry.to_sendable(conn)),
-        );
-        Ok(())
+        _queue_name: &str,
+        _ugkthid: &str,
+        _message: &str,
+        _sender_name: &str,
+    ) {
+        // let message = &json!(SendWrapper {
+        //     path: path.to_string(),
+        //     content: content,
+        // })
+        // .to_string();
+        // self.out.send(Message::Text(message.to_string())).unwrap();
     }
 
     pub fn send_self(&self, path: &str, content: Json) {
@@ -324,8 +312,6 @@ impl RoomHandler {
     }
 
     fn join_room(&mut self, room_name: &str) -> Result<()> {
-        // let conn = &self.get_db_connection();
-        // let queue = db::queues::find_by_name(conn, room_name)?;
         let internal_name = "room_".to_string() + room_name;
         let mut rooms: RefMut<_> = self.rooms.borrow_mut();
         rooms.entry(internal_name.clone()).or_insert_with(Vec::new);
@@ -338,7 +324,6 @@ impl RoomHandler {
             &internal_name,
             self.out.connection_id()
         );
-        // self.current_queue = Some(queue);
         Ok(())
     }
 

@@ -27,14 +27,42 @@ pub fn update_help_status(
     user_id: i32,
     status: bool,
 ) -> Result<QueueEntry, diesel::result::Error> {
-    let entry = queue_entries::table.filter(
-        queue_entries::queue_id
-            .eq(queue_id)
-            .and(queue_entries::user_id.eq(user_id)),
-    );
-    diesel::update(entry)
+    let entry = find(conn, queue_id, user_id)?;
+    diesel::update(&entry)
         .set(queue_entries::gettinghelp.eq(status))
         .get_result(conn)
+}
+
+pub fn update_user_data(
+    conn: &PgConnection,
+    queue_id: i32,
+    user_id: i32,
+    location: &str,
+    comment: &str,
+    help: bool,
+) -> Result<QueueEntry, diesel::result::Error> {
+    let entry = find(conn, queue_id, user_id)?;
+    diesel::update(&entry)
+        .set((
+            queue_entries::location.eq(location),
+            queue_entries::usercomment.eq(comment),
+            queue_entries::help.eq(help),
+        ))
+        .get_result(conn)
+}
+
+pub fn find(
+    conn: &PgConnection,
+    queue_id: i32,
+    user_id: i32,
+) -> Result<QueueEntry, diesel::result::Error> {
+    queue_entries::table
+        .filter(
+            queue_entries::queue_id
+                .eq(queue_id)
+                .and(queue_entries::user_id.eq(user_id)),
+        )
+        .first(conn)
 }
 
 pub fn find_by_ugkthid(
@@ -98,12 +126,14 @@ pub fn create(
     queue_id: i32,
     location: &str,
     usercomment: &str,
+    help: bool,
 ) -> Result<QueueEntry, diesel::result::Error> {
     let new_queue = &NewQueueEntry {
         user_id,
         queue_id,
         location,
         usercomment,
+        help,
     };
 
     diesel::insert_into(queue_entries::table)
@@ -119,4 +149,5 @@ pub struct NewQueueEntry<'a> {
     queue_id: i32,
     location: &'a str,
     usercomment: &'a str,
+    help: bool,
 }

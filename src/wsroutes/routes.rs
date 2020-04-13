@@ -16,7 +16,7 @@ pub struct AddUser {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct JoinQueue {
+pub struct QueueEntry {
     pub comment: String,
     pub help: bool,
     pub location: String,
@@ -25,6 +25,12 @@ pub struct JoinQueue {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct GettingHelp {
     pub status: bool,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct UserMessage {
+    pub message: String,
+    pub ugkthid: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -109,6 +115,94 @@ pub fn add_assistant_route(
     handler.send_self(
         &("addAssistant/".to_string() + queue_name),
         json!(db::users::find(conn, admin.user_id)),
+    );
+    Ok(())
+}
+
+pub fn getting_help_route(
+    handler: &mut RoomHandler,
+    auth: Auth,
+    conn: &PgConnection,
+    getting_help: GettingHelp,
+    queue_name: &str,
+) -> Result<()> {
+    let queue = db::queues::find_by_name(conn, queue_name)?;
+    let queue_entry =
+        db::queue_entries::update_help_status(&conn, queue.id, auth.id, getting_help.status)?;
+    handler.broadcast_room(
+        queue_name,
+        "updateQueueEntry",
+        json!(queue_entry.to_sendable(conn)),
+    );
+    Ok(())
+}
+
+pub fn join_queue_route(
+    handler: &mut RoomHandler,
+    auth: Auth,
+    conn: &PgConnection,
+    queue_entry: QueueEntry,
+    queue_name: &str,
+) -> Result<()> {
+    println!("Joining queue: {}", queue_name);
+    let queue = db::queues::find_by_name(conn, queue_name)?;
+    let queue_entry = db::queue_entries::create(
+        &conn,
+        auth.id,
+        queue.id,
+        &queue_entry.location,
+        &queue_entry.comment,
+        queue_entry.help,
+    )?;
+    println!("QueueEntry ID: {}", queue_entry.id);
+
+    handler.broadcast_room(
+        queue_name,
+        "joinQueue",
+        json!(queue_entry.to_sendable(conn)),
+    );
+    Ok(())
+}
+
+pub fn send_message_route(
+    handler: &mut RoomHandler,
+    auth: Auth,
+    user_message: UserMessage,
+    queue_name: &str,
+) -> Result<()> {
+    handler.send_user_message(
+        queue_name,
+        &user_message.ugkthid,
+        &user_message.message,
+        &auth.username, //TODO chango to realname?
+    );
+    Ok(())
+}
+
+pub fn update_queue_entry_route(
+    handler: &mut RoomHandler,
+    auth: Auth,
+    conn: &PgConnection,
+    queue_entry: QueueEntry,
+    queue_name: &str,
+) -> Result<()> {
+    println!("Joining queue: {}", queue_name);
+    let queue = db::queues::find_by_name(conn, queue_name)?;
+    let queue_entry = db::queue_entries::update_user_data(
+        &conn,
+        queue.id,
+        auth.id,
+        &queue_entry.location,
+        &queue_entry.comment,
+        queue_entry.help,
+    )?;
+    // let queue_entry = db::queue_entries::find(&conn, auth.id, queue.id)?;
+    println!("QueueEntry ID: {}", queue_entry.id);
+
+    handler.broadcast_room(
+        queue_name,
+        "updateQueueEntry",
+        json!(queue_entry.to_sendable(conn)),
     );
     Ok(())
 }
