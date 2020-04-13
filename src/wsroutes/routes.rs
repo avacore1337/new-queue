@@ -28,6 +28,11 @@ pub struct GettingHelp {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Text {
+    pub message: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct UserMessage {
     pub message: String,
     pub ugkthid: String,
@@ -75,6 +80,7 @@ pub fn add_queue_route(
     handler.send_self(&("addTeacher/".to_string() + queue_name), json!({}));
     Ok(())
 }
+
 pub fn kick_route(
     handler: &mut RoomHandler,
     _auth: Auth,
@@ -86,6 +92,18 @@ pub fn kick_route(
     let entry = db::queue_entries::find_by_ugkthid(conn, queue.id, &kick.ugkthid)?;
     let _todo = diesel::delete(&entry).execute(&*conn);
     handler.broadcast_room(queue_name, "leaveQueue", json!(kick));
+    Ok(())
+}
+
+pub fn update_queue_info(
+    handler: &mut RoomHandler,
+    _auth: Auth,
+    conn: &PgConnection,
+    text: Text,
+    queue_name: &str,
+) -> Result<()> {
+    let queue = db::queues::update_info(&conn, queue_name, &text.message)?;
+    handler.broadcast_room(queue_name, "updateQueue", json!(queue));
     Ok(())
 }
 

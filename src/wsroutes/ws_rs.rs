@@ -11,6 +11,7 @@ use serde_json::{from_str, from_value, json};
 use std::cell::{Cell, RefCell, RefMut};
 use std::collections::HashMap;
 use std::rc::Rc;
+
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 enum AuthLevel {
@@ -233,6 +234,11 @@ impl RoomHandler {
                 let auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
                 let kick = from_value::<Kick>(wrapper.content.clone())?;
                 kick_route(self, auth, conn, kick, queue_name)
+            }
+            ["updateQueueInfo", queue_name] => {
+                let auth = self.get_auth(&wrapper, AuthLevel::Teacher)?;
+                let text = from_value::<Text>(wrapper.content.clone())?;
+                update_queue_info(self, auth, conn, text, queue_name)
             }
             ["addTeacher", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::SuperOrTeacher)?;

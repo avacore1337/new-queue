@@ -20,6 +20,16 @@ impl From<Error> for QueueCreationError {
     }
 }
 
+pub fn update_info(
+    conn: &PgConnection,
+    queue_name: &str,
+    message: &str,
+) -> Result<Queue, diesel::result::Error> {
+    diesel::update(queues::table.filter(queues::name.eq(queue_name)))
+        .set(queues::info.eq(message))
+        .get_result(conn)
+}
+
 pub fn name_to_id(conn: &PgConnection, name: &str) -> Result<i32, diesel::result::Error> {
     queues::table
         .filter(queues::name.eq(name))
