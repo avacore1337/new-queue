@@ -33,6 +33,7 @@ pub struct RoomHandler {
     out: Sender,
     count: Rc<Cell<u32>>,
     rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>>,
+    ugid_map: Rc<RefCell<HashMap<String, Sender>>>,
     secret: Vec<u8>,
     pool: Rc<RefCell<db::PgPool>>,
     active_room: Option<String>,
@@ -42,10 +43,6 @@ impl Handler for RoomHandler {
     fn on_request(&mut self, req: &Request) -> ws::Result<Response> {
         match req.resource() {
             "/ws" => {
-                // used once for const socket = new WebSocket("ws://" + window.location.host + "/ws");
-                // https://blog.stanko.io/do-you-really-need-websockets-343aed40aa9b
-                // and no need for reconnect later
-
                 // https://ws-rs.org/api_docs/ws/struct.Request.html
                 println!("Browser Request from {:?}", req.origin().unwrap().unwrap());
                 println!("Client found is {:?}", req.client_addr().unwrap());
@@ -61,15 +58,11 @@ impl Handler for RoomHandler {
         // We have a new connection, so we increment the connection counter
         self.count.set(self.count.get() + 1);
         let number_of_connection = self.count.get();
-        //
-        // The most important part and used to assign id for clients
-        let open_message = format!(
+        println!(
             "{} entered and the number of live connections is {}",
             &handshake.peer_addr.unwrap(),
             &number_of_connection
         );
-
-        println!("{}", &open_message);
         Ok(())
     }
 
@@ -168,10 +161,13 @@ impl RoomHandler {
         let path = wrapper.path.clone();
         match path.split('/').collect::<Vec<&str>>().as_slice() {
             ["subscribeLobby"] => self.subscribe_lobby_route(),
-            // "/logout" => self.logout_route(),
             ["unsubscribeLobby"] => self.unsubscribe_lobby_route(),
             ["unsubscribeQueue", queue_name] => self.unsubscribe_queue_route(queue_name),
             ["subscribeQueue", queue_name] => self.subscribe_queue_route(queue_name),
+            ["login"] => {
+                let auth = self.get_auth(&wrapper, AuthLevel::Any)?;
+                self.login_route(auth)
+            }
             ["updateQueueEntry", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Any)?;
                 let join_queue = from_value::<QueueEntry>(wrapper.content.clone())?;
@@ -232,6 +228,12 @@ impl RoomHandler {
         }
     }
 
+    fn login_route(&mut self, auth: Auth) -> Result<()> {
+        let mut ugids: RefMut<_> = self.ugid_map.borrow_mut();
+        ugids.insert(auth.ugkthid, self.out.clone());
+        Ok(())
+    }
+
     fn subscribe_queue_route(&mut self, queue_name: &str) -> Result<()> {
         println!("joining room {}", queue_name);
         self.join_room(&queue_name)
@@ -255,16 +257,23 @@ impl RoomHandler {
     pub fn send_user_message(
         &mut self,
         _queue_name: &str,
-        _ugkthid: &str,
-        _message: &str,
+        ugkthid: &str,
+        message: &str,
         _sender_name: &str,
     ) {
-        // let message = &json!(SendWrapper {
-        //     path: path.to_string(),
-        //     content: content,
-        // })
+        let mut ugids: RefMut<_> = self.ugid_map.borrow_mut();
+        if let Some(handler) = ugids.get(ugkthid) {
+            let message = &json!(SendWrapper {
+                path: "message".to_string(),
+                content: json!(Text {
+                    message: message.to_string()
+                }),
+            });
+            handler.send(Message::Text(message.to_string())).unwrap();
+        }
+
+        // rooms.entry(room_name.clone()).or_insert_with(Vec::new);
         // .to_string();
-        // self.out.send(Message::Text(message.to_string())).unwrap();
     }
 
     pub fn send_self(&self, path: &str, content: Json) {
@@ -331,11 +340,13 @@ pub fn websocket() -> () {
     // Listen on an address and call the closure for each connection
     let count = Rc::new(Cell::new(0));
     let rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>> = Rc::new(RefCell::new(HashMap::new()));
+    let ugid_map: Rc<RefCell<HashMap<String, Sender>>> = Rc::new(RefCell::new(HashMap::new()));
     let pool: Rc<RefCell<db::PgPool>> = Rc::new(RefCell::new(db::init_pool()));
     listen("127.0.0.1:7777", |out| RoomHandler {
         out: out,
         count: count.clone(),
         rooms: rooms.clone(),
+        ugid_map: ugid_map.clone(),
         secret: get_secret().into_bytes(),
         pool: pool.clone(),
         active_room: None,
