@@ -4,13 +4,18 @@ This the the new queue system, written in rust.
 
 ## Setup
 ```bash
-sudo apt install libssl-dev
-sudo apt install postgresql postgresql-contrib
+sudo apt install libssl-dev -y
+sudo apt install postgresql postgresql-contrib -y
 sudo apt install libpq-dev openssl -y
 ```
 
 ### Get rust nightly
 Get [rustup](https://rustup.rs/) (nightly version) from
+
+run script, but pick nightly instead of stable. Can be changed for the project with rustup if you forget.
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+````
 
 Install Diesel CLI
 ```bash
@@ -19,13 +24,23 @@ cargo install diesel_cli --no-default-features --features postgres
 
 ### Setup postgresql
 
-setup a user (with your current username) with password. You know it works when you can run `psql` Then run the following:
+setup a user (with your current username) with password. You know it works when you can run `psql` Then run:
 ```bash
-psql -f init.sql
-diesel migration run
-psql -f testing.sql
+./reset_database.sh
 ```
-If you want to reset your database you can just run the scripts again
+If you want to reset your database you can just run the script again.
+
+All the script really does is to run:
+* psql -f init.sql
+* diesel migration run
+* psql -f testing.sql
+
+### Setting up production
+When setting up for production you need to create a database with password, and then add the new settings to the .env file.
+
+The .env file also need a new secret so that auth tokens can't be decrypted.
+
+Then simply run ```diesel migration run``` and you should be good to go.
 
 ## Building
 Build the project

@@ -3,6 +3,14 @@ pub mod ws_rs;
 use std::error;
 use std::fmt;
 
+enum AuthLevel {
+    Any,
+    Assistant,
+    Teacher,
+    SuperOrTeacher,
+    Super,
+}
+
 #[derive(Debug, Clone)]
 struct BadAuth;
 

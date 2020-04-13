@@ -14,14 +14,6 @@ use std::rc::Rc;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
-enum AuthLevel {
-    Any,
-    Assistant,
-    Teacher,
-    SuperOrTeacher,
-    Super,
-}
-
 use serde_json::Value as Json;
 
 #[derive(Deserialize, Debug, Clone)]
@@ -43,6 +35,7 @@ pub struct RoomHandler {
     rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>>,
     secret: Vec<u8>,
     pool: Rc<RefCell<db::PgPool>>,
+    active_room: Option<String>,
 }
 
 impl Handler for RoomHandler {
@@ -120,24 +113,6 @@ impl RoomHandler {
         let conn = pool.get().unwrap();
         db::DbConn(conn)
     }
-
-    // fn auth_deserialize<T, F>(
-    //     &mut self,
-    //     wrapper: Wrapper,
-    //     room_name: &str,
-    //     fun: F,
-    //     auth_level: AuthLevel,
-    // ) -> Result<()>
-    // where
-    //     T: for<'de> serde::Deserialize<'de>,
-    //     F: Fn(&mut Self, Auth, T, &Queue) -> Result<()>,
-    // {
-    //     let v = from_value::<T>(wrapper.content.clone())?;
-    //     let conn = &self.get_db_connection();
-    //     let queue = db::queues::find_by_name(conn, room_name)?;
-    //     let auth = self.get_auth(&wrapper, auth_level)?;
-    //     fun(self, auth, v, &queue)
-    // }
 
     fn get_auth(&mut self, wrapper: &Wrapper, auth_level: AuthLevel) -> Result<Auth> {
         let token = &wrapper.token;
@@ -318,42 +293,34 @@ impl RoomHandler {
     }
 
     fn join_room(&mut self, room_name: &str) -> Result<()> {
+        let conn = &self.get_db_connection();
+        let _queue = db::queues::find_by_name(conn, room_name)?; // Making sure the queue exists
         let internal_name = "room_".to_string() + room_name;
+        println!("Joining room: {}", &internal_name,);
+        self.join_room_internal(internal_name)
+    }
+
+    fn join_room_internal(&mut self, room_name: String) -> Result<()> {
+        self.leave_room(); // Leave any previous room if any
         let mut rooms: RefMut<_> = self.rooms.borrow_mut();
-        rooms.entry(internal_name.clone()).or_insert_with(Vec::new);
-        rooms
-            .get_mut(&internal_name)
-            .unwrap()
-            .push(self.out.clone());
-        println!(
-            "Joining room: {}, {}",
-            &internal_name,
-            self.out.connection_id()
-        );
+        rooms.entry(room_name.clone()).or_insert_with(Vec::new);
+        rooms.get_mut(&room_name).unwrap().push(self.out.clone());
+        self.active_room = Some(room_name);
         Ok(())
     }
 
     fn join_lobby(&mut self) -> Result<()> {
-        let mut rooms: RefMut<_> = self.rooms.borrow_mut();
-        rooms.entry("lobby".to_string()).or_insert_with(Vec::new);
-        rooms.get_mut("lobby").unwrap().push(self.out.clone());
-        println!("Joining lobby",);
-        // TODO join the lobby struct
-        Ok(())
+        println!("Joining lobby");
+        self.join_room_internal("lobby".to_string())
     }
 
     fn leave_room(&mut self) {
-        //println!("Leaving room");
-        //if let Some(queue) = &self.current_queue {
-        //    let mut rooms: RefMut<_> = self.rooms.borrow_mut();
-        //    //TODO won't be needed soon?
-        //    rooms.entry(queue.name.clone()).or_insert_with(Vec::new);
-        //    rooms
-        //        .get_mut(&queue.name)
-        //        .unwrap()
-        //        .retain(|x| x != &self.out);
-        //}
-        //self.current_queue = None;
+        if let Some(room_name) = &self.active_room {
+            println!("Leaving room {}", room_name);
+            let mut rooms: RefMut<_> = self.rooms.borrow_mut();
+            rooms.get_mut(room_name).unwrap().retain(|x| x != &self.out);
+            self.active_room = None;
+        }
     }
 }
 
@@ -371,6 +338,7 @@ pub fn websocket() -> () {
         rooms: rooms.clone(),
         secret: get_secret().into_bytes(),
         pool: pool.clone(),
+        active_room: None,
     })
     .unwrap()
 }
