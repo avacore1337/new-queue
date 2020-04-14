@@ -261,7 +261,7 @@ impl RoomHandler {
         message: &str,
         _sender_name: &str,
     ) {
-        let mut ugids: RefMut<_> = self.ugid_map.borrow_mut();
+        let ugids: RefMut<_> = self.ugid_map.borrow_mut();
         if let Some(handler) = ugids.get(ugkthid) {
             let message = &json!(SendWrapper {
                 path: "message".to_string(),
