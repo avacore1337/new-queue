@@ -16,6 +16,14 @@ pub fn create(conn: &PgConnection, username: &str) -> Result<SuperAdmin, diesel:
         .map_err(Into::into)
 }
 
+pub fn remove(conn: &PgConnection, username: &str) -> Result<(), diesel::result::Error> {
+    let user_id = db::users::username_to_id(conn, username)?;
+    diesel::delete(super_admins::table.filter(super_admins::user_id.eq(user_id)))
+        .execute(conn)
+        .map_err(Into::into)
+        .map(|_| ())
+}
+
 #[derive(Insertable)]
 #[table_name = "super_admins"]
 pub struct NewSuperAdmin {

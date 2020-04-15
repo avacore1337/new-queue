@@ -70,6 +70,17 @@ pub fn add_super_route(
     Ok(())
 }
 
+pub fn remove_super_route(
+    handler: &mut RoomHandler,
+    _auth: Auth,
+    conn: &PgConnection,
+    add_user: AddUser,
+) -> Result<()> {
+    let _admin = db::super_admins::remove(conn, &add_user.username)?;
+    handler.send_self("removeSuperAdmin", json!(add_user));
+    Ok(())
+}
+
 pub fn add_queue_route(
     handler: &mut RoomHandler,
     _auth: Auth,
@@ -95,7 +106,7 @@ pub fn kick_route(
     Ok(())
 }
 
-pub fn update_queue_info(
+pub fn update_queue_info_route(
     handler: &mut RoomHandler,
     _auth: Auth,
     conn: &PgConnection,
@@ -114,11 +125,8 @@ pub fn add_teacher_route(
     add_user: AddUser,
     queue_name: &str,
 ) -> Result<()> {
-    let admin = db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Teacher)?;
-    handler.send_self(
-        &("addTeacher/".to_string() + queue_name),
-        json!(db::users::find(conn, admin.user_id)),
-    );
+    let _admin = db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Teacher)?;
+    handler.send_self(&("addTeacher/".to_string() + queue_name), json!(add_user));
     Ok(())
 }
 
@@ -129,10 +137,37 @@ pub fn add_assistant_route(
     add_user: AddUser,
     queue_name: &str,
 ) -> Result<()> {
-    let admin = db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Teacher)?;
+    let _admin = db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Teacher)?;
+    handler.send_self(&("addAssistant/".to_string() + queue_name), json!(add_user));
+    Ok(())
+}
+
+pub fn remove_teacher_route(
+    handler: &mut RoomHandler,
+    _auth: Auth,
+    conn: &PgConnection,
+    add_user: AddUser,
+    queue_name: &str,
+) -> Result<()> {
+    let _admin = db::admins::remove(conn, queue_name, &add_user.username)?;
     handler.send_self(
-        &("addAssistant/".to_string() + queue_name),
-        json!(db::users::find(conn, admin.user_id)),
+        &("removeTeacher/".to_string() + queue_name),
+        json!(add_user),
+    );
+    Ok(())
+}
+
+pub fn remove_assistant_route(
+    handler: &mut RoomHandler,
+    _auth: Auth,
+    conn: &PgConnection,
+    add_user: AddUser,
+    queue_name: &str,
+) -> Result<()> {
+    let _admin = db::admins::remove(conn, queue_name, &add_user.username)?;
+    handler.send_self(
+        &("removeAssistant/".to_string() + queue_name),
+        json!(add_user),
     );
     Ok(())
 }

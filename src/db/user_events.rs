@@ -8,18 +8,20 @@ use diesel::prelude::*;
 pub fn for_queue(
     conn: &PgConnection,
     queue_name: &str,
-    from_time: DateTime<Utc>,
-    until_time: DateTime<Utc>,
+    from: DateTime<Utc>,
+    until: DateTime<Utc>,
 ) -> Option<Vec<UserEvent>> {
     let queue = queues::find_by_name(conn, queue_name).ok()?;
     UserEvent::belonging_to(&queue)
-        .filter(
-            user_events::time
-                .ge(from_time)
-                .and(user_events::time.le(until_time)),
-        )
+        .filter(user_events::time.ge(from).and(user_events::time.le(until)))
         .load(conn)
         .ok()
+}
+
+#[derive(FromForm, Default)]
+pub struct Interval {
+    from: Option<i64>,
+    until: Option<i64>,
 }
 
 // pub fn create(

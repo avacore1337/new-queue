@@ -27,6 +27,26 @@ pub fn create(
         .map_err(Into::into)
 }
 
+pub fn remove(
+    conn: &PgConnection,
+
+    queue_name: &str,
+    username: &str,
+) -> Result<(), diesel::result::Error> {
+    let user_id = db::users::username_to_id(conn, username)?;
+    let queue_id = db::queues::name_to_id(conn, queue_name)?;
+    diesel::delete(
+        admins::table.filter(
+            admins::user_id
+                .eq(user_id)
+                .and(admins::queue_id.eq(queue_id)),
+        ),
+    )
+    .execute(conn)
+    .map_err(Into::into)
+    .map(|_| ())
+}
+
 #[derive(Insertable)]
 #[table_name = "admins"]
 pub struct NewAdmin {
