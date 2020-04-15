@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
-import Queue from '../../models/Queue';
+import React from 'react';
+import SocketConnection from '../../utils/SocketConnection';
 import QueueEntry from '../../models/QueueEntry';
+import User from '../../models/User';
 import QueueEntryRowViewComponent from './QueueEntryRow';
-import SearchViewComponent from '../../viewcomponents/Search';
 
 export default function QueueEntryTableViewComponent(props: any) {
 
   let queueEntries: QueueEntry[] = props.queueEntries;
   let filter: string = props.filter;
   let ugkthid: string | null = props.ugkthid;
+  let user: User | null = props.user;
+  let queueName: string = props.queueName;
+  let socket: SocketConnection = props.socket;
 
   function filterUsers(entry: QueueEntry) {
     const lowerCaseFilter = filter.toLowerCase();
@@ -45,7 +48,10 @@ export default function QueueEntryTableViewComponent(props: any) {
                     <QueueEntryRowViewComponent
                       index={index}
                       queueEntry={queueEntry}
-                      ugkthid={ugkthid} />)
+                      ugkthid={ugkthid}
+                      user={user}
+                      queueName={queueName}
+                      socket={socket} />)
                 }
               </tbody>
             </table>

@@ -99,7 +99,10 @@ export default function QueueViewComponent(props: any) {
               <QueueEntryTableViewComponent
                 queueEntries={queueEntries}
                 filter={filter}
-                ugkthid={user ? user.ugkthid : null} />
+                ugkthid={user ? user.ugkthid : null}
+                user={user}
+                queueName={queueName}
+                socket={socket} />
             </div>
           </div>
   );
