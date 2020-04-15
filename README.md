@@ -65,11 +65,20 @@ revert migrations with
 diesel migration revert
 ```
 
-# guides
+## guides
 * [Rocket, diesel, serde setup](https://lankydan.dev/2018/05/20/creating-a-rusty-rocket-fuelled-with-diesel)
 * [Rust react setup](https://github.com/ghotiphud/rust-web-starter)
 * [Chat blog](https://www.steadylearner.com/blog/read/How-to-start-Rust-Chat-App)
 * [Steadylearner Chat](https://github.com/steadylearner/Chat)
 * [Realworld Rust Rocket](https://github.com/TatriX/realworld-rust-rocket)
 
+# Features and Bugs
 
+Backend:
+* add_assistant should transform from teacher -> assistant and vice versa
+* messaging
+* authentication on rocket routes
+* statistics
+
+Frontend:
+* fill in this list

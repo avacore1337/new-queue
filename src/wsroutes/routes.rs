@@ -88,7 +88,7 @@ pub fn add_queue_route(
     queue_name: &str,
 ) -> Result<()> {
     let _queue = db::queues::create(conn, queue_name).map_err(|_e| BadAuth)?;
-    handler.send_self(&("addTeacher/".to_string() + queue_name), json!({}));
+    handler.send_self(&("addQueue/".to_string() + queue_name), json!({}));
     Ok(())
 }
 
@@ -98,8 +98,8 @@ pub fn remove_queue_route(
     conn: &PgConnection,
     queue_name: &str,
 ) -> Result<()> {
-    let _queue = db::queues::create(conn, queue_name).map_err(|_e| BadAuth)?;
-    handler.send_self(&("addTeacher/".to_string() + queue_name), json!({}));
+    let _queue = db::queues::remove(conn, queue_name).map_err(|_e| BadAuth)?;
+    handler.send_self(&("removeQueue/".to_string() + queue_name), json!({}));
     Ok(())
 }
 
@@ -117,7 +117,7 @@ pub fn kick_route(
     Ok(())
 }
 
-pub fn update_queue_info_route(
+pub fn set_queue_info_route(
     handler: &mut RoomHandler,
     _auth: Auth,
     conn: &PgConnection,
@@ -151,7 +151,7 @@ pub fn add_assistant_route(
     add_user: Username,
     queue_name: &str,
 ) -> Result<()> {
-    let admin = db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Teacher)?;
+    let admin = db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Assistant)?;
     handler.send_self(
         &("addTeacher/".to_string() + queue_name),
         json!(db::users::find(conn, admin.user_id)),
@@ -247,6 +247,10 @@ pub fn send_message_route(
         &auth.username, //TODO chango to realname?
     );
     Ok(())
+}
+
+pub fn not_implemented_route() -> Result<()> {
+    unimplemented!("Route not yet implemented!");
 }
 
 pub fn update_queue_entry_route(
