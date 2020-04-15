@@ -65,8 +65,8 @@ pub fn add_super_admin_route(
     conn: &PgConnection,
     add_user: Username,
 ) -> Result<()> {
-    let _admin = db::super_admins::create(conn, &add_user.username)?;
-    handler.send_self("addSuperAdmin", json!(add_user));
+    let admin = db::super_admins::create(conn, &add_user.username)?;
+    handler.send_self("addSuperAdmin", json!(db::users::find(conn, admin.user_id)));
     Ok(())
 }
 
@@ -136,8 +136,11 @@ pub fn add_teacher_route(
     add_user: Username,
     queue_name: &str,
 ) -> Result<()> {
-    let _admin = db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Teacher)?;
-    handler.send_self(&("addTeacher/".to_string() + queue_name), json!(add_user));
+    let admin = db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Teacher)?;
+    handler.send_self(
+        &("addTeacher/".to_string() + queue_name),
+        json!(db::users::find(conn, admin.user_id)),
+    );
     Ok(())
 }
 
@@ -148,8 +151,11 @@ pub fn add_assistant_route(
     add_user: Username,
     queue_name: &str,
 ) -> Result<()> {
-    let _admin = db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Teacher)?;
-    handler.send_self(&("addAssistant/".to_string() + queue_name), json!(add_user));
+    let admin = db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Teacher)?;
+    handler.send_self(
+        &("addTeacher/".to_string() + queue_name),
+        json!(db::users::find(conn, admin.user_id)),
+    );
     Ok(())
 }
 
