@@ -11,7 +11,7 @@ use serde_json::json;
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct AddUser {
+pub struct Username {
     pub username: String,
 }
 
@@ -59,11 +59,11 @@ pub fn leave_queue_route(
     Ok(())
 }
 
-pub fn add_super_route(
+pub fn add_super_admin_route(
     handler: &mut RoomHandler,
     _auth: Auth,
     conn: &PgConnection,
-    add_user: AddUser,
+    add_user: Username,
 ) -> Result<()> {
     let _admin = db::super_admins::create(conn, &add_user.username)?;
     handler.send_self("addSuperAdmin", json!(add_user));
@@ -74,7 +74,7 @@ pub fn remove_super_route(
     handler: &mut RoomHandler,
     _auth: Auth,
     conn: &PgConnection,
-    add_user: AddUser,
+    add_user: Username,
 ) -> Result<()> {
     let _admin = db::super_admins::remove(conn, &add_user.username)?;
     handler.send_self("removeSuperAdmin", json!(add_user));
@@ -82,6 +82,17 @@ pub fn remove_super_route(
 }
 
 pub fn add_queue_route(
+    handler: &mut RoomHandler,
+    _auth: Auth,
+    conn: &PgConnection,
+    queue_name: &str,
+) -> Result<()> {
+    let _queue = db::queues::create(conn, queue_name).map_err(|_e| BadAuth)?;
+    handler.send_self(&("addTeacher/".to_string() + queue_name), json!({}));
+    Ok(())
+}
+
+pub fn remove_queue_route(
     handler: &mut RoomHandler,
     _auth: Auth,
     conn: &PgConnection,
@@ -122,7 +133,7 @@ pub fn add_teacher_route(
     handler: &mut RoomHandler,
     _auth: Auth,
     conn: &PgConnection,
-    add_user: AddUser,
+    add_user: Username,
     queue_name: &str,
 ) -> Result<()> {
     let _admin = db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Teacher)?;
@@ -134,7 +145,7 @@ pub fn add_assistant_route(
     handler: &mut RoomHandler,
     _auth: Auth,
     conn: &PgConnection,
-    add_user: AddUser,
+    add_user: Username,
     queue_name: &str,
 ) -> Result<()> {
     let _admin = db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Teacher)?;
@@ -146,7 +157,7 @@ pub fn remove_teacher_route(
     handler: &mut RoomHandler,
     _auth: Auth,
     conn: &PgConnection,
-    add_user: AddUser,
+    add_user: Username,
     queue_name: &str,
 ) -> Result<()> {
     let _admin = db::admins::remove(conn, queue_name, &add_user.username)?;
@@ -161,7 +172,7 @@ pub fn remove_assistant_route(
     handler: &mut RoomHandler,
     _auth: Auth,
     conn: &PgConnection,
-    add_user: AddUser,
+    add_user: Username,
     queue_name: &str,
 ) -> Result<()> {
     let _admin = db::admins::remove(conn, queue_name, &add_user.username)?;

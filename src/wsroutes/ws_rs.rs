@@ -191,14 +191,18 @@ impl RoomHandler {
                 let auth = self.get_auth(&wrapper, AuthLevel::Super)?;
                 add_queue_route(self, auth, conn, queue_name)
             }
+            ["removeQueue", queue_name] => {
+                let auth = self.get_auth(&wrapper, AuthLevel::SuperOrTeacher)?;
+                remove_queue_route(self, auth, conn, queue_name)
+            }
             ["addSuperAdmin"] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Super)?;
-                let user = from_value::<AddUser>(wrapper.content.clone())?;
-                add_super_route(self, auth, conn, user)
+                let user = from_value::<Username>(wrapper.content.clone())?;
+                add_super_admin_route(self, auth, conn, user)
             }
-            ["RemoveSuperAdmin"] => {
+            ["removeSuperAdmin"] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Super)?;
-                let user = from_value::<AddUser>(wrapper.content.clone())?;
+                let user = from_value::<Username>(wrapper.content.clone())?;
                 remove_super_route(self, auth, conn, user)
             }
             ["gettingHelp", queue_name] => {
@@ -218,22 +222,22 @@ impl RoomHandler {
             }
             ["addTeacher", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::SuperOrTeacher)?;
-                let user = from_value::<AddUser>(wrapper.content.clone())?;
+                let user = from_value::<Username>(wrapper.content.clone())?;
                 add_teacher_route(self, auth, conn, user, queue_name)
             }
             ["addAssistant", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::SuperOrTeacher)?;
-                let user = from_value::<AddUser>(wrapper.content.clone())?;
+                let user = from_value::<Username>(wrapper.content.clone())?;
                 add_assistant_route(self, auth, conn, user, queue_name)
             }
             ["removeTeacher", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::SuperOrTeacher)?;
-                let user = from_value::<AddUser>(wrapper.content.clone())?;
+                let user = from_value::<Username>(wrapper.content.clone())?;
                 remove_teacher_route(self, auth, conn, user, queue_name)
             }
             ["removeAssistant", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::SuperOrTeacher)?;
-                let user = from_value::<AddUser>(wrapper.content.clone())?;
+                let user = from_value::<Username>(wrapper.content.clone())?;
                 remove_assistant_route(self, auth, conn, user, queue_name)
             }
             _ => {
