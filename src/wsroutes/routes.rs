@@ -23,7 +23,7 @@ pub struct QueueEntry {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct GettingHelp {
+pub struct Status {
     pub status: bool,
 }
 
@@ -153,7 +153,7 @@ pub fn add_assistant_route(
 ) -> Result<()> {
     let admin = db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Assistant)?;
     handler.send_self(
-        &("addTeacher/".to_string() + queue_name),
+        &("addAssistant/".to_string() + queue_name),
         json!(db::users::find(conn, admin.user_id)),
     );
     Ok(())
@@ -193,7 +193,7 @@ pub fn getting_help_route(
     handler: &mut RoomHandler,
     auth: Auth,
     conn: &PgConnection,
-    getting_help: GettingHelp,
+    getting_help: Status,
     queue_name: &str,
 ) -> Result<()> {
     let queue = db::queues::find_by_name(conn, queue_name)?;

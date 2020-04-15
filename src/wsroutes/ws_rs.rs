@@ -309,9 +309,9 @@ impl RoomHandler {
                 let user = from_value::<Username>(wrapper.content.clone())?;
                 remove_super_route(self, auth, conn, user)
             }
-            ["gettingHelp", queue_name] => {
+            ["setHelpStatus", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Any)?;
-                let getting_help = from_value::<GettingHelp>(wrapper.content.clone())?;
+                let getting_help = from_value::<Status>(wrapper.content.clone())?;
                 getting_help_route(self, auth, conn, getting_help, queue_name)
             }
             ["kick", queue_name] => {
@@ -344,14 +344,14 @@ impl RoomHandler {
                 let user = from_value::<Username>(wrapper.content.clone())?;
                 remove_assistant_route(self, auth, conn, user, queue_name)
             }
-            ["help", _queue_name] => not_implemented_route(),
-            ["stopHelp", _queue_name] => not_implemented_route(),
+            ["setUserHelpStatus", _queue_name] => not_implemented_route(),
             ["badLocation", _queue_name] => not_implemented_route(),
             ["broadcast", _queue_name] => not_implemented_route(),
             ["broadcastFaculty", _queue_name] => not_implemented_route(),
             ["setMOTD", _queue_name] => not_implemented_route(),
             ["purgeQueue", _queue_name] => not_implemented_route(),
             ["lockQueue", _queue_name] => not_implemented_route(),
+            ["unlockQueue", _queue_name] => not_implemented_route(),
             _ => {
                 println!("Route does not exist");
                 Ok(())
