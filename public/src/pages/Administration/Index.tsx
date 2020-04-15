@@ -28,28 +28,28 @@ export default function AdministrationViewComponent(props: any) {
   administratorsState.current = administrators;
 
   let onAdministratorAdded = (data: any): void => {
-    console.log(data);
+    console.log(data, 'onAdministratorAdded');
     console.log(administratorsState.current);
     setAdministrators([...administratorsState.current, new Administrator(data)]);
   };
 
-  let onAdministratorDeleted = (data: any): void => {
-    console.log(data);
+  let onAdministratorRemoved = (data: any): void => {
+    console.log(data, 'onAdministratorRemoved');
     setAdministrators(administratorsState.current.filter((a: Administrator) => a.username !== data.username));
   };
 
   let onQueueAdded = (data: any): void => {
-    console.log(data);
+    console.log(data, 'onQueueAdded');
     setQueues([...queuesState.current, new Queue({name: data.queueName})]);
   };
 
-  let onQueueDeleted = (data: any): void => {
-    console.log(data);
-    setQueues(queuesState.current.filter((q: Queue) => q.name !== data.name));
+  let onQueueRemoved = (data: any): void => {
+    console.log(data, 'onQueueRemoved');
+    setQueues(queuesState.current.filter((q: Queue) => q.name !== data.queueName));
   };
 
   let onTeacherAdded = (data: any): void => {
-    console.log(data);
+    console.log(data, 'onTeacherAdded');
     let tempQueues = [...queuesState.current];
     for (let queue of tempQueues.filter(q => q.name === data.queueName)) {
         queue.addTeacher(new Teacher(data));
@@ -57,27 +57,39 @@ export default function AdministrationViewComponent(props: any) {
     setQueues(tempQueues);
   };
 
-  let onTeacherDeleted = (data: any): void => {
-    console.log(data);
+  let onTeacherRemoved = (data: any): void => {
+    console.log(data, 'onTeacherRemoved');
+    let queue: Queue = queuesState.current.filter((q: Queue) => q.name !== data.queueName)[0];
+    queue.removeTeacher(data);
+    setQueues([...queuesState.current.filter((q: Queue) => q.name !== data.queueName), queue]);
   };
 
   let onAssistantAdded = (data: any): void => {
-    console.log(data);
+    console.log(data, 'onAssistantAdded');
+    let tempQueues = [...queuesState.current];
+    for (let queue of tempQueues.filter(q => q.name === data.queueName)) {
+        queue.addAssistant(new Assistant(data));
+    }
+    setQueues(tempQueues);
   };
 
-  let onAssistantDeleted = (data: any): void => {
-    console.log(data);
+  let onAssistantRemoved = (data: any): void => {
+    console.log(data, 'onAssistantRemoved');
+    let queue: Queue = queuesState.current.filter((q: Queue) => q.name !== data.queueName)[0];
+    queue.removeAssistant(data.username);
+    console.log(queue);
+    setQueues([...queuesState.current.filter((q: Queue) => q.name !== data.queueName), queue]);
   };
 
   useEffect(() => {
     socket.listen('addSuperAdmin', onAdministratorAdded);
-    socket.listen('removeSuperAdmin', onAdministratorDeleted);
+    socket.listen('removeSuperAdmin', onAdministratorRemoved);
     socket.listen('addTeacher/:queueName', onTeacherAdded);
-    socket.listen('removeTeacher/:queueName', onTeacherDeleted);
+    socket.listen('removeTeacher/:queueName', onTeacherRemoved);
     socket.listen('addAssistant/:queueName', onAssistantAdded);
-    socket.listen('removeAssistant/:queueName', onAssistantDeleted);
+    socket.listen('removeAssistant/:queueName', onAssistantRemoved);
     socket.listen('addQueue/:queueName', onQueueAdded);
-    socket.listen('removeQueue/:queueName', onQueueDeleted);
+    socket.listen('removeQueue/:queueName', onQueueRemoved);
 
     fetch('http://localhost:8000/api/queues')
       .then(response => response.json())

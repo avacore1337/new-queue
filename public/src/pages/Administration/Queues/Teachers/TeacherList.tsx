@@ -11,7 +11,7 @@ export default function TeacherListViewComponent(props: any) {
   let socket: SocketConnection = props.socket;
 
   function removeTeacher(teacher: Teacher): void | undefined {
-    socket.send(new RequestMessage(`deleteTeacher/${queueName}`, { username: teacher }));
+    socket.send(new RequestMessage(`removeTeacher/${queueName}`, { username: teacher.username }));
   }
 
   return (

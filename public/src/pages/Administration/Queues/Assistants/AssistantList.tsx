@@ -11,7 +11,7 @@ export default function AssistantListViewComponent(props: any) {
   let socket: SocketConnection = props.socket;
 
   function removeAssistant(assistant: Assistant): void | undefined {
-    socket.send(new RequestMessage(`deleteAssistant/${queueName}`, { username: assistant }));
+    socket.send(new RequestMessage(`removeAssistant/${queueName}`, { username: assistant.username }));
   }
 
   return (
