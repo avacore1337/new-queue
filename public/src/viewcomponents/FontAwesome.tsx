@@ -1,164 +1,15 @@
 import React from 'react';
 
-export function Bookmark(props: any) {
-
-  let [title, styling, onClick] = parseProps(props);
-
-  return (
-    title || styling || onClick
-      ? <span
-          className={styling}
-          title={title}
-          onClick={onClick}>
-            <i className="fas fa-bookmark"></i>
-        </span>
-      : <i className="fas fa-bookmark"></i>
-  );
-}
-
-export function CheckMark(props: any) {
-
-  let [title, styling, onClick] = parseProps(props);
-
-  return (
-    title || styling || onClick
-      ? <span
-          className={styling}
-          title={title}
-          onClick={onClick}>
-            <i className="fas fa-check"></i>
-        </span>
-      : <i className="fas fa-check"></i>
-  );
-}
-
-export function Cross(props: any) {
-
-  let [title, styling, onClick] = parseProps(props);
-
-  return (
-    title || styling || onClick
-      ? <span
-          className={styling}
-          title={title}
-          onClick={onClick}>
-            <i className="fas fa-times"></i>
-        </span>
-      : <i className="fas fa-times"></i>
-  );
-}
-
-export function Envelope(props: any) {
-
-  let [title, styling, onClick] = parseProps(props);
-
-  return (
-    title || styling || onClick
-      ? <span
-          className={styling}
-          title={title}
-          onClick={onClick}>
-            <i className="fas fa-envelope"></i>
-        </span>
-      : <i className="fas fa-envelope"></i>
-  );
-}
-
-export function Invisible(props: any) {
-
-  let [title, styling, onClick] = parseProps(props);
-
-  return (
-    title || styling || onClick
-      ? <span
-          className={styling}
-          title={title}
-          onClick={onClick}>
-            <i className="fas fa-eye-slash"></i>
-        </span>
-      : <i className="fas fa-eye-slash"></i>
-  );
-}
-
-export function Locked(props: any) {
-
-  let [title, styling, onClick] = parseProps(props);
-
-  return (
-    title || styling || onClick
-      ? <span
-          className={styling}
-          title={title}
-          onClick={onClick}>
-            <i className="fas fa-lock"></i>
-        </span>
-      : <i className="fas fa-lock"></i>
-  );
-}
-
-export function Plus(props: any) {
-
-  let [title, styling, onClick] = parseProps(props);
-
-  return (
-    title || styling || onClick
-      ? <span
-          className={styling}
-          title={title}
-          onClick={onClick}>
-            <i className="fas fa-plus"></i>
-        </span>
-      : <i className="fas fa-plus"></i>
-  );
-}
-
-export function QuestionMark(props: any) {
-
-  let [title, styling, onClick] = parseProps(props);
-
-  return (
-    title || styling || onClick
-      ? <span
-          className={styling}
-          title={title}
-          onClick={onClick}>
-            <i className="fas fa-question"></i>
-        </span>
-      : <i className="fas fa-question"></i>
-  );
-}
-
-export function Star(props: any) {
-
-  let [title, styling, onClick] = parseProps(props);
-
-  return (
-    title || styling || onClick
-      ? <span
-          className={styling}
-          title={title}
-          onClick={onClick}>
-            <i className="fas fa-star"></i>
-        </span>
-      : <i className="fas fa-star"></i>
-  );
-}
-
-export function Tag(props: any) {
-
-  let [title, styling, onClick] = parseProps(props);
-
-  return (
-    title || styling || onClick
-      ? <span
-          className={styling}
-          title={title}
-          onClick={onClick}>
-            <i className="fas fa-tag"></i>
-        </span>
-      : <i className="fas fa-tag"></i>
-  );
-}
+export const Bookmark = (props: any): JSX.Element => Markup(props, 'bookmark');
+export const CheckMark = (props: any): JSX.Element => Markup(props, 'check');
+export const Cross = (props: any): JSX.Element => Markup(props, 'times');
+export const Envelope = (props: any): JSX.Element => Markup(props, 'envelope');
+export const Invisible = (props: any): JSX.Element => Markup(props, 'eye-slash');
+export const Locked = (props: any): JSX.Element => Markup(props, 'lock');
+export const Plus = (props: any): JSX.Element => Markup(props, 'plus');
+export const QuestionMark = (props: any): JSX.Element => Markup(props, 'question');
+export const Star = (props: any): JSX.Element => Markup(props, 'star');
+export const Tag = (props: any): JSX.Element => Markup(props, 'tag');
 
 const colorMapping: Record<string, string | null> = {
   'red': 'text-danger',
@@ -188,4 +39,20 @@ function parseProps(props: any): [string | undefined, string | undefined, ((even
     cssClasses.filter(x => x !== null).join(' ') || undefined,
     onClick
   ];
+}
+
+function Markup(props: any, fontAwesomeCssClass: string): JSX.Element {
+
+  let [title, styling, onClick] = parseProps(props);
+
+  return (
+    title || styling || onClick
+      ? <span
+          className={styling}
+          title={title}
+          onClick={onClick}>
+            <i className={`fas fa-${fontAwesomeCssClass}`}></i>
+        </span>
+      : <i className={`fas fa-${fontAwesomeCssClass}`}></i>
+  );
 }

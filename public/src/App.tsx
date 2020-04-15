@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import './App.css';
 import SocketConnection from './utils/SocketConnection';
 import User from './models/User';
-import Queue from './models/Queue';
 import HomeViewComponent from './pages/Home/Index';
 import QueueViewComponent from './pages/Queue/Index';
 import NavBarViewComponent from './viewcomponents/NavBar';
