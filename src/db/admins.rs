@@ -29,7 +29,6 @@ pub fn create(
 
 pub fn remove(
     conn: &PgConnection,
-
     queue_name: &str,
     username: &str,
 ) -> Result<(), diesel::result::Error> {

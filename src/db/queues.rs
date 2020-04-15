@@ -51,6 +51,14 @@ pub fn all(conn: &PgConnection) -> Vec<Queue> {
         .expect("Could not get queues")
 }
 
+pub fn remove(conn: &PgConnection, queue_name: &str) -> Result<(), diesel::result::Error> {
+    let queue = find_by_name(conn, queue_name)?;
+    diesel::delete(&queue)
+        .execute(conn)
+        .map_err(Into::into)
+        .map(|_| ())
+}
+
 pub fn create(conn: &PgConnection, name: &str) -> Result<Queue, QueueCreationError> {
     let new_queue = &NewQueue { name };
 
