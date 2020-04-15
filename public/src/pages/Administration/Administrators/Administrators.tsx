@@ -3,7 +3,7 @@ import SocketConnection from '../../../utils/SocketConnection';
 import User from '../../../models/User';
 import Administrator from '../../../models/Administrator';
 import AddAdminViewModel from './AddAdmin';
-import AdministratorListViewComponent from './AdministratorList';
+import AdministrationListViewComponent from './AdministratorList';
 
 export default function AdministratorsViewComponent(props: any) {
 
@@ -24,9 +24,8 @@ export default function AdministratorsViewComponent(props: any) {
             <h6>Administrators</h6>
             <br />
             <div className="col-12 pl-0">
-              <AdministratorListViewComponent
+              <AdministrationListViewComponent
                 socket={socket}
-                user={user}
                 administrators={administrators} />
             </div>
           </div>

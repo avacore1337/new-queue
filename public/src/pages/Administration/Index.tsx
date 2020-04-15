@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import SocketConnection from '../../utils/SocketConnection';
@@ -18,55 +18,66 @@ export default function AdministrationViewComponent(props: any) {
   let user: User = props.user;
   let socket: SocketConnection = props.socket;
 
-  let [queues, setQueues] = useState([] as Queue[]);
-  let [administrators, setAdministrators] = useState([] as Administrator[]);
+  const [queues, setQueues] = useState([] as Queue[]);
+  const [administrators, setAdministrators] = useState([] as Administrator[]);
 
-  function onAdministratorAdded(data: any): void {
-    setAdministrators([...administrators, new Administrator(data)]);
-  }
+  const queuesState: any = useRef([] as Queue[]);
+  queuesState.current = queues;
 
-  function onAdministratorDeleted(data: any): void {
-    setAdministrators(administrators.filter(q => q.username !== data.username));
-  }
+  const administratorsState: any = useRef([] as Administrator[]);
+  administratorsState.current = administrators;
 
-  function onQueueAdded(data: any): void {
-    setQueues([...queues, new Queue(data)]);
-  }
+  let onAdministratorAdded = (data: any): void => {
+    console.log(data);
+    console.log(administratorsState.current);
+    setAdministrators([...administratorsState.current, new Administrator(data)]);
+  };
 
-  function onQueueDeleted(data: any): void {
-    setQueues(queues.filter(q => q.name !== data.name));
-  }
+  let onAdministratorDeleted = (data: any): void => {
+    console.log(data);
+    setAdministrators(administratorsState.current.filter((a: Administrator) => a.username !== data.username));
+  };
 
-  function onTeacherAdded(data: any): void {
-    // TOOD: Find bug in this code
-    let tempQueues = [...queues];
+  let onQueueAdded = (data: any): void => {
+    console.log(data);
+    setQueues([...queuesState.current, new Queue({name: data.queueName})]);
+  };
+
+  let onQueueDeleted = (data: any): void => {
+    console.log(data);
+    setQueues(queuesState.current.filter((q: Queue) => q.name !== data.name));
+  };
+
+  let onTeacherAdded = (data: any): void => {
+    console.log(data);
+    let tempQueues = [...queuesState.current];
     for (let queue of tempQueues.filter(q => q.name === data.queueName)) {
         queue.addTeacher(new Teacher(data));
     }
     setQueues(tempQueues);
-  }
+  };
 
-  function onTeacherDeleted(data: any): void {
-    console.log(JSON.stringify(data));
-  }
+  let onTeacherDeleted = (data: any): void => {
+    console.log(data);
+  };
 
-  function onAssistantAdded(data: any): void {
-    console.log(JSON.stringify(data));
-  }
+  let onAssistantAdded = (data: any): void => {
+    console.log(data);
+  };
 
-  function onAssistantDeleted(data: any): void {
-    console.log(JSON.stringify(data));
-  }
+  let onAssistantDeleted = (data: any): void => {
+    console.log(data);
+  };
 
   useEffect(() => {
     socket.listen('addSuperAdmin', onAdministratorAdded);
-    socket.listen('deleteSuperAdmin', onAdministratorDeleted);
+    socket.listen('removeSuperAdmin', onAdministratorDeleted);
     socket.listen('addTeacher/:queueName', onTeacherAdded);
-    socket.listen('deleteTeacher/:queueName', onTeacherDeleted);
+    socket.listen('removeTeacher/:queueName', onTeacherDeleted);
     socket.listen('addAssistant/:queueName', onAssistantAdded);
-    socket.listen('deleteAssistant/:queueName', onAssistantDeleted);
+    socket.listen('removeAssistant/:queueName', onAssistantDeleted);
     socket.listen('addQueue/:queueName', onQueueAdded);
-    socket.listen('deleteQueue/:queueName', onQueueDeleted);
+    socket.listen('removeQueue/:queueName', onQueueDeleted);
 
     fetch('http://localhost:8000/api/queues')
       .then(response => response.json())
@@ -80,13 +91,13 @@ export default function AdministrationViewComponent(props: any) {
 
     return (() => {
       socket.quitListening('addQueue/:queueName');
-      socket.quitListening('deleteQueue/:queueName');
+      socket.quitListening('removeQueue/:queueName');
       socket.quitListening('addSuperAdmin');
-      socket.quitListening('deleteSuperAdmin');
+      socket.quitListening('removeSuperAdmin');
       socket.quitListening('addTeacher/:queueName');
-      socket.quitListening('deleteTeacher/:queueName');
+      socket.quitListening('removeTeacher/:queueName');
       socket.quitListening('addAssistant/:queueName');
-      socket.quitListening('deleteAssistant/:queueName');
+      socket.quitListening('removeAssistant/:queueName');
     });
   }, []);
 
@@ -119,6 +130,7 @@ export default function AdministrationViewComponent(props: any) {
           </div>
           <QueueOptionsViewComponent
             queues={queues}
+            setQueues={setQueues}
             user={user}
             socket={socket} />
         </div>

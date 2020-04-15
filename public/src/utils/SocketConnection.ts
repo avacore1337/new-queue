@@ -55,11 +55,15 @@ export default class SocketConnection {
 
         for (let property in this._callbacks) {
           let regex = new RegExp(`^${property.split(new RegExp(':[^/]+')).join('[^/]+')}$`);
+          console.log(regex);
           if (property.match(regex) !== null) {
             data.content = JSON.parse(backUp);
-            
+
             const parts = path.split('/');
             const propertyParts = property.split('/');
+
+            console.log(parts);
+            console.log(propertyParts);
 
             for (let i = 0; i < propertyParts.length; i++) {
               if (propertyParts[i].startsWith(':')) {

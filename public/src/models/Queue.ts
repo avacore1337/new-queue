@@ -47,12 +47,20 @@ export default class Queue {
     this._assistants.push(assistant);
   }
 
+  public setAssistants(assistants: Assistant[]): void {
+    this._assistants = assistants;
+  }
+
   public removeAssistant(assistant: Assistant): void {
     this._assistants = this._assistants.filter(a => a.username !== assistant.username);
   }
 
   public addTeacher(teacher: Teacher): void {
     this._teachers.push(teacher);
+  }
+
+  public setTeachers(teachers: Teacher[]): void {
+    this._teachers = teachers;
   }
 
   public removeTeacher(teacher: Teacher): void {
