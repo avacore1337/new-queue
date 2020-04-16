@@ -311,8 +311,8 @@ impl RoomHandler {
             }
             ["setHelpStatus", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Any)?;
-                let getting_help = from_value::<Status>(wrapper.content.clone())?;
-                getting_help_route(self, auth, conn, getting_help, queue_name)
+                let status = from_value::<Status>(wrapper.content.clone())?;
+                set_help_route(self, auth, conn, status, queue_name)
             }
             ["kick", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
@@ -344,7 +344,11 @@ impl RoomHandler {
                 let user = from_value::<Username>(wrapper.content.clone())?;
                 remove_assistant_route(self, auth, conn, user, queue_name)
             }
-            ["setUserHelpStatus", _queue_name] => not_implemented_route(),
+            ["setUserHelpStatus", queue_name] => {
+                let _auth = self.get_auth(&wrapper, AuthLevel::Any)?;
+                let user_status = from_value::<UserStatus>(wrapper.content.clone())?;
+                set_user_help_route(self, conn, user_status, queue_name)
+            }
             ["badLocation", _queue_name] => not_implemented_route(),
             ["broadcast", _queue_name] => not_implemented_route(),
             ["broadcastFaculty", _queue_name] => not_implemented_route(),

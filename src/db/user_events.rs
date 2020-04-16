@@ -1,21 +1,31 @@
 use crate::db::queues;
 use crate::models::user_event::UserEvent;
 use crate::schema::user_events;
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, TimeZone, Utc};
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
+use rocket::request::Form;
 
 pub fn for_queue(
     conn: &PgConnection,
     queue_name: &str,
-    from: DateTime<Utc>,
-    until: DateTime<Utc>,
+    params: Form<Interval>,
 ) -> Option<Vec<UserEvent>> {
+    // from: DateTime<Utc>,
+    // until: DateTime<Utc>,
     let queue = queues::find_by_name(conn, queue_name).ok()?;
-    UserEvent::belonging_to(&queue)
-        .filter(user_events::time.ge(from).and(user_events::time.le(until)))
-        .load(conn)
-        .ok()
+    let mut query = UserEvent::belonging_to(&queue).into_boxed();
+    if let Some(from) = params.from {
+        let from: DateTime<Utc> = Utc.timestamp(from, 0);
+        query = query.filter(user_events::time.ge(from));
+    }
+    if let Some(until) = params.until {
+        let until: DateTime<Utc> = Utc.timestamp(until, 0);
+        query = query.filter(user_events::time.le(until));
+    }
+    // .and(user_events::time.le(until)));
+
+    query.load(conn).ok()
 }
 
 #[derive(FromForm, Default)]

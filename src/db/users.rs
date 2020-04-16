@@ -63,6 +63,13 @@ pub fn username_to_id(conn: &PgConnection, username: &str) -> Result<i32, diesel
         .map_err(Into::into)
 }
 
+pub fn find_by_ugkthid(conn: &PgConnection, ugkthid: &str) -> Result<User, diesel::result::Error> {
+    users::table
+        .filter(users::ugkthid.eq(ugkthid))
+        .get_result::<User>(&*conn)
+        .map_err(Into::into)
+}
+
 pub fn find(conn: &PgConnection, id: i32) -> Option<User> {
     users::table
         .find(id)

@@ -28,6 +28,12 @@ pub struct Status {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct UserStatus {
+    pub status: bool,
+    pub ugkthid: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Text {
     pub message: String,
 }
@@ -189,16 +195,34 @@ pub fn remove_assistant_route(
     Ok(())
 }
 
-pub fn getting_help_route(
+pub fn set_help_route(
     handler: &mut RoomHandler,
     auth: Auth,
     conn: &PgConnection,
-    getting_help: Status,
+    status: Status,
     queue_name: &str,
 ) -> Result<()> {
     let queue = db::queues::find_by_name(conn, queue_name)?;
     let queue_entry =
-        db::queue_entries::update_help_status(&conn, queue.id, auth.id, getting_help.status)?;
+        db::queue_entries::update_help_status(&conn, queue.id, auth.id, status.status)?;
+    handler.broadcast_room(
+        queue_name,
+        "updateQueueEntry",
+        json!(queue_entry.to_sendable(conn)),
+    );
+    Ok(())
+}
+
+pub fn set_user_help_route(
+    handler: &mut RoomHandler,
+    conn: &PgConnection,
+    user_status: UserStatus,
+    queue_name: &str,
+) -> Result<()> {
+    let queue = db::queues::find_by_name(conn, queue_name)?;
+    let user = db::users::find_by_ugkthid(conn, &user_status.ugkthid)?;
+    let queue_entry =
+        db::queue_entries::update_help_status(&conn, queue.id, user.id, user_status.status)?;
     handler.broadcast_room(
         queue_name,
         "updateQueueEntry",

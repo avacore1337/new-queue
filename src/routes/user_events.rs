@@ -1,5 +1,4 @@
 use crate::db::{self};
-use chrono::Utc;
 use rocket::request::Form;
 
 use rocket_contrib::json::JsonValue;
@@ -17,7 +16,6 @@ pub fn get_user_events(
     Some(json!(db::user_events::for_queue(
         &conn,
         &queue_name,
-        Utc::now(),
-        Utc::now()
+        params
     )?))
 }
