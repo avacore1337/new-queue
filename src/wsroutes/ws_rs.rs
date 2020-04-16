@@ -186,7 +186,7 @@ impl RoomHandler {
         message: &str,
         _sender_name: &str,
     ) {
-        let ugids: RefMut<_> = self.ugid_map.borrow_mut();
+        let ugids = self.ugid_map.borrow();
         if let Some(handler) = ugids.get(ugkthid) {
             let message = &json!(SendWrapper {
                 path: "message".to_string(),
@@ -316,7 +316,7 @@ impl RoomHandler {
             }
             ["kick", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
-                let kick = from_value::<Kick>(wrapper.content.clone())?;
+                let kick = from_value::<Ugkthid>(wrapper.content.clone())?;
                 kick_route(self, auth, conn, kick, queue_name)
             }
             ["setQueueInfo", queue_name] => {
@@ -345,13 +345,25 @@ impl RoomHandler {
                 remove_assistant_route(self, auth, conn, user, queue_name)
             }
             ["setUserHelpStatus", queue_name] => {
-                let _auth = self.get_auth(&wrapper, AuthLevel::Any)?;
+                let _auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
                 let user_status = from_value::<UserStatus>(wrapper.content.clone())?;
                 set_user_help_route(self, conn, user_status, queue_name)
             }
-            ["badLocation", _queue_name] => not_implemented_route(),
-            ["broadcast", _queue_name] => not_implemented_route(),
-            ["broadcastFaculty", _queue_name] => not_implemented_route(),
+            ["broadcast", queue_name] => {
+                let auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
+                let message = from_value::<Text>(wrapper.content.clone())?;
+                broadcast_route(self, auth, message, queue_name)
+            }
+            ["broadcastFaculty", queue_name] => {
+                let auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
+                let message = from_value::<Text>(wrapper.content.clone())?;
+                broadcast_faculty_route(self, auth, conn, message, queue_name)
+            }
+            ["badLocation", queue_name] => {
+                let auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
+                let ugkthid = from_value::<Ugkthid>(wrapper.content.clone())?;
+                bad_location_route(self, auth, ugkthid, conn, queue_name)
+            }
             ["setMOTD", _queue_name] => not_implemented_route(),
             ["purgeQueue", _queue_name] => not_implemented_route(),
             ["lockQueue", _queue_name] => not_implemented_route(),

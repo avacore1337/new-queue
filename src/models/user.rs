@@ -33,6 +33,7 @@ impl User {
             id: self.id,
             username: self.username.clone(),
             ugkthid: self.ugkthid.clone(),
+            realname: self.realname.clone(),
             exp: exp.timestamp(),
         }
         .token(secret);

@@ -33,6 +33,18 @@ pub fn update_help_status(
         .get_result(conn)
 }
 
+pub fn update_bad_location(
+    conn: &PgConnection,
+    queue_id: i32,
+    user_id: i32,
+    badlocation: bool,
+) -> Result<QueueEntry, diesel::result::Error> {
+    let entry = find(conn, queue_id, user_id)?;
+    diesel::update(&entry)
+        .set((queue_entries::badlocation.eq(badlocation),))
+        .get_result(conn)
+}
+
 pub fn update_user_data(
     conn: &PgConnection,
     queue_id: i32,

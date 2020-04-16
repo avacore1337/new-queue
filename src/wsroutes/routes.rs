@@ -39,13 +39,19 @@ pub struct Text {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct FromMessage {
+    pub message: String,
+    pub realname: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct UserMessage {
     pub message: String,
     pub ugkthid: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct Kick {
+pub struct Ugkthid {
     pub ugkthid: String,
 }
 
@@ -113,7 +119,7 @@ pub fn kick_route(
     handler: &mut RoomHandler,
     _auth: Auth,
     conn: &PgConnection,
-    kick: Kick,
+    kick: Ugkthid,
     queue_name: &str,
 ) -> Result<()> {
     let queue = db::queues::find_by_name(conn, queue_name)?;
@@ -258,6 +264,41 @@ pub fn join_queue_route(
     Ok(())
 }
 
+pub fn broadcast_route(
+    handler: &mut RoomHandler,
+    auth: Auth,
+    message: Text,
+    queue_name: &str,
+) -> Result<()> {
+    println!("Joining queue: {}", queue_name);
+    handler.broadcast_room(
+        queue_name,
+        "message",
+        json!(FromMessage {
+            message: message.message,
+            realname: auth.realname
+        }),
+    );
+    Ok(())
+}
+
+pub fn broadcast_faculty_route(
+    handler: &mut RoomHandler,
+    auth: Auth,
+    conn: &PgConnection,
+    message: Text,
+    queue_name: &str,
+) -> Result<()> {
+    println!("Joining queue: {}", queue_name);
+
+    if let Some(faculty) = db::admins::for_queue(conn, queue_name) {
+        for user in faculty {
+            handler.send_user_message(queue_name, &user.ugkthid, &message.message, &auth.realname);
+        }
+    }
+    Ok(())
+}
+
 pub fn send_message_route(
     handler: &mut RoomHandler,
     auth: Auth,
@@ -268,7 +309,7 @@ pub fn send_message_route(
         queue_name,
         &user_message.ugkthid,
         &user_message.message,
-        &auth.username, //TODO chango to realname?
+        &auth.realname,
     );
     Ok(())
 }
@@ -302,5 +343,25 @@ pub fn update_queue_entry_route(
         "updateQueueEntry",
         json!(queue_entry.to_sendable(conn)),
     );
+    Ok(())
+}
+
+pub fn bad_location_route(
+    handler: &mut RoomHandler,
+    _auth: Auth,
+    ugkthid: Ugkthid,
+    conn: &PgConnection,
+    queue_name: &str,
+) -> Result<()> {
+    let queue = db::queues::find_by_name(conn, queue_name)?;
+    let user = db::users::find_by_ugkthid(conn, &ugkthid.ugkthid)?;
+    let queue_entry = db::queue_entries::update_bad_location(&conn, queue.id, user.id, true)?;
+    handler.broadcast_room(
+        queue_name,
+        "updateQueueEntry",
+        json!(queue_entry.to_sendable(conn)),
+    );
+    // let queue = db::queues::update_info(&conn, queue_name, &text.message)?;
+    // handler.broadcast_room(queue_name, "updateQueue", json!(queue));
     Ok(())
 }

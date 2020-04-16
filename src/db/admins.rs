@@ -90,3 +90,13 @@ pub fn assistants_for_queue(conn: &PgConnection, name: &str) -> Option<Vec<User>
         .load::<User>(conn)
         .ok()
 }
+
+pub fn for_queue(conn: &PgConnection, name: &str) -> Option<Vec<User>> {
+    admins::table
+        .inner_join(queues::table)
+        .inner_join(users::table)
+        .filter(queues::name.eq(name))
+        .select((users::id, users::username, users::ugkthid, users::realname))
+        .load::<User>(conn)
+        .ok()
+}
