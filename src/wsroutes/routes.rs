@@ -7,7 +7,7 @@ use crate::wsroutes::*;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-// use crate::db::DbConn;
+
 // Change the alias to `Box<error::Error>`.
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
@@ -305,9 +305,9 @@ pub fn send_message_route(
     Ok(())
 }
 
-pub fn not_implemented_route() -> Result<()> {
-    unimplemented!("Route not yet implemented!");
-}
+// pub fn not_implemented_route() -> Result<()> {
+//     unimplemented!("Route not yet implemented!");
+// }
 
 pub fn update_queue_entry_route(
     handler: &mut RoomHandler,
@@ -326,7 +326,6 @@ pub fn update_queue_entry_route(
         &queue_entry.comment,
         queue_entry.help,
     )?;
-    // let queue_entry = db::queue_entries::find(&conn, auth.id, queue.id)?;
     println!("QueueEntry ID: {}", queue_entry.id);
 
     handler.broadcast_room(
@@ -383,6 +382,17 @@ pub fn purge_queue_route(
             );
         }
     }
+    handler.broadcast_room(queue_name, "updateQueue", json!(queue));
+    Ok(())
+}
+
+pub fn set_queue_lock_status(
+    handler: &mut RoomHandler,
+    conn: &PgConnection,
+    status: Status,
+    queue_name: &str,
+) -> Result<()> {
+    let queue = db::queues::update_locked(&conn, queue_name, status.status)?;
     handler.broadcast_room(queue_name, "updateQueue", json!(queue));
     Ok(())
 }

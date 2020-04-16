@@ -30,6 +30,16 @@ pub fn update_motd(
         .get_result(conn)
 }
 
+pub fn update_locked(
+    conn: &PgConnection,
+    queue_name: &str,
+    status: bool,
+) -> Result<Queue, diesel::result::Error> {
+    diesel::update(queues::table.filter(queues::name.eq(queue_name)))
+        .set(queues::locked.eq(status))
+        .get_result(conn)
+}
+
 pub fn update_info(
     conn: &PgConnection,
     queue_name: &str,

@@ -373,8 +373,11 @@ impl RoomHandler {
                 let _auth = self.get_auth(&wrapper, AuthLevel::Teacher)?;
                 purge_queue_route(self, conn, queue_name)
             }
-            ["lockQueue", _queue_name] => not_implemented_route(),
-            ["unlockQueue", _queue_name] => not_implemented_route(),
+            ["setQueueLockStatus", queue_name] => {
+                let status = from_value::<Status>(wrapper.content.clone())?;
+                let _auth = self.get_auth(&wrapper, AuthLevel::Teacher)?;
+                set_queue_lock_status(self, conn, status, queue_name)
+            }
             _ => {
                 println!("Route does not exist");
                 Ok(())
