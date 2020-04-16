@@ -65,6 +65,15 @@ revert migrations with
 diesel migration revert
 ```
 
+Install debuggin extensions for React and Redux
+(Chrome)
+- [React](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi)
+- [Redux](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd)
+
+(Firefox)
+- [React](https://addons.mozilla.org/en-US/firefox/addon/react-devtools/)
+- [Redux](https://addons.mozilla.org/en-US/firefox/addon/reduxdevtools/)
+
 ## guides
 * [Rocket, diesel, serde setup](https://lankydan.dev/2018/05/20/creating-a-rusty-rocket-fuelled-with-diesel)
 * [Rust react setup](https://github.com/ghotiphud/rust-web-starter)
