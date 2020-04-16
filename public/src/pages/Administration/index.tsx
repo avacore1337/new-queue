@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 import SocketConnection from '../../utils/SocketConnection';
 import User from '../../models/User';
-import NotFoundViewComponent from '../NoMatch/Index';
+import NotFoundViewComponent from '../NoMatch';
 import AdministrationInformationViewComponent from './Administrators/AdministrationInformation';
 import AdministratorsViewComponent from './Administrators/Administrators';
 import QueuesViewComponent from './Queues/Queues';

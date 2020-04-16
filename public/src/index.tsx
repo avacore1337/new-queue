@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import './index.css';
 import App from './App';
+import store from './store';
 import * as serviceWorker from './serviceWorker';
 import SocketConnection from './utils/SocketConnection';
 import User from './models/User';
@@ -31,7 +33,9 @@ function LifeCycle() {
 
 ReactDOM.render(
   <React.StrictMode>
-    <LifeCycle />
+    <Provider store={store}>
+      <LifeCycle />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -5,7 +5,7 @@ import QueueEntry from '../../models/QueueEntry';
 import User from '../../models/User';
 import EnterQueueViewComponent from './EnterQueue';
 import QueueEntryTableViewComponent from './QueueEntryTable';
-import NotFoundViewComponent from '../NoMatch/Index';
+import NotFoundViewComponent from '../NoMatch';
 import SearchViewComponent from '../../viewcomponents/Search';
 
 export default function QueueViewComponent(props: any) {

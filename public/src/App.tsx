@@ -1,23 +1,28 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux'
 import './App.css';
 import SocketConnection from './utils/SocketConnection';
 import User from './models/User';
-import HomeViewComponent from './pages/Home/Index';
-import QueueViewComponent from './pages/Queue/Index';
+import HomeViewComponent from './pages/Home';
+import QueueViewComponent from './pages/Queue';
 import NavBarViewComponent from './viewcomponents/NavBar';
-import AboutViewComponent from './pages/About/Index';
-import NoMatchViewComponent from './pages/NoMatch/Index';
+import AboutViewComponent from './pages/About';
+import NoMatchViewComponent from './pages/NoMatch';
 import DebugViewComponent from './viewcomponents/Debug';
-import LoginViewComponent from './pages/Login/Index';
-import LogoutViewComponent from './pages/Logout/Index';
-import AdministrationViewComponent from './pages/Administration/Index';
+import LoginViewComponent from './pages/Login';
+import LogoutViewComponent from './pages/Logout';
+import AdministrationViewComponent from './pages/Administration';
+import * as UserActions from './actions/userActions';
 
 export default function App(props: any) {
 
   let user: User | null = props.user;
   let setUser: React.Dispatch<React.SetStateAction<User | null>> = props.setUser;
   const socket: SocketConnection = props.socket;
+
+  const dispatch = useDispatch();
+  dispatch(UserActions.loadUser());
 
   return (
     <Router>
