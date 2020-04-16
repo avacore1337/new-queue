@@ -153,32 +153,6 @@ impl RoomHandler {
         );
     }
 
-    fn login_route(&mut self, auth: Auth) -> Result<()> {
-        let mut ugids: RefMut<_> = self.ugid_map.borrow_mut();
-        ugids.insert(auth.ugkthid, self.out.clone());
-        Ok(())
-    }
-
-    fn subscribe_queue_route(&mut self, queue_name: &str) -> Result<()> {
-        println!("joining room {}", queue_name);
-        self.join_room(&queue_name)
-    }
-
-    fn subscribe_lobby_route(&mut self) -> Result<()> {
-        println!("joining lobby ");
-        self.join_lobby()
-    }
-
-    fn unsubscribe_queue_route(&mut self, _queue_name: &str) -> Result<()> {
-        self.leave_room();
-        Ok(())
-    }
-
-    fn unsubscribe_lobby_route(&mut self) -> Result<()> {
-        self.leave_room();
-        Ok(())
-    }
-
     pub fn send_user_message(
         &mut self,
         _queue_name: &str,
@@ -196,9 +170,6 @@ impl RoomHandler {
             });
             handler.send(Message::Text(message.to_string())).unwrap();
         }
-
-        // rooms.entry(room_name.clone()).or_insert_with(Vec::new);
-        // .to_string();
     }
 
     pub fn send_self(&self, path: &str, content: Json) {
@@ -264,14 +235,24 @@ impl RoomHandler {
         let conn = &self.get_db_connection();
         let path = wrapper.path.clone();
         match path.split('/').collect::<Vec<&str>>().as_slice() {
-            ["subscribeLobby"] => self.subscribe_lobby_route(),
-            ["unsubscribeLobby"] => self.unsubscribe_lobby_route(),
-            ["unsubscribeQueue", queue_name] => self.unsubscribe_queue_route(queue_name),
-            ["subscribeQueue", queue_name] => self.subscribe_queue_route(queue_name),
-            ["login"] => {
-                let auth = self.get_auth(&wrapper, AuthLevel::Any)?;
-                self.login_route(auth)
+            ["subscribeLobby"] => self.join_lobby(),
+            ["unsubscribeLobby"] => {
+                self.leave_room();
+                Ok(())
             }
+            ["unsubscribeQueue", _queue_name] => {
+                self.leave_room();
+                Ok(())
+            }
+            ["subscribeQueue", queue_name] => {
+                if let Ok(auth) = self.get_auth(&wrapper, AuthLevel::Any) {
+                    let mut ugids: RefMut<_> = self.ugid_map.borrow_mut();
+                    ugids.insert(auth.ugkthid, self.out.clone());
+                }
+                println!("joining room {}", queue_name);
+                self.join_room(&queue_name)
+            }
+
             ["updateQueueEntry", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Any)?;
                 let join_queue = from_value::<UpdateQueueEntry>(wrapper.content.clone())?;
