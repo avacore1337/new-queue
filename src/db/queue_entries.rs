@@ -116,6 +116,17 @@ pub fn for_queue(conn: &PgConnection, queue_name: &str) -> Option<Vec<SendableQu
         .ok()
 }
 
+pub fn remove_multiple(
+    conn: &PgConnection,
+    entries: &Vec<QueueEntry>,
+) -> Result<(), diesel::result::Error> {
+    diesel::delete(queue_entries::table.filter(
+        queue_entries::id.eq_any::<Vec<i32>>(entries.into_iter().map(|entry| entry.id).collect()),
+    ))
+    .execute(conn)
+    .map(|_| ())
+}
+
 pub fn remove(
     conn: &PgConnection,
     queue_id: i32,

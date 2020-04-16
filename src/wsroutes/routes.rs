@@ -1,5 +1,6 @@
 use crate::auth::Auth;
 use crate::db;
+use crate::models::queue_entry::QueueEntry;
 use crate::sql_types::AdminEnum;
 use crate::wsroutes::ws_rs::RoomHandler;
 use crate::wsroutes::*;
@@ -16,7 +17,7 @@ pub struct Username {
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct QueueEntry {
+pub struct UpdateQueueEntry {
     pub comment: String,
     pub help: bool,
     pub location: String,
@@ -73,7 +74,6 @@ pub fn leave_queue_route(
 
 pub fn add_super_admin_route(
     handler: &mut RoomHandler,
-    _auth: Auth,
     conn: &PgConnection,
     add_user: Username,
 ) -> Result<()> {
@@ -84,7 +84,6 @@ pub fn add_super_admin_route(
 
 pub fn remove_super_route(
     handler: &mut RoomHandler,
-    _auth: Auth,
     conn: &PgConnection,
     add_user: Username,
 ) -> Result<()> {
@@ -95,7 +94,6 @@ pub fn remove_super_route(
 
 pub fn add_queue_route(
     handler: &mut RoomHandler,
-    _auth: Auth,
     conn: &PgConnection,
     queue_name: &str,
 ) -> Result<()> {
@@ -106,7 +104,6 @@ pub fn add_queue_route(
 
 pub fn remove_queue_route(
     handler: &mut RoomHandler,
-    _auth: Auth,
     conn: &PgConnection,
     queue_name: &str,
 ) -> Result<()> {
@@ -117,7 +114,6 @@ pub fn remove_queue_route(
 
 pub fn kick_route(
     handler: &mut RoomHandler,
-    _auth: Auth,
     conn: &PgConnection,
     kick: Ugkthid,
     queue_name: &str,
@@ -131,7 +127,6 @@ pub fn kick_route(
 
 pub fn set_queue_info_route(
     handler: &mut RoomHandler,
-    _auth: Auth,
     conn: &PgConnection,
     text: Text,
     queue_name: &str,
@@ -143,7 +138,6 @@ pub fn set_queue_info_route(
 
 pub fn add_teacher_route(
     handler: &mut RoomHandler,
-    _auth: Auth,
     conn: &PgConnection,
     add_user: Username,
     queue_name: &str,
@@ -158,7 +152,6 @@ pub fn add_teacher_route(
 
 pub fn add_assistant_route(
     handler: &mut RoomHandler,
-    _auth: Auth,
     conn: &PgConnection,
     add_user: Username,
     queue_name: &str,
@@ -173,7 +166,6 @@ pub fn add_assistant_route(
 
 pub fn remove_teacher_route(
     handler: &mut RoomHandler,
-    _auth: Auth,
     conn: &PgConnection,
     add_user: Username,
     queue_name: &str,
@@ -188,7 +180,6 @@ pub fn remove_teacher_route(
 
 pub fn remove_assistant_route(
     handler: &mut RoomHandler,
-    _auth: Auth,
     conn: &PgConnection,
     add_user: Username,
     queue_name: &str,
@@ -241,7 +232,7 @@ pub fn join_queue_route(
     handler: &mut RoomHandler,
     auth: Auth,
     conn: &PgConnection,
-    queue_entry: QueueEntry,
+    queue_entry: UpdateQueueEntry,
     queue_name: &str,
 ) -> Result<()> {
     println!("Joining queue: {}", queue_name);
@@ -322,7 +313,7 @@ pub fn update_queue_entry_route(
     handler: &mut RoomHandler,
     auth: Auth,
     conn: &PgConnection,
-    queue_entry: QueueEntry,
+    queue_entry: UpdateQueueEntry,
     queue_name: &str,
 ) -> Result<()> {
     println!("Joining queue: {}", queue_name);
@@ -361,7 +352,37 @@ pub fn bad_location_route(
         "updateQueueEntry",
         json!(queue_entry.to_sendable(conn)),
     );
-    // let queue = db::queues::update_info(&conn, queue_name, &text.message)?;
-    // handler.broadcast_room(queue_name, "updateQueue", json!(queue));
+    Ok(())
+}
+
+pub fn set_queue_motd_route(
+    handler: &mut RoomHandler,
+    conn: &PgConnection,
+    text: Text,
+    queue_name: &str,
+) -> Result<()> {
+    let queue = db::queues::update_motd(&conn, queue_name, &text.message)?;
+    handler.broadcast_room(queue_name, "updateQueue", json!(queue));
+    Ok(())
+}
+
+pub fn purge_queue_route(
+    handler: &mut RoomHandler,
+    conn: &PgConnection,
+    queue_name: &str,
+) -> Result<()> {
+    let queue = db::queues::find_by_name(&conn, queue_name)?;
+    let entries: Vec<QueueEntry> = QueueEntry::belonging_to(&queue).load(conn)?;
+    db::queue_entries::remove_multiple(conn, &entries)?;
+    for entry in entries {
+        if let Some(user) = db::users::find(conn, entry.user_id) {
+            handler.broadcast_room(
+                &queue.name,
+                "leaveQueue",
+                json!({ "ugkthid": &user.ugkthid }),
+            );
+        }
+    }
+    handler.broadcast_room(queue_name, "updateQueue", json!(queue));
     Ok(())
 }
