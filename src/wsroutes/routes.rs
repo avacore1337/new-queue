@@ -59,11 +59,13 @@ pub struct Ugkthid {
 pub fn leave_queue_route(
     handler: &mut RoomHandler,
     auth: Auth,
-    conn: &db::DbConn,
+    conn: &PgConnection,
     queue_name: &str,
 ) -> Result<()> {
     let queue = db::queues::find_by_name(conn, queue_name)?;
-    db::queue_entries::remove(&conn, queue.id, auth.id)?;
+    let queue_entry = db::queue_entries::find(&conn, queue.id, auth.id)?;
+    let _todo = diesel::delete(&queue_entry).execute(conn);
+    db::user_events::create(conn, &queue_entry, true)?;
     handler.broadcast_room(
         &queue.name,
         "leaveQueue",
@@ -245,6 +247,7 @@ pub fn join_queue_route(
         &queue_entry.comment,
         queue_entry.help,
     )?;
+    db::user_events::create(conn, &queue_entry, false)?;
     println!("QueueEntry ID: {}", queue_entry.id);
 
     handler.broadcast_room(
@@ -374,6 +377,7 @@ pub fn purge_queue_route(
     let entries: Vec<QueueEntry> = QueueEntry::belonging_to(&queue).load(conn)?;
     db::queue_entries::remove_multiple(conn, &entries)?;
     for entry in entries {
+        db::user_events::create(conn, &entry, true)?;
         if let Some(user) = db::users::find(conn, entry.user_id) {
             handler.broadcast_room(
                 &queue.name,

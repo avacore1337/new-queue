@@ -127,22 +127,6 @@ pub fn remove_multiple(
     .map(|_| ())
 }
 
-pub fn remove(
-    conn: &PgConnection,
-    queue_id: i32,
-    user_id: i32,
-) -> Result<(), diesel::result::Error> {
-    diesel::delete(
-        queue_entries::table.filter(
-            queue_entries::queue_id
-                .eq(queue_id)
-                .and(queue_entries::user_id.eq(user_id)),
-        ),
-    )
-    .execute(conn)
-    .map(|_| ())
-}
-
 pub fn create(
     conn: &PgConnection,
     user_id: i32,

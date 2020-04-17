@@ -1,10 +1,12 @@
 use crate::db::queues;
+use crate::models::queue_entry::QueueEntry;
 use crate::models::user_event::UserEvent;
-use crate::schema::user_events;
+use crate::schema::{queue_entries, user_events};
 use chrono::{DateTime, TimeZone, Utc};
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use rocket::request::Form;
+use std::convert::TryInto;
 
 pub fn for_queue(
     conn: &PgConnection,
@@ -34,32 +36,67 @@ pub struct Interval {
     until: Option<i64>,
 }
 
-// pub fn create(
-//     conn: &PgConnection,
-//     user_id: i32,
-//     queue_id: i32,
-//     help: bool,
-// ) -> Result<QueueEntry, diesel::result::Error> {
-//     let new_queue = &NewQueueEntry {
-//         user_id,
-//         queue_id,
-//         location,
-//         usercomment,
-//         help,
-//     };
+pub fn create(
+    conn: &PgConnection,
+    queue_entry: &QueueEntry,
+    left_queue: bool,
+) -> Result<UserEvent, diesel::result::Error> {
+    let help_amount: i32 = queue_entries::table
+        .filter(
+            queue_entries::queue_id
+                .eq(queue_entry.queue_id)
+                .and(queue_entries::help.eq(true)),
+        )
+        .count()
+        .get_result::<i64>(conn)?
+        .try_into()
+        .expect("Too many entries");
+    let present_amount: i32 = queue_entries::table
+        .filter(
+            queue_entries::queue_id
+                .eq(queue_entry.queue_id)
+                .and(queue_entries::help.eq(false)),
+        )
+        .count()
+        .get_result::<i64>(conn)?
+        .try_into()
+        .expect("Too many entries");
+    let queue_length = help_amount + present_amount;
+    let new_event = &NewUserEvent {
+        user_id: queue_entry.user_id,
+        queue_id: queue_entry.queue_id,
+        help: queue_entry.help,
+        left_queue,
+        queue_length,
+        help_amount,
+        present_amount,
+    };
 
-//     diesel::insert_into(queue_entries::table)
-//         .values(new_queue)
-//         .get_result::<QueueEntry>(conn)
-//         .map_err(Into::into)
-// }
+    diesel::insert_into(user_events::table)
+        .values(new_event)
+        .get_result::<UserEvent>(conn)
+        .map_err(Into::into)
+}
 
-// #[derive(Insertable)]
-// #[table_name = "queue_entries"]
-// pub struct NewQueueEntry<'a> {
-//     user_id: i32,
-//     queue_id: i32,
-//     location: &'a str,
-//     usercomment: &'a str,
-//     help: bool,
+// user_events (id) {
+//     id -> Int4,
+//     user_id -> Int4,
+//     queue_id -> Int4,
+//     time -> Timestamptz,
+//     help -> Bool,
+//     left_queue -> Bool,
+//     queue_length -> Int4,
+//     help_amount -> Int4,
+//     present_amount -> Int4,
 // }
+#[derive(Insertable)]
+#[table_name = "user_events"]
+pub struct NewUserEvent {
+    user_id: i32,
+    queue_id: i32,
+    help: bool,
+    left_queue: bool,
+    queue_length: i32,
+    help_amount: i32,
+    present_amount: i32,
+}
