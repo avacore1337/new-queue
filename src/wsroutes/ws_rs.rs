@@ -1,5 +1,3 @@
-use ws::{listen, CloseCode, Handler, Handshake, Message, Request, Response, Sender};
-
 use crate::auth::{decode_token, validate_auth, Auth, AuthLevel, BadAuth};
 use crate::config::get_secret;
 use crate::db;
@@ -9,6 +7,7 @@ use serde_json::{from_str, from_value, json};
 use std::cell::{Cell, RefCell, RefMut};
 use std::collections::HashMap;
 use std::rc::Rc;
+use ws::{listen, CloseCode, Handler, Handshake, Message, Request, Response, Sender};
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 

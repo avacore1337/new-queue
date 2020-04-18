@@ -15,7 +15,7 @@ pub fn get_user_events(
     params: Form<db::user_events::Interval>,
     conn: db::DbConn,
 ) -> Option<JsonValue> {
-    let _auth = validate_auth(&conn, Some(queue_name.clone()), auth, AuthLevel::Teacher);
+    let _auth = validate_auth(&conn, Some(queue_name.clone()), auth, AuthLevel::Teacher).ok()?;
     Some(json!(db::user_events::for_queue(
         &conn,
         &queue_name,
