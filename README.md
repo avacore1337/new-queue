@@ -86,8 +86,8 @@ Install debuggin extensions for React and Redux
 Backend:
 * add_assistant should transform from teacher -> assistant and vice versa
 * messaging, done?
-* authentication on rocket routes
-* statistics
+* authentication on rocket routes, done?
+* statistics, done?
 
 Frontend:
 * fill in this list

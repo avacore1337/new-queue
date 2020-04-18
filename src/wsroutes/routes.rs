@@ -1,9 +1,8 @@
-use crate::auth::Auth;
+use crate::auth::{Auth, BadAuth};
 use crate::db;
 use crate::models::queue_entry::QueueEntry;
 use crate::sql_types::AdminEnum;
 use crate::wsroutes::ws_rs::RoomHandler;
-use crate::wsroutes::*;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use serde_json::json;

@@ -3,7 +3,7 @@ use rocket::request::Request;
 use rocket::response::status;
 use rocket::response::{self, Responder};
 use rocket_contrib::json::Json;
-use validator::{Validate, ValidationError, ValidationErrors};
+use validator::{ValidationError, ValidationErrors};
 
 #[derive(Debug)]
 pub struct Errors {
@@ -58,12 +58,6 @@ impl Default for FieldValidator {
 }
 
 impl FieldValidator {
-    pub fn validate<T: Validate>(model: &T) -> Self {
-        Self {
-            errors: model.validate().err().unwrap_or_else(ValidationErrors::new),
-        }
-    }
-
     /// Convenience method to trigger early returns with ? operator.
     pub fn check(self) -> Result<(), Errors> {
         if self.errors.is_empty() {

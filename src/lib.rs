@@ -15,9 +15,6 @@ extern crate diesel;
 #[macro_use]
 extern crate diesel_derive_enum;
 
-#[macro_use]
-extern crate validator_derive;
-
 use dotenv::dotenv;
 
 mod auth;
@@ -62,10 +59,8 @@ pub fn rocket() -> rocket::Rocket {
         .mount(
             "/api",
             routes![
-                routes::users::post_users,
                 routes::users::post_users_login,
                 routes::users::get_user,
-                routes::queues::post_queues,
                 routes::queues::get_queues,
                 routes::queues::get_queue,
                 routes::queue_entries::get_queue_entries,

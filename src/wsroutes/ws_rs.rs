@@ -1,11 +1,9 @@
 use ws::{listen, CloseCode, Handler, Handshake, Message, Request, Response, Sender};
 
-use crate::auth::{decode_token, Auth};
+use crate::auth::{decode_token, validate_auth, Auth, AuthLevel, BadAuth};
 use crate::config::get_secret;
 use crate::db;
-use crate::sql_types::AdminEnum;
 use crate::wsroutes::routes::*;
-use crate::wsroutes::*;
 use serde::{Deserialize, Serialize};
 use serde_json::{from_str, from_value, json};
 use std::cell::{Cell, RefCell, RefMut};
@@ -116,28 +114,7 @@ impl RoomHandler {
         };
         let conn = &self.get_db_connection();
         match decode_token(token, &self.secret) {
-            Some(auth) => match auth_level {
-                AuthLevel::Any => Ok(auth),
-                AuthLevel::Assistant => {
-                    let queue_name = queue_name.ok_or_else(|| BadAuth)?;
-                    match db::admins::admin_for_queue(conn, &queue_name, &auth) {
-                        Some(_) => Ok(auth),
-                        None => Err(Box::new(BadAuth)),
-                    }
-                }
-                AuthLevel::Teacher => {
-                    let queue_name = queue_name.ok_or_else(|| BadAuth)?;
-                    match db::admins::admin_for_queue(conn, &queue_name, &auth) {
-                        Some(AdminEnum::Teacher) => Ok(auth),
-                        _ => Err(Box::new(BadAuth)),
-                    }
-                }
-                AuthLevel::SuperOrTeacher => Ok(auth),
-                AuthLevel::Super => match db::super_admins::is_super(conn, &auth) {
-                    Some(_) => Ok(auth),
-                    None => Err(Box::new(BadAuth)),
-                },
-            },
+            Some(auth) => validate_auth(conn, queue_name, auth, auth_level),
             None => Err(Box::new(BadAuth)),
         }
     }
