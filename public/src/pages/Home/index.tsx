@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux'
 import { Link } from "react-router-dom";
 import SocketConnection from '../../utils/SocketConnection';
 import User from '../../models/User';
 import Queue from '../../models/Queue';
 import QueueCardViewComponent from './QueueCard';
 import SearchViewComponent from '../../viewcomponents/Search';
+import * as QueueActions from '../../actions/queueActions';
 
 export default function HomeViewComponent(props: any) {
 
@@ -14,7 +16,11 @@ export default function HomeViewComponent(props: any) {
   let user: User | null = props.user;
   let socket: SocketConnection = props.socket;
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
+    dispatch(QueueActions.loadQueues());
+
     fetch('http://localhost:8000/api/queues')
       .then(response => response.json())
       .then((response: any) => response.queues.map((res: any) => new Queue(res)))

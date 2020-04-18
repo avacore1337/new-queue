@@ -1,7 +1,9 @@
 import { combineReducers } from 'redux';
 
-import user from './userReducer';
+import userReducer from './userReducer';
+import queueReducer from './queueReducer';
 
 export default combineReducers({
-  user
+  user: userReducer,
+  queueList: queueReducer
 });
