@@ -62,6 +62,22 @@ export default (): JSX.Element => {
     }
   }
 
+  function isValidFromDate(time: moment.Moment): boolean {
+    return (
+      time.isAfter(moment().subtract(5, 'year'))
+      && (until === null || time.isBefore(moment.unix(until as number)))
+      && time.isBefore(moment())
+    );
+  }
+
+  function isValidUntilDate(time: moment.Moment): boolean {
+    return (
+      time.isAfter(moment().subtract(5, 'year'))
+      && (from === null || time.isAfter(moment.unix(from as number)))
+      && time.isBefore(moment())
+    );
+  }
+
   function getStatistics() {
     if (user === null || selectedQueue === null || !(user.isAdministrator || user.isTeacherIn(selectedQueue))) {
       return;
@@ -133,11 +149,13 @@ export default (): JSX.Element => {
               <div className="row">
                 <DateTimePicker
                   className="col-lg-6 mb-3 pl-0"
+                  isValidDate={isValidFromDate}
                   defaultValue={new Date((from as number) * 1000)}
                   inputProps={{ placeholder: 'From' }}
                   onChange={(value) => updateFrom(value)} />
                 <DateTimePicker
                   className="col-lg-6 mb-3 pl-0"
+                  isValidDate={isValidUntilDate}
                   defaultValue={new Date((until as number) * 1000)}
                   inputProps={{ placeholder: 'Until' }}
                   onChange={(value) => updateUntil(value)} />
