@@ -3,6 +3,7 @@ use diesel::pg::PgConnection;
 // use diesel::prelude::*;
 
 pub fn cleanup(conn: &PgConnection) {
-    remove_all(conn);
-    println!("fake it");
+    if let Err(e) = remove_all(conn) {
+        println!("Something went wrong! {}", e);
+    }
 }

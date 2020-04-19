@@ -87,7 +87,7 @@ Backend:
 * statistics, done?
 * backend websockets leave/errors
 * leaving needs to leave for messaging
-* nightly reset
+* nightly reset, done?
 * message history
 * max string lengths
 
