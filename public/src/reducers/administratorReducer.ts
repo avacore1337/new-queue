@@ -37,31 +37,6 @@ export default (state = initialState, action: FluxStandardAction) => {
       return { ...state, administrators: state.administrators.filter(a => a.username !== action.payload.username) };
     }
 
-    case Listeners.OnTeacherAdded: {
-      alert('Not yet implemented');
-      break;
-    }
-
-    case Listeners.OnTeacherRemoved: {
-      alert('Not yet implemented');
-      break;
-    }
-
-    case Listeners.OnAssistantAdded: {
-      alert('Not yet implemented');
-      break;
-    }
-
-    case Listeners.OnAssistantRemoved: {
-      alert('Not yet implemented');
-      break;
-    }
-
-    case Listeners.OnQueueRemoved: {
-      alert('Not yet implemented');
-      break;
-    }
-
   }
 
   return state;

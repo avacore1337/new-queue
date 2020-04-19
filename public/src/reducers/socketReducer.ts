@@ -97,11 +97,6 @@ export default (_ = socket, action: FluxStandardAction) => {
       break;
     }
 
-    case QueueActionTypes.JoinQueue: {
-      socket.send(new RequestMessage(action.payload));
-      break;
-    }
-
     case SocketActionTypes.Listen: {
       socket.listen(action.payload.path, action.payload.callback);
       break;

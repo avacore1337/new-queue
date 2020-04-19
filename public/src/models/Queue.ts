@@ -51,8 +51,8 @@ export default class Queue {
     this._assistants = assistants;
   }
 
-  public removeAssistant(username: string): void {
-    this._assistants = this._assistants.filter(a => a.username !== username);
+  public removeAssistant(assistant: Assistant): void {
+    this._assistants = this._assistants.filter(a => a.username !== assistant.username);
   }
 
   public addTeacher(teacher: Teacher): void {

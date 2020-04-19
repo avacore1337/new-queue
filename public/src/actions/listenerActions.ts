@@ -31,7 +31,7 @@ export const onTeacherAdded = (teacher: any): FluxStandardAction => ({
 });
 
 export const onTeacherRemoved = (username: string): FluxStandardAction => ({
-  type: Listeners.OnTeacherAdded,
+  type: Listeners.OnTeacherRemoved,
   payload: username
 });
 
@@ -41,7 +41,7 @@ export const onAssistantAdded = (assistant: any): FluxStandardAction => ({
 });
 
 export const onAssistantRemoved = (username: string): FluxStandardAction => ({
-  type: Listeners.OnAssistantAdded,
+  type: Listeners.OnAssistantRemoved,
   payload: username
 });
 
@@ -51,7 +51,7 @@ export const onQueueAdded = (queue: any): FluxStandardAction => ({
 });
 
 export const onQueueRemoved = (queueName: string): FluxStandardAction => ({
-  type: Listeners.OnQueueAdded,
+  type: Listeners.OnQueueRemoved,
   payload: queueName
 });
 

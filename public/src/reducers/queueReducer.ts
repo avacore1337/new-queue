@@ -139,6 +139,34 @@ export default (state = initialState, action: FluxStandardAction) => {
       return queues;
     }
 
+    case Listeners.OnTeacherAdded: {
+      const queues = state.map(q => q.clone());
+      queues.filter(q => q.name === action.payload.queueName)[0].addTeacher(new Teacher(action.payload));
+      return queues;
+    }
+
+    case Listeners.OnTeacherRemoved: {
+      const queues = state.map(q => q.clone());
+      queues.filter(q => q.name === action.payload.queueName)[0].removeTeacher(new Teacher(action.payload));
+      return queues;
+    }
+
+    case Listeners.OnAssistantAdded: {
+      const queues = state.map(q => q.clone());
+      queues.filter(q => q.name === action.payload.queueName)[0].addAssistant(new Assistant(action.payload));
+      return queues;
+    }
+
+    case Listeners.OnAssistantRemoved: {
+      const queues = state.map(q => q.clone());
+      queues.filter(q => q.name === action.payload.queueName)[0].removeAssistant(new Assistant(action.payload));
+      return queues;
+    }
+
+    case Listeners.OnQueueRemoved: {
+      return state.filter(q => q.name !== action.payload.queueName);
+    }
+
   }
 
   return state;
