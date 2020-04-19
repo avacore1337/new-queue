@@ -147,7 +147,7 @@ export default (): JSX.Element => {
               </div>
             </div>
             <div className="col-lg-6">
-            <textarea rows={15} className="col-lg-12" value={statistics}></textarea>
+              <textarea rows={15} className="col-lg-12" value={statistics}></textarea>
             </div>
           </div>
         </div>
