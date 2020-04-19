@@ -87,7 +87,7 @@ export default (): JSX.Element => {
       return;
     }
 
-    axios.get(`http://localhost:8000/api/queues/${selectedQueue}/user_events${from !== null || until !== null ? '?' : ''}${from !== null ? `from=${from}` : ''}${until !== null ? `until=${until}` : ''}`, {
+    axios.get(`http://localhost:8000/api/queues/${selectedQueue}/user_events${from !== null || until !== null ? '?' : ''}${from !== null ? `from=${from}` : ''}${until !== null ? `${from !== null && until !== null ? '&' : ''}until=${until}` : ''}`, {
       headers: { 'Authorization': `Token ${user.token}` }
     })
     .then(response => setStatistics(response.data.split('}, {').join('}, \n{')))
