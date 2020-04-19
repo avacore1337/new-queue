@@ -24,8 +24,7 @@ export default (): JSX.Element | null => {
     if (!queuesAreLoaded) {
       dispatch(loadQueues());
     }
-
-    if (queue !== null) {
+    else if (queue !== null) {
       dispatch(loadQueueData(queue.name));
       dispatch(subscribe(queue.name));
 
@@ -34,7 +33,7 @@ export default (): JSX.Element | null => {
         dispatch(clearFilter());
       };
     }
-  }, []);
+  }, [queuesAreLoaded]);
 
   return (
     !queuesAreLoaded

@@ -7,19 +7,21 @@ const initialState = {} as { [queueName: string]: PersonalQueueEntry };
 export default (state = initialState, action: FluxStandardAction) => {
   switch (action.type) {
 
-    case ActionTypes.JoinQueue: {
+    case ActionTypes.LeaveQueue: {
       const nextState = { ...state };
-      nextState[action.payload.queueName] = {
-        comment: action.payload.comment,
-        location: action.payload.location,
-        typeOfCommunication: action.payload.typeOfCommunication
-      };
+      nextState[action.payload] = nextState[action.payload].clone();
+      nextState[action.payload].resetComment();
+      nextState[action.payload].resetTypeOfCommunication();
       return nextState;
     }
 
-    case ActionTypes.LeaveQueue: {
+    case ActionTypes.UpdatePersonalEntry: {
       const nextState = { ...state };
-      delete nextState[action.payload.queueName];
+      nextState[action.payload.queueName] = new PersonalQueueEntry({
+        comment: action.payload.comment,
+        location: action.payload.location,
+        typeOfCommunication: action.payload.typeOfCommunication
+      });
       return nextState;
     }
 

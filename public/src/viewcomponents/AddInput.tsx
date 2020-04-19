@@ -31,9 +31,9 @@ export default (props: any): JSX.Element => {
 
   function runCallback(event: any): void {
     if (!isDisabled) {
-      if (addInput?.placeholder) {
+      if (addInput?.content) {
         if (event.key === 'Enter' || event.button === 0) {
-          callback(addInput?.placeholder);
+          callback(addInput?.content);
           dispatch(clearInput(key));
         }
       }

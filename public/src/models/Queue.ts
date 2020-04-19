@@ -71,6 +71,22 @@ export default class Queue {
     this._info = info;
   }
 
+  public addQueueEntry(entry: QueueEntry): void {
+    this._queueEntries.push(entry);
+  }
+
+  public removeQueueEntry(entry: QueueEntry): void {
+    this._queueEntries = this._queueEntries.filter(e => e.ugkthid !== entry.ugkthid);
+  }
+
+  public updateQueueEntry(entry: QueueEntry): void {
+    for (let i = 0; i < this._queueEntries.length; i++) {
+        if (this._queueEntries[i].ugkthid === entry.ugkthid) {
+          this._queueEntries[i] = entry;
+        }
+    }
+  }
+
   public setQueueEntries(queueEntries: QueueEntry[]): void {
     this._queueEntries = queueEntries;
   }

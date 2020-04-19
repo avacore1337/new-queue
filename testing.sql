@@ -21,3 +21,7 @@ INSERT INTO queue_entries (user_id, queue_id, location, usercomment) VALUES ((SE
 UPDATE queues SET hiding = true WHERE name = 'test1';
 UPDATE queues SET motd = '';
 INSERT INTO super_admins (user_id) VALUES ((SELECT Id FROM Users WHERE Username = 'antbac'));
+INSERT INTO admins (user_id, queue_id, admin_type) VALUES (
+  (SELECT Id FROM Users WHERE Username = 'antbac'),
+  (SELECT id FROM queues WHERE name = 'INDA'),
+  'assistant');

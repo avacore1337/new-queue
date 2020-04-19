@@ -1,5 +1,6 @@
 import { FluxStandardAction } from 'redux-promise-middleware';
 import { ActionTypes } from '../actions/userActions';
+import { Listeners } from '../actions/listenerActions';
 import User from '../models/User';
 
 const initialState: User | null = null;
@@ -29,6 +30,11 @@ export default (state: User | null = initialState, action: FluxStandardAction) =
     case ActionTypes.LoadUser: {
       const userData = localStorage.getItem('User');
       return userData ? new User(JSON.parse(userData)) : state;
+    }
+
+    case Listeners.OnMessageRecieved: {
+      alert(action.payload.message);
+      return state;
     }
 
   }

@@ -92,9 +92,9 @@ export default class SocketConnection {
   }
 
   public enterQueue(room: string, onJoin?: (data: any) => void, onLeave?: (data: any) => void, onUpdate?: (data: any) => void): void {
-    this._callbacks[`joinQueue/${room}`] = onJoin;
-    this._callbacks[`leaveQueue/${room}`] = onLeave;
-    this._callbacks[`updateQueue/${room}`] = onUpdate;
+    this._callbacks['joinQueue/:queueName'] = onJoin;
+    this._callbacks['leaveQueue/:queueName'] = onLeave;
+    this._callbacks['updateQueue/:queueName'] = onUpdate;
 
     const message = new RequestMessage(`subscribeQueue/${room}`);
     this._lastJoinRequest = message;
@@ -113,9 +113,9 @@ export default class SocketConnection {
   }
 
   public leaveQueue(room: string): void {
-    delete this._callbacks[`joinQueue/${room}`];
-    delete this._callbacks[`leaveQueue/${room}`];
-    delete this._callbacks[`updateQueue/${room}`];
+    delete this._callbacks['joinQueue/:queueName'];
+    delete this._callbacks['leaveQueue/:queueName'];
+    delete this._callbacks['updateQueue/:queueName'];
 
     if (this._lastJoinRequest?.path === `subscribeQueue/${room}`) {
       this._lastJoinRequest = null;

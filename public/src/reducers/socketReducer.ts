@@ -7,6 +7,10 @@ import { ActionTypes as SocketActionTypes } from '../actions/socketActions';
 import { ActionTypes as UserActionTypes } from '../actions/userActions';
 import { ActionTypes as AssistantActionTypes } from '../actions/assistantActions';
 import { ActionTypes as DebugActionTypes } from '../actions/debugActions';
+import {
+  onQueueEntryAdded, onQueueEntryRemoved, onQueueEntryUpdated,
+  onMessageRecieved
+} from '../actions/listenerActions';
 import SocketConnection from '../utils/SocketConnection';
 import RequestMessage from '../utils/RequestMessage';
 
@@ -46,7 +50,7 @@ export default (_ = socket, action: FluxStandardAction) => {
     }
 
     case AdministratorActionTypes.AddQueue: {
-      socket.send(new RequestMessage(`addQueue/${action.payload.queueName}`));
+      socket.send(new RequestMessage(`addQueue/${action.payload}`));
       break;
     }
 
@@ -65,12 +69,16 @@ export default (_ = socket, action: FluxStandardAction) => {
     }
 
     case QueueActionTypes.LeaveQueue: {
-      alert('Not yet implemented');
+      socket.send(new RequestMessage(`leaveQueue/${action.payload}`));
       break;
     }
 
     case QueueActionTypes.SubscribeToQueue: {
-      socket.enterQueue(action.payload);
+      socket.enterQueue(
+        action.payload,
+        onQueueEntryAdded,
+        onQueueEntryRemoved,
+        onQueueEntryUpdated);
       break;
     }
 
@@ -109,25 +117,28 @@ export default (_ = socket, action: FluxStandardAction) => {
       break;
     }
 
-    case UserActionTypes.Login: {
+    case UserActionTypes.Login.Fulfilled: {
       socket.setToken(action.payload.data.user.token);
+      socket.listen('message', onMessageRecieved);
       break;
     }
 
     case UserActionTypes.Logout: {
       socket.send(new RequestMessage('logout'));
       socket.setToken(null);
+      socket.stopListening('message');
       break;
     }
 
     case UserActionTypes.LoadUser: {
       const userData = localStorage.getItem('User');
       socket.setToken(userData ? JSON.parse(userData).token : null);
+      socket.listen('message', onMessageRecieved);
       break;
     }
 
     case AssistantActionTypes.KickUser: {
-      socket.send(new RequestMessage(`kickUser/${action.payload.queueName}`, {
+      socket.send(new RequestMessage(`kick/${action.payload.queueName}`, {
         ugkthid: action.payload.ugkthid,
         message: action.payload.message
       }));
