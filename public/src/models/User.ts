@@ -19,6 +19,8 @@ export default class User {
   public get location() { return this._location; }
 
   private _teacherIn: string[];
+  public get teacherIn() { return this._teacherIn; }
+
   private _assistantIn: string[];
 
   public constructor(data: any) {
