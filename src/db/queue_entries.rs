@@ -59,6 +59,7 @@ pub fn update_user_data(
             queue_entries::location.eq(location),
             queue_entries::usercomment.eq(comment),
             queue_entries::help.eq(help),
+            queue_entries::badlocation.eq(false),
         ))
         .get_result(conn)
 }

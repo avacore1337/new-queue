@@ -85,9 +85,12 @@ Install debuggin extensions for React and Redux
 
 Backend:
 * add_assistant should transform from teacher -> assistant and vice versa
-* messaging, done?
 * authentication on rocket routes, done?
 * statistics, done?
+* backend websockets leave/errors
+* leaving needs to leave for messaging
+* nightly reset
+* message history
 
 Frontend:
 * Fix Help page

@@ -335,6 +335,11 @@ impl RoomHandler {
                 let _auth = self.get_auth(&wrapper, AuthLevel::Teacher)?;
                 set_queue_lock_status(self, conn, status, queue_name)
             }
+            ["setQueueHideStatus", queue_name] => {
+                let status = from_value::<Status>(wrapper.content.clone())?;
+                let _auth = self.get_auth(&wrapper, AuthLevel::Teacher)?;
+                set_queue_hide_status(self, conn, status, queue_name)
+            }
             _ => {
                 println!("Route does not exist");
                 Ok(())

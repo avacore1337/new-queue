@@ -425,3 +425,14 @@ pub fn set_queue_lock_status(
     handler.broadcast_room(queue_name, "updateQueue", json!(queue));
     Ok(())
 }
+
+pub fn set_queue_hide_status(
+    handler: &mut RoomHandler,
+    conn: &PgConnection,
+    status: Status,
+    queue_name: &str,
+) -> Result<()> {
+    let queue = db::queues::update_hiding(&conn, queue_name, status.status)?;
+    handler.broadcast_room(queue_name, "updateQueue", json!(queue));
+    Ok(())
+}

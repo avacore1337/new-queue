@@ -1,7 +1,7 @@
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
+mod common;
+
+#[test]
+fn it_works() {
+    // common::setup();
+    assert_eq!(2 + 2, 4);
 }
