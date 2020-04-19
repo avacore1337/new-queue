@@ -84,8 +84,6 @@ Install debuggin extensions for React and Redux
 # Features and Bugs
 
 Backend:
-* add_assistant should transform from teacher -> assistant and vice versa
-* authentication on rocket routes, done?
 * statistics, done?
 * backend websockets leave/errors
 * leaving needs to leave for messaging

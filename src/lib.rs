@@ -17,6 +17,9 @@ extern crate diesel_derive_enum;
 
 use dotenv::dotenv;
 
+use clokwerk::{Scheduler, TimeUnits};
+use std::time::Duration;
+
 mod auth;
 mod config;
 mod db;
@@ -26,6 +29,7 @@ mod routes;
 #[allow(unused_imports)]
 mod schema;
 mod sql_types;
+mod util;
 mod wsroutes;
 
 use rocket_contrib::json::JsonValue;
@@ -46,6 +50,23 @@ fn cors_fairing() -> Cors {
 
 pub fn rocket() -> rocket::Rocket {
     dotenv().ok();
+
+    thread::Builder::new()
+        .name("Thread for Rust Chat with ws-rs".into())
+        .spawn(move || loop {
+            // or a scheduler with a given timezone
+            let pool = db::init_pool();
+
+            let mut scheduler = Scheduler::with_tz(chrono::Utc);
+            scheduler.every(1.day()).at("03:00").run(move || {
+                let conn = pool.get().unwrap();
+                util::cleanup(&db::DbConn(conn));
+            });
+            scheduler.run_pending();
+            thread::sleep(Duration::from_millis(500));
+        })
+        .unwrap();
+
     thread::Builder::new()
         .name("Thread for Rust Chat with ws-rs".into())
         // .stack_size(83886 * 1024) // 80mib in killobytes
@@ -53,6 +74,7 @@ pub fn rocket() -> rocket::Rocket {
             wsroutes::ws_rs::websocket();
         })
         .unwrap();
+
     rocket::custom(config::from_env())
         .mount("/public", StaticFiles::from("/public/public"))
         .mount(
@@ -69,6 +91,7 @@ pub fn rocket() -> rocket::Rocket {
                 routes::super_admins::get_superadmins,
             ],
         )
+        .attach(db::DbConn::fairing())
         .attach(cors_fairing())
         .attach(config::AppState::manage())
         .register(catchers![not_found])

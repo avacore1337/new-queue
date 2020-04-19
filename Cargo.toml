@@ -26,6 +26,7 @@ serde_json = "1.0"
 validator = "0.10.0"
 validator_derive = "0.10.0"
 ws = "0.8.1"
+clokwerk = "0.3.0"
 
 
 [dependencies.rocket_contrib]
