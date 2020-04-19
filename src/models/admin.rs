@@ -5,7 +5,7 @@ use crate::schema::admins;
 use crate::sql_types::AdminEnum;
 use serde::Serialize;
 
-#[derive(Queryable, Serialize, Associations)]
+#[derive(Identifiable, Queryable, Serialize, Associations)]
 #[belongs_to(parent = "User")]
 #[belongs_to(parent = "Queue")]
 pub struct Admin {

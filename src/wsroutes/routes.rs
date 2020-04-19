@@ -143,11 +143,30 @@ pub fn add_teacher_route(
     add_user: Username,
     queue_name: &str,
 ) -> Result<()> {
-    let admin = db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Teacher)?;
-    handler.send_self(
-        &("addTeacher/".to_string() + queue_name),
-        json!(db::users::find(conn, admin.user_id)),
-    );
+    match db::admins::find_by_name(conn, queue_name, &add_user.username) {
+        Ok(admin) => match admin.admin_type {
+            AdminEnum::Assistant => {
+                handler.send_self(
+                    &("removeAssistant/".to_string() + queue_name),
+                    json!(add_user),
+                );
+                db::admins::make_teacher(conn, &admin)?;
+                handler.send_self(
+                    &("addTeacher/".to_string() + queue_name),
+                    json!(db::users::find(conn, admin.user_id)),
+                );
+            }
+            AdminEnum::Teacher => {}
+        },
+        Err(_) => {
+            let admin =
+                db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Assistant)?;
+            handler.send_self(
+                &("addTeacher/".to_string() + queue_name),
+                json!(db::users::find(conn, admin.user_id)),
+            );
+        }
+    };
     Ok(())
 }
 
@@ -157,12 +176,18 @@ pub fn add_assistant_route(
     add_user: Username,
     queue_name: &str,
 ) -> Result<()> {
-    let admin = db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Assistant)?;
-    handler.send_self(
-        &("addAssistant/".to_string() + queue_name),
-        json!(db::users::find(conn, admin.user_id)),
-    );
-    Ok(())
+    match db::admins::find_by_name(conn, queue_name, &add_user.username) {
+        Ok(_) => Ok(()),
+        Err(_) => {
+            let admin =
+                db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Assistant)?;
+            handler.send_self(
+                &("addAssistant/".to_string() + queue_name),
+                json!(db::users::find(conn, admin.user_id)),
+            );
+            Ok(())
+        }
+    }
 }
 
 pub fn remove_teacher_route(
@@ -171,7 +196,7 @@ pub fn remove_teacher_route(
     add_user: Username,
     queue_name: &str,
 ) -> Result<()> {
-    let _admin = db::admins::remove(conn, queue_name, &add_user.username)?;
+    let _admin = db::admins::remove(conn, queue_name, &add_user.username, AdminEnum::Teacher)?;
     handler.send_self(
         &("removeTeacher/".to_string() + queue_name),
         json!(add_user),
@@ -185,7 +210,7 @@ pub fn remove_assistant_route(
     add_user: Username,
     queue_name: &str,
 ) -> Result<()> {
-    let _admin = db::admins::remove(conn, queue_name, &add_user.username)?;
+    let _admin = db::admins::remove(conn, queue_name, &add_user.username, AdminEnum::Assistant)?;
     handler.send_self(
         &("removeAssistant/".to_string() + queue_name),
         json!(add_user),

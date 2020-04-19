@@ -27,10 +27,36 @@ pub fn create(
         .map_err(Into::into)
 }
 
+pub fn make_teacher(conn: &PgConnection, admin: &Admin) -> Result<(), diesel::result::Error> {
+    diesel::update(admin)
+        .set(admins::admin_type.eq(AdminEnum::Teacher))
+        .execute(conn)
+        .map_err(Into::into)
+        .map(|_| ())
+}
+
+pub fn find_by_name(
+    conn: &PgConnection,
+    queue_name: &str,
+    username: &str,
+) -> Result<Admin, diesel::result::Error> {
+    let user_id = db::users::username_to_id(conn, username)?;
+    let queue_id = db::queues::name_to_id(conn, queue_name)?;
+    admins::table
+        .filter(
+            admins::user_id
+                .eq(user_id)
+                .and(admins::queue_id.eq(queue_id)),
+        )
+        .get_result::<Admin>(conn)
+        .map_err(Into::into)
+}
+
 pub fn remove(
     conn: &PgConnection,
     queue_name: &str,
     username: &str,
+    admin_type: AdminEnum,
 ) -> Result<(), diesel::result::Error> {
     let user_id = db::users::username_to_id(conn, username)?;
     let queue_id = db::queues::name_to_id(conn, queue_name)?;
@@ -38,7 +64,8 @@ pub fn remove(
         admins::table.filter(
             admins::user_id
                 .eq(user_id)
-                .and(admins::queue_id.eq(queue_id)),
+                .and(admins::queue_id.eq(queue_id))
+                .and(admins::admin_type.eq(admin_type)),
         ),
     )
     .execute(conn)
