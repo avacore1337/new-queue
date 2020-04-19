@@ -21,9 +21,9 @@ export const sendMessage = (queueName: string, ugkthid: string, message: string)
   payload: { queueName, ugkthid, message }
 });
 
-export const help = (queueName: string, ugkthid: string): FluxStandardAction => ({
+export const toggleHelp = (queueName: string, ugkthid: string, newStatus: boolean): FluxStandardAction => ({
   type: ActionTypes.Help,
-  payload: { queueName, ugkthid }
+  payload: { queueName, ugkthid, newStatus }
 });
 
 export const badLocation = (queueName: string, ugkthid: string): FluxStandardAction => ({

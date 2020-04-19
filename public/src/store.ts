@@ -7,11 +7,9 @@ import queueReducer from './reducers/queueReducer';
 import socketReducer from './reducers/socketReducer';
 import administratorReducer from './reducers/administratorReducer';
 import utilsReducer, { UtilsStore } from './reducers/utils';
-import personalQueueEntryReducer from './reducers/personalQueueEntryReducer';
 import User from './models/User';
 import Queue from './models/Queue';
 import Administrator from './models/Administrator';
-import PersonalQueueEntry from './models/PersonalQueueEntry';
 
 export interface GlobalStore {
   user: User | null,
@@ -20,9 +18,6 @@ export interface GlobalStore {
     administrators: Administrator[]
     selectedQueue: string
   },
-  personalQueueEntries: {
-    [queueName: string]: PersonalQueueEntry
-  }
   utils: UtilsStore
 }
 
@@ -33,7 +28,6 @@ const reducer = combineReducers({
   queues: queueReducer,
   socket: socketReducer,
   administration: administratorReducer,
-  personalQueueEntries: personalQueueEntryReducer,
   utils: utilsReducer
 });
 

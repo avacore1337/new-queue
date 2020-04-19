@@ -63,7 +63,7 @@ export default (_ = socket, action: FluxStandardAction) => {
       socket.send(new RequestMessage(`joinQueue/${action.payload.queueName}`, {
         location: action.payload.location,
         comment: action.payload.comment,
-        help: action.payload.typeOfCommunication === 'help'
+        help: action.payload.help
       }));
       break;
     }
@@ -76,6 +76,15 @@ export default (_ = socket, action: FluxStandardAction) => {
     case QueueActionTypes.RecievingHelp: {
       socket.send(new RequestMessage(`setHelpStatus/${action.payload.queueName}`, {
         status: action.payload.status
+      }));
+      break;
+    }
+
+    case QueueActionTypes.SendUpdatedPersonalEntry: {
+      socket.send(new RequestMessage(`updateQueueEntry/${action.payload.queueName}`, {
+        comment: action.payload.comment,
+        location: action.payload.location,
+        help: action.payload.help
       }));
       break;
     }
@@ -158,7 +167,7 @@ export default (_ = socket, action: FluxStandardAction) => {
     case AssistantActionTypes.Help: {
       socket.send(new RequestMessage(`setUserHelpStatus/${action.payload.queueName}`, {
         ugkthid: action.payload.ugkthid,
-        status: true
+        status: action.payload.newStatus
       }));
       break;
     }

@@ -1,39 +1,57 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
+import debounce from 'lodash.debounce';
 import { GlobalStore } from '../../store';
-import { joinQueue, leaveQueue, recievingHelp, updatePersonalEntry } from '../../actions/queueActions';
-import PersonalQueueEntry from '../../models/PersonalQueueEntry';
+import {
+  joinQueue, leaveQueue, recievingHelp,
+  updatePersonalEntry, sendUpdatedPersonalEntry
+} from '../../actions/queueActions';
 import User from '../../models/User';
+import QueueEntry from '../../models/QueueEntry';
 
 export default (props: any): JSX.Element => {
 
   const queueName: string = props.queueName;
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
-  const personalQueueEntry = useSelector<GlobalStore, PersonalQueueEntry | null>(store => store.personalQueueEntries[queueName] || null);
-  const isInQueue = useSelector<GlobalStore, boolean>(store => store.queues.filter(q => q.name === queueName).some(q => q.queueEntries.some(e => e.ugkthid === user?.ugkthid)));
-
-  const location: string = user?.location || personalQueueEntry?.location || '';
-  const comment: string = personalQueueEntry?.comment || '';
-  const typeOfCommunication: string = personalQueueEntry?.typeOfCommunication || 'help';
+  const personalQueueEntry = useSelector<GlobalStore, QueueEntry | null>(store => store.queues.filter(q => q.name === queueName)[0].queueEntries.filter(e => e.ugkthid === user?.ugkthid)[0] || null);
 
   const dispatch = useDispatch();
 
+  const [location, setLocation] = useState(personalQueueEntry?.location || '');
+  const [comment, setComment] = useState(personalQueueEntry?.location || '');
+  const [help, setHelp] = useState(personalQueueEntry?.help || true);
+  const [sendPersonalEntry] = useState(() => debounce((q: string, c: string, l: string, h: boolean): void => {
+      dispatch(sendUpdatedPersonalEntry(q, c, l, h));
+    }, 750));
+
   function changeLocation(event: any): void {
-    dispatch(updatePersonalEntry(queueName, comment, event.target.value, typeOfCommunication));
+    setLocation(event.target.value);
+    if (personalQueueEntry !== null && event.target.value && comment) {
+      sendPersonalEntry(queueName, event.target.value, comment, help);
+    }
+    else {
+      sendPersonalEntry.cancel();
+    }
   }
 
   function changeComment(event: any): void {
-    dispatch(updatePersonalEntry(queueName, event.target.value, location, typeOfCommunication));
+    setComment(event.target.value);
+    if (personalQueueEntry !== null && location && event.target.value) {
+      sendPersonalEntry(queueName, location, event.target.value, help);
+    }
+    else {
+      sendPersonalEntry.cancel();
+    }
   }
 
-  function changeCommunicationType(event: any): void {
-    dispatch(updatePersonalEntry(queueName, comment, location, event.target.value));
+  function changeHelp(event: any): void {
+    setHelp(event.target.value === 'help');
   }
 
   return (
     <div className="col-12 col-lg-3">
-      <form onSubmit={() => dispatch(joinQueue(queueName, comment, location, typeOfCommunication))}>
+      <form onSubmit={() => dispatch(joinQueue(queueName, comment, location, help))}>
 
         <label htmlFor="location">Location:</label>
         <br />
@@ -78,7 +96,7 @@ export default (props: any): JSX.Element => {
         <br />
 
         {
-          isInQueue
+          personalQueueEntry !== null
             ? null
             : <>
                 <div className="row text-center">
@@ -88,8 +106,8 @@ export default (props: any): JSX.Element => {
                       type="radio"
                       name="react-tips"
                       value="help"
-                      checked={typeOfCommunication === "help"}
-                      onChange={changeCommunicationType} />
+                      checked={help}
+                      onChange={changeHelp} />
                   </div>
                   <div className="col-6">
                     <label htmlFor="presentation" style={{marginRight: '.5em' }}>Presentation</label>
@@ -97,8 +115,8 @@ export default (props: any): JSX.Element => {
                       type="radio"
                       name="react-tips"
                       value="presentation"
-                      checked={typeOfCommunication === "presentation"}
-                      onChange={changeCommunicationType} />
+                      checked={!help}
+                      onChange={changeHelp} />
                     </div>
                 </div>
 
@@ -107,12 +125,12 @@ export default (props: any): JSX.Element => {
         }
 
         {
-          isInQueue
+          personalQueueEntry !== null
             ? <>
                 <div
                   className="col-12 text-center yellow clickable"
                   style={{lineHeight: '3em'}}
-                  onClick={() => dispatch(recievingHelp(queueName, false /* TODO : Fix this */ ))}>
+                  onClick={() => dispatch(recievingHelp(queueName, true))}>
                   <strong>Recieving help</strong>
                 </div>
                 <div
@@ -125,7 +143,7 @@ export default (props: any): JSX.Element => {
             : <div
                 className="col-12 text-center blue clickable"
                 style={{lineHeight: '3em'}}
-                onClick={() => dispatch(joinQueue(queueName, comment, location, typeOfCommunication))}>
+                onClick={() => dispatch(joinQueue(queueName, comment, location, help))}>
                 <strong>Join queue</strong>
               </div>
         }

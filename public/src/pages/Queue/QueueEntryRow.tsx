@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../store';
 import {
-  kickUser, sendMessage, help,
+  kickUser, sendMessage, toggleHelp,
   badLocation, markForCompletion,
   addComment, touchRow, clickRow
 } from '../../actions/assistantActions';
@@ -27,7 +27,8 @@ export default (props: any): JSX.Element => {
     <>
       <tr
         onClick={() => dispatch(clickRow(queueName, queueEntry.ugkthid))}
-        onTouchEnd={() => dispatch(touchRow(queueName, queueEntry.ugkthid))}>
+        onTouchEnd={() => dispatch(touchRow(queueName, queueEntry.ugkthid))}
+        className={queueEntry.badlocation ? 'table-danger' : undefined}>
         <th scope="row">{index + 1}</th>
         <td>
           {
@@ -63,7 +64,7 @@ export default (props: any): JSX.Element => {
                         <Envelope />
                       </div>
                     </div>
-                    <div title="help" className="col-12 col-lg-2 px-3 my-1" onClick={() => dispatch(help(queueName, queueEntry.ugkthid))}>
+                    <div title="help" className="col-12 col-lg-2 px-3 my-1" onClick={() => dispatch(toggleHelp(queueName, queueEntry.ugkthid, !queueEntry.help))}>
                       <div
                         className="text-center blue clickable"
                         style={{lineHeight: '2em'}}>
