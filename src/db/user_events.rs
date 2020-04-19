@@ -27,7 +27,16 @@ pub fn for_queue(
     }
     // .and(user_events::time.le(until)));
 
-    query.load(conn).ok()
+    match query.load(conn) {
+        Ok(events) => {
+            println!("got {} user_events", events.len());
+            Some(events)
+        }
+        Err(e) => {
+            println!("Something went wrong when fetching user_events: {}", e);
+            None
+        }
+    }
 }
 
 #[derive(FromForm, Default)]
