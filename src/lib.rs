@@ -54,7 +54,6 @@ pub fn rocket() -> rocket::Rocket {
         })
         .unwrap();
     rocket::custom(config::from_env())
-        .manage(db::init_pool())
         .mount("/public", StaticFiles::from("/public/public"))
         .mount(
             "/api",

@@ -91,6 +91,7 @@ Backend:
 * leaving needs to leave for messaging
 * nightly reset
 * message history
+* max string lengths
 
 Frontend:
 * Fix Help page
