@@ -269,7 +269,7 @@ impl RoomHandler {
             ["setHelpStatus", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Any)?;
                 let status = from_value::<Status>(wrapper.content.clone())?;
-                set_help_route(self, auth, conn, status, queue_name)
+                set_help_status_route(self, auth, conn, status, queue_name)
             }
             ["kick", queue_name] => {
                 let _auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
@@ -304,7 +304,7 @@ impl RoomHandler {
             ["setUserHelpStatus", queue_name] => {
                 let _auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
                 let user_status = from_value::<UserStatus>(wrapper.content.clone())?;
-                set_user_help_route(self, conn, user_status, queue_name)
+                set_user_help_status_route(self, conn, user_status, queue_name)
             }
             ["broadcast", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;

@@ -146,6 +146,7 @@ pub fn add_teacher_route(
     match db::admins::find_by_name(conn, queue_name, &add_user.username) {
         Ok(admin) => match admin.admin_type {
             AdminEnum::Assistant => {
+                println!("Upgrading {} to teacher", &add_user.username);
                 handler.send_self(
                     &("removeAssistant/".to_string() + queue_name),
                     json!(add_user),
@@ -218,7 +219,7 @@ pub fn remove_assistant_route(
     Ok(())
 }
 
-pub fn set_help_route(
+pub fn set_help_status_route(
     handler: &mut RoomHandler,
     auth: Auth,
     conn: &PgConnection,
@@ -236,7 +237,7 @@ pub fn set_help_route(
     Ok(())
 }
 
-pub fn set_user_help_route(
+pub fn set_user_help_status_route(
     handler: &mut RoomHandler,
     conn: &PgConnection,
     user_status: UserStatus,
