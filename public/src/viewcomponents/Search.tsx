@@ -1,21 +1,21 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux'
+import { GlobalStore } from '../store';
+import { setFilter } from '../actions/filterActions';
 
-export default function SearchViewComponent(props: any) {
+export default (): JSX.Element => {
 
-  let filter = props.filter;
-  let setFilter = props.setFilter;
+  const filter = useSelector<GlobalStore, string>(store => store.utils.filter);
 
-  function handleChange(event: any): void {
-    setFilter(event.target.value);
-  }
+  const dispatch = useDispatch();
 
   return (
     <input
       type="text"
       value={filter}
-      onChange={handleChange}
+      onChange={(e) => dispatch(setFilter(e.target.value))}
       className="col-12"
       style={{lineHeight: '3em'}}
       placeholder="Search" />
   );
-}
+};

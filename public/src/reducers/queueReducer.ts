@@ -1,13 +1,19 @@
 import { FluxStandardAction } from 'redux-promise-middleware';
-import { Types } from '../actions/queueActions';
+import { ActionTypes } from '../actions/queueActions';
+import { ActionTypes as AdministratorActionTypes } from '../actions/administratorActions';
+import { ActionTypes as AssistantActionTypes } from '../actions/assistantActions';
+import { Listeners } from '../actions/listenerActions';
 import Queue from '../models/Queue';
+import QueueEntry from '../models/QueueEntry';
+import Teacher from '../models/Teacher';
+import Assistant from '../models/Assistant';
 
 const initialState = [] as Queue[];
 
 export default (state = initialState, action: FluxStandardAction) => {
-
   switch (action.type) {
-    case Types.GetQueues.Fulfilled: {
+
+    case ActionTypes.GetQueues.Fulfilled: {
       action.payload.sort((queue1: Queue, queue2: Queue) => {
         if (queue1.hiding && !queue2.hiding) { return 1; }
         if (!queue1.hiding && queue2.hiding) { return -1; }
@@ -15,6 +21,106 @@ export default (state = initialState, action: FluxStandardAction) => {
       });
       return action.payload;
     }
+
+    case ActionTypes.LoadQueueData.Fulfilled: {
+      const queueEntries: QueueEntry[] = action.payload[0].map((entryInformation: any) => new QueueEntry(entryInformation));
+      const metadata: any = action.payload[1];
+
+      const queueToUpdate = state.filter(queue => queue.name === action.meta.queueName)[0].clone();
+      queueToUpdate.setInformationText(metadata.info);
+      queueToUpdate.setQueueEntries(queueEntries);
+
+      const queues = [...state.filter(queue => queue.name !== action.meta.queueName), queueToUpdate];
+
+      queues.sort((queue1: Queue, queue2: Queue) => {
+        if (queue1.hiding && !queue2.hiding) { return 1; }
+        if (!queue1.hiding && queue2.hiding) { return -1; }
+        return queue1.name < queue2.name ? -1 : 1;
+      });
+
+      if (metadata.motd) {
+        alert(metadata.motd);
+      }
+
+      return queues;
+    }
+
+    case AdministratorActionTypes.LoadAdditionalQueueData.Fulfilled: {
+      const teachers: Teacher[] = action.payload[0].data.map((t: any) => new Teacher(t));
+      const assistants: Assistant[] = action.payload[1].data.map((a: any) => new Assistant(a));
+
+      const queueToUpdate = state.filter(queue => queue.name === action.meta.queueName)[0].clone();
+      queueToUpdate.setTeachers(teachers);
+      queueToUpdate.setAssistants(assistants);
+
+      const queues = [...state.filter(queue => queue.name !== action.meta.queueName), queueToUpdate];
+
+      queues.sort((queue1: Queue, queue2: Queue) => {
+        if (queue1.hiding && !queue2.hiding) { return 1; }
+        if (!queue1.hiding && queue2.hiding) { return -1; }
+        return queue1.name < queue2.name ? -1 : 1;
+      });
+
+      return queues;
+    }
+
+    case AssistantActionTypes.ClickRow: {
+      const queueToUpdate = state.filter(queue => queue.name === action.payload.queueName)[0].clone();
+      const queueEntryToUpdate = queueToUpdate.queueEntries.filter(e => e.ugkthid === action.payload.ugkthid)[0];
+
+      if (queueEntryToUpdate.lastClicked === null) {
+        queueEntryToUpdate.setLastClicked(Date.now());
+      }
+      else {
+        const intervallMilliseconds: number = 500;
+        if (Date.now() - queueEntryToUpdate.lastClicked <= intervallMilliseconds) {
+          queueEntryToUpdate.toggleTAOptions();
+        }
+
+        queueEntryToUpdate.setLastClicked(Date.now());
+      }
+
+      const queues = [...state.filter(queue => queue.name !== action.payload.queueName), queueToUpdate];
+
+      queues.sort((queue1: Queue, queue2: Queue) => {
+        if (queue1.hiding && !queue2.hiding) { return 1; }
+        if (!queue1.hiding && queue2.hiding) { return -1; }
+        return queue1.name < queue2.name ? -1 : 1;
+      });
+
+      return queues;
+    }
+
+    case AssistantActionTypes.TouchRow: {
+      const queueToUpdate = state.filter(queue => queue.name === action.payload.queueName)[0].clone();
+      const queueEntryToUpdate = queueToUpdate.queueEntries.filter(e => e.ugkthid === action.payload.ugkthid)[0];
+      queueEntryToUpdate.toggleTAOptions();
+
+      const queues = [...state.filter(queue => queue.name !== action.payload.queueName), queueToUpdate];
+
+      queues.sort((queue1: Queue, queue2: Queue) => {
+        if (queue1.hiding && !queue2.hiding) { return 1; }
+        if (!queue1.hiding && queue2.hiding) { return -1; }
+        return queue1.name < queue2.name ? -1 : 1;
+      });
+
+      return queues;
+    }
+
+    case Listeners.OnQueueAdded: {
+      var queues = [...state, new Queue({ name: action.payload })];
+      queues.sort((queue1: Queue, queue2: Queue) => {
+        if (queue1.hiding && !queue2.hiding) { return 1; }
+        if (!queue1.hiding && queue2.hiding) { return -1; }
+        return queue1.name < queue2.name ? -1 : 1;
+      });
+      return queues;
+    }
+
+    case Listeners.OnQueueRemoved: {
+      return state.filter(queue => queue.name !== action.payload);
+    }
+
   }
 
   return state;

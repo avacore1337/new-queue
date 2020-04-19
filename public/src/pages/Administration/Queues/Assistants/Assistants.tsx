@@ -1,19 +1,12 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import Queue from '../../../../models/Queue';
-import User from '../../../../models/User';
-import Assistant from '../../../../models/TeachingAssistant';
 import AddAssistantViewComponent from './AddAssistant';
 import AssistantListViewComponent from './AssistantList';
 
-export default function AssistantsViewComponent(props: any) {
+export default (props: any): JSX.Element => {
 
-  // TODO: This might not be a real "Queue"
-  let queue: Queue = props.queue;
-  let user: User = props.user;
-  let socket: Queue = props.socket;
-
-  console.log(queue === null);
+  const queue: Queue = props.queue;
 
   return (
     <>
@@ -22,19 +15,13 @@ export default function AssistantsViewComponent(props: any) {
         <p>New assistants will have to log out and in again in order to get all of their new privileges.</p>
       </div>
       <div className="row mb-3">
-        <AddAssistantViewComponent
-          queue={queue}
-          user={user}
-          socket={socket} />
+        <AddAssistantViewComponent queue={queue} />
       </div>
       <div className="row">
         <div className="col-12 pl-0">
-          <AssistantListViewComponent
-            queueName={queue.name}
-            assistants={queue.assistants}
-            socket={socket} />
+          <AssistantListViewComponent queue={queue} />
         </div>
       </div>
     </>
   );
-}
+};

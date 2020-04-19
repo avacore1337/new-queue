@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Contributor from '../../models/Contributor';
 import Contributors from '../../data/contributors.json';
 
-export default function AboutViewComponent() {
+export default (): JSX.Element => {
 
-  let contributors: Contributor[] = Contributors.Contributors.map(contributor => new Contributor(contributor));
+  const contributors: Contributor[] = Contributors.Contributors.map(contributor => new Contributor(contributor));
 
   return (
     <div className="container">

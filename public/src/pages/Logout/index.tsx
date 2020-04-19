@@ -1,21 +1,14 @@
 import React from 'react';
 import { Redirect } from "react-router-dom";
-import User from "../../models/User";
-import SocketConnection from "../../utils/SocketConnection";
-import RequestMessage from "../../utils/RequestMessage";
+import { useDispatch } from 'react-redux'
+import { logout } from '../../actions/userActions';
 
-export default function LogoutViewComponent(props: any) {
+export default (): JSX.Element => {
 
-  let setUser: React.Dispatch<React.SetStateAction<User | null>> = props.setUser;
-  let socket: SocketConnection = props.socket;
-
-  setUser(null);
-
-  socket.send(new RequestMessage('logout'));
-
-  localStorage.removeItem('User');
+  const dispatch = useDispatch();
+  dispatch(logout());
 
   return (
     <Redirect to="/" />
   );
-}
+};

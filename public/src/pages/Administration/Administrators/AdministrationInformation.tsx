@@ -1,12 +1,17 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux'
+import { GlobalStore } from '../../../store';
+import { setServerMessage } from '../../../actions/administratorActions';
 import User from '../../../models/User';
 
-export default function AdministrationInformationViewComponent(props: any) {
+export default function AdministrationInformationViewComponent() {
 
-  let user: User = props.user;
+  const user = useSelector<GlobalStore, User | null>(store => store.user);
 
-  function setServerMessage() : void {
-    alert('Not yet implemented');
+  const dispatch = useDispatch();
+
+  function displayMotd() {
+    dispatch(setServerMessage('TODO'));
   }
 
   return (
@@ -25,7 +30,7 @@ export default function AdministrationInformationViewComponent(props: any) {
               : <div className="row mb-5">
                   <button
                     className="btn btn-primary mb-2"
-                    onClick={setServerMessage}>
+                    onClick={displayMotd}>
                     Set server-message
                     </button>
                 </div>

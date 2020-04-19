@@ -1,50 +1,39 @@
-import React, { useState } from 'react';
-import debounce from 'lodash.debounce';
-import SocketConnection from '../../utils/SocketConnection';
-import RequestMessage from '../../utils/RequestMessage';
-import QueueEntry from '../../models/QueueEntry';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux'
+import { GlobalStore } from '../../store';
+import { joinQueue, leaveQueue, recievingHelp, updatePersonalEntry } from '../../actions/queueActions';
+import PersonalQueueEntry from '../../models/PersonalQueueEntry';
+import User from '../../models/User';
 
-export default function EnterQueueViewComponent(props: any) {
+export default (props: any): JSX.Element => {
 
-  let queueName: string = props.queueName;
-  let socket: SocketConnection = props.socket;
-  let yourself: QueueEntry | null = props.yourself;
+  const queueName: string = props.queueName;
 
-  let [location, setLocation] = useState(yourself !== null ? yourself.location : '');
-  let [comment, setComment] = useState(yourself !== null ? yourself.comment : '');
-  let [typeOfCommunication, setTypeOfCommunication] = useState(yourself !== null ? yourself.help : 'help');
+  const user = useSelector<GlobalStore, User | null>(store => store.user);
+  const personalQueueEntry = useSelector<GlobalStore, PersonalQueueEntry | null>(store => store.personalQueueEntries[queueName] || null);
+  const isInQueue = useSelector<GlobalStore, boolean>(store => store.queues.filter(q => q.name === queueName).some(q => q.queueEntries.some(e => e.ugkthid === user?.ugkthid)));
+
+  const location: string = user?.location || personalQueueEntry?.location || '';
+  const comment: string = personalQueueEntry?.comment || '';
+  const typeOfCommunication: string = personalQueueEntry?.typeOfCommunication || 'help';
+
+  const dispatch = useDispatch();
 
   function changeLocation(event: any): void {
-    setLocation(event.target.value);
+    dispatch(updatePersonalEntry(queueName, comment, event.target.value, typeOfCommunication));
   }
 
   function changeComment(event: any): void {
-    setComment(event.target.value);
+    dispatch(updatePersonalEntry(queueName, event.target.value, location, typeOfCommunication));
   }
 
   function changeCommunicationType(event: any): void {
-    setTypeOfCommunication(event.target.value);
-  }
-
-  function enterQueue(): void {
-    socket.send(new RequestMessage(`joinQueue/${queueName}`, {
-      location: location,
-      comment: comment,
-      help: typeOfCommunication === 'help'
-    }));
-  }
-
-  function leaveQueue(): void {
-    socket.send(new RequestMessage(`leaveQueue/${queueName}`));
-  }
-
-  function recievingHelp(): void {
-    socket.send(new RequestMessage(`recievingHelp/${queueName}`));
+    dispatch(updatePersonalEntry(queueName, comment, location, event.target.value));
   }
 
   return (
     <div className="col-12 col-lg-3">
-      <form onSubmit={enterQueue}>
+      <form onSubmit={() => dispatch(joinQueue(queueName, comment, location, typeOfCommunication))}>
 
         <label htmlFor="location">Location:</label>
         <br />
@@ -70,7 +59,12 @@ export default function EnterQueueViewComponent(props: any) {
         <label htmlFor="comment">Comment:</label>
         <br />
         <div style={{backgroundColor: comment === '' ? 'red' : 'inherit'}}>
-          <input name="comment" type="text" value={comment} onChange={changeComment} style={{width: '100%', borderRadius: 0}} />
+          <input
+            name="comment"
+            type="text"
+            value={comment}
+            onChange={changeComment}
+            style={{width: '100%', borderRadius: 0}} />
           {
             comment === ''
             ? <>
@@ -84,7 +78,7 @@ export default function EnterQueueViewComponent(props: any) {
         <br />
 
         {
-          yourself
+          isInQueue
             ? null
             : <>
                 <div className="row text-center">
@@ -113,29 +107,29 @@ export default function EnterQueueViewComponent(props: any) {
         }
 
         {
-          yourself
+          isInQueue
             ? <>
                 <div
                   className="col-12 text-center yellow clickable"
                   style={{lineHeight: '3em'}}
-                  onClick={recievingHelp}>
+                  onClick={() => dispatch(recievingHelp(queueName))}>
                   <strong>Recieving help</strong>
                 </div>
                 <div
                   className="col-12 text-center red clickable"
                   style={{lineHeight: '3em'}}
-                  onClick={leaveQueue}>
+                  onClick={() => dispatch(leaveQueue(queueName))}>
                   <strong>Leave queue</strong>
                 </div>
               </>
             : <div
                 className="col-12 text-center blue clickable"
                 style={{lineHeight: '3em'}}
-                onClick={enterQueue}>
+                onClick={() => dispatch(joinQueue(queueName, comment, location, typeOfCommunication))}>
                 <strong>Join queue</strong>
               </div>
         }
       </form>
     </div>
   );
-}
+};

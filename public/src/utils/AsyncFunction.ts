@@ -1,6 +1,6 @@
 import { ActionType as ActionTypeSuffix } from 'redux-promise-middleware';
 
-export default class ActionType {
+export default class AsyncFunction {
 
   private _type: string;
 
@@ -14,5 +14,3 @@ export default class ActionType {
     this._type = type;
   }
 }
-
-export const SetUser = new ActionType('SET_USER');

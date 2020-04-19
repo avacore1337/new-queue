@@ -1,78 +1,39 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux'
+import { GlobalStore } from '../../store';
+import {
+  kickUser, sendMessage, help,
+  badLocation, markForCompletion,
+  addComment, touchRow, clickRow
+} from '../../actions/assistantActions';
 import TimeAgo from 'react-timeago';
-import SocketConnection from '../../utils/SocketConnection';
-import RequestMessage from '../../utils/RequestMessage';
 import QueueEntry from '../../models/QueueEntry';
 import User from '../../models/User';
 import { Bookmark, CheckMark, Cross, Envelope, QuestionMark, Star, Tag } from '../../viewcomponents/FontAwesome';
 
-export default function QueueEntryRowViewComponent(props: any) {
+export default (props: any): JSX.Element => {
 
-  let index: number = props.index;
-  let queueEntry: QueueEntry = props.queueEntry;
-  let ugkthid: string | null = props.ugkthid;
-  let user: User | null = props.user;
-  let queueName: string = props.queueName;
-  let socket: SocketConnection = props.socket;
+  const index: number = props.index;
+  const queueEntry: QueueEntry = props.queueEntry;
+  const queueName: string = props.queueName;
 
-  let [lastClicked, setLastClicked] = useState(null as null | number);
-  let [displayTAOptions, setDisplayTAOptions] = useState(false);
+  const user = useSelector<GlobalStore, User | null>(store => store.user);
 
-  function kickUser() {
-    console.log('kickUser');
-  }
+  const displayTAOptions = queueEntry.isDisplayingTAOptions;
 
-  function sendMessage(message: string) {
-    socket.send(new RequestMessage(`sendMessage/${queueName}`, {
-      ugkthid: ugkthid,
-      message: message
-    }));
-  }
-
-  function help() {
-    console.log('help');
-  }
-
-  function badLocation() {
-    console.log('badLocation');
-  }
-
-  function completion() {
-    console.log('completion');
-  }
-
-  function addComment() {
-    console.log('addComment');
-  }
-
-
-  function click() {
-    if (lastClicked === null) {
-      setLastClicked(Date.now());
-      return;
-    }
-
-    const intervallMilliseconds: number = 500;
-    if (Date.now() - lastClicked <= intervallMilliseconds) {
-      setDisplayTAOptions(!displayTAOptions);
-    }
-
-    setLastClicked(Date.now());
-  }
-
-  function touch() {
-    setDisplayTAOptions(!displayTAOptions);
-  }
+  const dispatch = useDispatch();
 
   return (
     <>
-      <tr onClick={click} onTouchEnd={touch}>
+      <tr
+        onClick={() => dispatch(clickRow(queueName, queueEntry.ugkthid))}
+        onTouchEnd={() => dispatch(touchRow(queueName, queueEntry.ugkthid))}>
         <th scope="row">{index + 1}</th>
         <td>
           {
-            !ugkthid || queueEntry.ugkthid !== ugkthid
-              ? queueEntry.realname
-              : <><Star color="blue" /> {queueEntry.realname}</>
+            user?.ugkthid === queueEntry.ugkthid
+              ? <><Star color="blue" /> {queueEntry.realname}</>
+              : queueEntry.realname
           }
         </td>
         <td>{queueEntry.location}</td>
@@ -88,42 +49,42 @@ export default function QueueEntryRowViewComponent(props: any) {
               <tr>
                 <td colSpan={6}>
                   <div className="row my-1">
-                    <div title="kick user" className="col-12 col-lg-2 px-3 my-1" onClick={kickUser}>
+                    <div title="kick user" className="col-12 col-lg-2 px-3 my-1" onClick={() => dispatch(kickUser(queueName, queueEntry.ugkthid))}>
                       <div
                         className="text-center red clickable"
                         style={{lineHeight: '2em'}}>
                         <Cross />
                       </div>
                     </div>
-                    <div title="send message" className="col-12 col-lg-2 px-3 my-1" onClick={() => sendMessage('Hello there cutie')}>
+                    <div title="send message" className="col-12 col-lg-2 px-3 my-1" onClick={() => dispatch(sendMessage(queueName, queueEntry.ugkthid, 'Hello there cutie'))}>
                       <div
                         className="text-center yellow clickable"
                         style={{lineHeight: '2em'}}>
                         <Envelope />
                       </div>
                     </div>
-                    <div title="help" className="col-12 col-lg-2 px-3 my-1" onClick={help}>
+                    <div title="help" className="col-12 col-lg-2 px-3 my-1" onClick={() => dispatch(help(queueName, queueEntry.ugkthid))}>
                       <div
                         className="text-center blue clickable"
                         style={{lineHeight: '2em'}}>
                         <CheckMark />
                       </div>
                     </div>
-                    <div title="bad location" className="col-12 col-lg-2 px-3 my-1" onClick={badLocation}>
+                    <div title="bad location" className="col-12 col-lg-2 px-3 my-1" onClick={() => dispatch(badLocation(queueName, queueEntry.ugkthid))}>
                       <div
                         className="text-center yellow clickable"
                         style={{lineHeight: '2em'}}>
                         <QuestionMark />
                       </div>
                     </div>
-                    <div title="completion" className="col-12 col-lg-2 px-3 my-1" onClick={completion}>
+                    <div title="completion" className="col-12 col-lg-2 px-3 my-1" onClick={() => dispatch(markForCompletion(queueName, queueEntry.ugkthid))}>
                       <div
                         className="text-center yellow clickable"
                         style={{lineHeight: '2em'}}>
                         <Bookmark />
                       </div>
                     </div>
-                    <div title="add comment" className="col-12 col-lg-2 px-3 my-1" onClick={addComment}>
+                    <div title="add comment" className="col-12 col-lg-2 px-3 my-1" onClick={() => dispatch(addComment(queueName, queueEntry.ugkthid, 'My new comment'))}>
                       <div
                         className="text-center yellow clickable"
                         style={{lineHeight: '2em'}}>
@@ -137,4 +98,4 @@ export default function QueueEntryRowViewComponent(props: any) {
       }
     </>
   );
-}
+};

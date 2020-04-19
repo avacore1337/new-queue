@@ -1,19 +1,15 @@
 import React from 'react';
-import SocketConnection from '../../../utils/SocketConnection';
-import RequestMessage from '../../../utils/RequestMessage';
+import { useSelector, useDispatch } from 'react-redux'
+import { GlobalStore } from '../../../store';
+import { removeAdministrator } from '../../../actions/administratorActions';
 import Administrator from '../../../models/Administrator';
 import { Cross } from '../../../viewcomponents/FontAwesome';
 
-export default function AdministrationListViewComponent(props: any) {
+export default (): JSX.Element => {
 
-  let administrators: Administrator[] = props.administrators;
-  let socket: SocketConnection = props.socket;
+  const administrators = useSelector<GlobalStore, Administrator[]>(store => store.administration.administrators);
 
-  function removeAdministrator(administrator: Administrator): void | undefined {
-    socket.send(new RequestMessage('RemoveSuperAdmin', {
-      username: administrator.username
-    }));
-  }
+  const dispatch = useDispatch();
 
   return (
     administrators.length
@@ -35,7 +31,7 @@ export default function AdministrationListViewComponent(props: any) {
                         administrators.length <= 1
                           ? administrator.username
                           : <>
-                              {administrator.username} <Cross color="red" title="Remove administrator" onClick={() => removeAdministrator(administrator)} />
+                              {administrator.username} <Cross color="red" title="Remove administrator" onClick={() => dispatch(removeAdministrator(administrator.username))} />
                             </>
                       }
                     </td>
@@ -48,4 +44,4 @@ export default function AdministrationListViewComponent(props: any) {
           (No admins, you are totally screwed now ... ;) )
         </div>
   );
-}
+};

@@ -1,17 +1,15 @@
 import React from 'react';
-import SocketConnection from '../../utils/SocketConnection';
+import { useSelector } from 'react-redux'
+import { GlobalStore } from '../../store';
 import QueueEntry from '../../models/QueueEntry';
-import User from '../../models/User';
 import QueueEntryRowViewComponent from './QueueEntryRow';
 
-export default function QueueEntryTableViewComponent(props: any) {
+export default (props: any): JSX.Element => {
 
-  let queueEntries: QueueEntry[] = props.queueEntries;
-  let filter: string = props.filter;
-  let ugkthid: string | null = props.ugkthid;
-  let user: User | null = props.user;
-  let queueName: string = props.queueName;
-  let socket: SocketConnection = props.socket;
+  const queueName: string = props.queueName;
+  const queueEntries: QueueEntry[] = props.queueEntries;
+
+  const filter = useSelector<GlobalStore, string>(store => store.utils.filter);
 
   function filterUsers(entry: QueueEntry) {
     const lowerCaseFilter = filter.toLowerCase();
@@ -48,14 +46,11 @@ export default function QueueEntryTableViewComponent(props: any) {
                     <QueueEntryRowViewComponent
                       index={index}
                       queueEntry={queueEntry}
-                      ugkthid={ugkthid}
-                      user={user}
-                      queueName={queueName}
-                      socket={socket} />)
+                      queueName={queueName} />)
                 }
               </tbody>
             </table>
       }
     </div>
   );
-}
+};

@@ -1,28 +1,27 @@
 import React from 'react';
-import SocketConnection from '../../../../utils/SocketConnection';
-import RequestMessage from '../../../../utils/RequestMessage';
+import { useSelector, useDispatch } from 'react-redux'
+import { GlobalStore } from '../../../../store';
+import { addTeacher } from '../../../../actions/administratorActions';
 import User from '../../../../models/User';
 import Queue from '../../../../models/Queue';
 import AddInputViewComponent from '../../../../viewcomponents/AddInput';
 
-export default function AddTeacherViewComponent(props: any) {
+export default (props: any): JSX.Element | null => {
 
-  let queue: Queue = props.queue;
-  let user: User = props.user;
-  let socket: SocketConnection = props.socket;
+  const queue: Queue = props.queue;
+  const user = useSelector<GlobalStore, User | null>(store => store.user);
 
-  function addTeacher(newTeacher: string): void {
-    socket.send(new RequestMessage(`addTeacher/${queue.name}`, { username: newTeacher }));
-  }
+  const dispatch = useDispatch();
 
   return (
     user === null || queue === undefined || (!user.isAdministrator && !user.isTeacherIn(queue.name))
       ? null
       : <>
-          <p>Insert the new teachers's username</p>
+          <p>Insert the new teacher's username</p>
           <div className="col-12 col-lg-8 p-0">
             <AddInputViewComponent
-              callback={addTeacher}
+              uniqueIdentifier="addTeacher"
+              callback={(username: string) => dispatch(addTeacher(queue.name, username))}
               placeholder={'Add teacher'}
               isDisabled={queue === null} />
           </div>
@@ -30,4 +29,4 @@ export default function AddTeacherViewComponent(props: any) {
         </>
 
   );
-}
+};

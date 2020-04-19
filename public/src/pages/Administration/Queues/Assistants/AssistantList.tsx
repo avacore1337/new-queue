@@ -1,21 +1,18 @@
 import React from 'react';
-import SocketConnection from '../../../../utils/SocketConnection';
-import RequestMessage from '../../../../utils/RequestMessage';
-import Assistant from '../../../../models/TeachingAssistant';
+import { useDispatch } from 'react-redux'
+import { removeAssistant } from '../../../../actions/administratorActions';
+import Queue from '../../../../models/Queue';
+import Assistant from '../../../../models/Assistant';
 import { Cross } from '../../../../viewcomponents/FontAwesome';
 
-export default function AssistantListViewComponent(props: any) {
+export default (props: any): JSX.Element => {
 
-  let queueName: string = props.queueName;
-  let assistants: Assistant[] = props.assistants;
-  let socket: SocketConnection = props.socket;
+  const queue: Queue = props.queue;
 
-  function removeAssistant(assistant: Assistant): void | undefined {
-    socket.send(new RequestMessage(`removeAssistant/${queueName}`, { username: assistant.username }));
-  }
+  const dispatch = useDispatch();
 
   return (
-    assistants.length
+    queue.assistants.length
       ? <>
           <table className="table table-striped">
             <thead>
@@ -26,11 +23,11 @@ export default function AssistantListViewComponent(props: any) {
             </thead>
             <tbody>
               {
-                assistants.map((assistant: Assistant) =>
+                queue.assistants.map((assistant: Assistant) =>
                   <tr key={assistant.username}>
                     <td>{ assistant.realname }</td>
                     <td>
-                      { assistant.username } <Cross color="red" title="Remove assistant" onClick={() => removeAssistant(assistant)} />
+                      { assistant.username } <Cross color="red" title="Remove assistant" onClick={() => dispatch(removeAssistant(queue.name, assistant.username))} />
                     </td>
                   </tr>)
               }
@@ -40,7 +37,7 @@ export default function AssistantListViewComponent(props: any) {
       : <strong>
           No assistants?
           <br />
-          Hope you have plenty of time for your students ^.^
+          You must have plenty of time for your students ^.^
         </strong>
   );
-}
+};

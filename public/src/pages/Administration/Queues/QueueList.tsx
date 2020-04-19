@@ -1,10 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux'
+import { GlobalStore } from '../../../store';
 import Queue from '../../../models/Queue';
 
-export default function QueueListViewComponent(props: any) {
+export default (): JSX.Element => {
 
-  let queues: Queue[] = props.queues;
-  queues.sort((queue1: Queue, queue2: Queue) => queue1.name.toLowerCase() < queue2.name.toLowerCase() ? -1 : 1);
+  const queues = useSelector<GlobalStore, Queue[]>(store => store.queues);
 
   return (
     queues.length
@@ -18,7 +19,7 @@ export default function QueueListViewComponent(props: any) {
             <tbody>
               {
                 queues.map(queue =>
-                  <tr key={'QueueListViewComponent_' + queue.name}>
+                  <tr key={`QueueList_${queue.name}`}>
                     <td style={{color: queue.hiding ? 'gray' : 'inherit'}}>{ queue.name }</td>
                   </tr>)
               }
@@ -26,7 +27,7 @@ export default function QueueListViewComponent(props: any) {
           </table>
         </div>
       : <div>
-          (No queues, you might as well add some now ... ;) )
+          (No queues, you might as well add some now ... o_o )
         </div>
   );
-}
+};

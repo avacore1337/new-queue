@@ -1,17 +1,12 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import Queue from '../../../../models/Queue';
-import User from '../../../../models/User';
-import Teacher from '../../../../models/Teacher';
 import AddTeacherViewComponent from './AddTeacher';
 import TeacherListViewComponent from './TeacherList';
 
-export default function TeachersViewComponent(props: any) {
+export default (props: any): JSX.Element => {
 
-  // TODO: This might not be a real "Queue"
-  let queue: Queue = props.queue;
-  let user: User = props.user;
-  let socket: Queue = props.socket;
+  const queue: Queue = props.queue;
 
   return (
     <>
@@ -20,19 +15,13 @@ export default function TeachersViewComponent(props: any) {
         <p>New teachers will have to log out and in again in order to get all of their new privileges.</p>
       </div>
       <div className="row mb-3">
-        <AddTeacherViewComponent
-          queue={queue}
-          user={user}
-          socket={socket} />
+        <AddTeacherViewComponent queue={queue} />
       </div>
       <div className="row">
         <div className="col-12 pl-0">
-          <TeacherListViewComponent
-            queueName={queue.name}
-            teachers={queue.teachers}
-            socket={socket} />
+          <TeacherListViewComponent queue={queue} />
         </div>
       </div>
     </>
   );
-}
+};

@@ -1,5 +1,5 @@
+import store from '../store';
 import RequestMessage from './RequestMessage';
-import User from '../models/User';
 
 export default class SocketConnection {
 
@@ -48,22 +48,18 @@ export default class SocketConnection {
 
       let callback = this._callbacks[path];
       if (callback !== undefined) {
-        callback(data.content);
+        store.dispatch(callback(data.content));
       }
       else {
         let backUp = JSON.stringify(data.content);
 
         for (let property in this._callbacks) {
           let regex = new RegExp(`^${property.split(new RegExp(':[^/]+')).join('[^/]+')}$`);
-          console.log(regex);
-          console.log(property);
           if (path.match(regex) !== null) {
             data.content = JSON.parse(backUp);
 
             const parts = path.split('/');
             const propertyParts = property.split('/');
-
-            console.log(`path ${path} matched ${property}`);
 
             for (let i = 0; i < propertyParts.length; i++) {
               if (propertyParts[i].startsWith(':')) {
@@ -71,7 +67,7 @@ export default class SocketConnection {
               }
             }
 
-            this._callbacks[property](data.content);
+            store.dispatch(this._callbacks[property](data.content));
           }
         }
       }
@@ -91,7 +87,7 @@ export default class SocketConnection {
     this._callbacks[path] = callback;
   }
 
-  public quitListening(path: string): void {
+  public stopListening(path: string): void {
     delete this._callbacks[path];
   }
 

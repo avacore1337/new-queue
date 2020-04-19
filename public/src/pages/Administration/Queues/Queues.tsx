@@ -1,34 +1,28 @@
 import React from 'react';
-import { Redirect, Link } from "react-router-dom";
-import SocketConnection from '../../../utils/SocketConnection';
+import { useSelector } from 'react-redux'
+import { GlobalStore } from '../../../store';
 import User from '../../../models/User';
-import Queue from '../../../models/Queue';
 import AddQueueViewModel from './AddQueue';
 import QueueListViewComponent from './QueueList';
 
-export default function QueuesViewComponent(props: any) {
+export default (): JSX.Element | null => {
 
-  let user: User = props.user;
-  let socket: SocketConnection = props.socket;
-  let queues: Queue[] = props.queues;
+  const user = useSelector<GlobalStore, User | null>(store => store.user);
 
   return (
     user === null || (!user.isAdministrator && !user.isTeacher)
       ? null
       : <>
           <div className="row mb-5">
-            <AddQueueViewModel
-              socket={socket}
-              user={user} />
+            <AddQueueViewModel />
           </div>
           <div className="row">
             <h6>Queues</h6>
             <br />
             <div className="col-12 pl-0">
-              <QueueListViewComponent
-                queues={queues} />
+              <QueueListViewComponent />
             </div>
           </div>
         </>
   );
-}
+};

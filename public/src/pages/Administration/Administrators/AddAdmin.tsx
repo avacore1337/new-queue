@@ -1,18 +1,15 @@
 import React from 'react';
-import { Redirect } from "react-router-dom";
-import SocketConnection from '../../../utils/SocketConnection';
-import RequestMessage from '../../../utils/RequestMessage';
+import { useSelector, useDispatch } from 'react-redux'
+import { GlobalStore } from '../../../store';
+import { addAdministrator } from '../../../actions/administratorActions';
 import User from '../../../models/User';
 import AddInputViewComponent from '../../../viewcomponents/AddInput';
 
-export default function AddAdministratorViewComponent(props: any) {
+export default (): JSX.Element | null => {
 
-  let user: User = props.user;
-  let socket: SocketConnection = props.socket;
+  const user = useSelector<GlobalStore, User | null>(store => store.user);
 
-  function addAdministrator(newAdministrator: string): void {
-    socket.send(new RequestMessage('addSuperAdmin', { username: newAdministrator }));
-  }
+  const dispatch = useDispatch();
 
   return (
     user === null || !user.isAdministrator
@@ -21,11 +18,12 @@ export default function AddAdministratorViewComponent(props: any) {
           <p>Insert the new administrator's username</p>
           <div className="col-12 col-lg-8 p-0">
             <AddInputViewComponent
-              callback={addAdministrator}
+              uniqueIdentifier="addAdmin"
+              callback={(newAdministrator: string) => dispatch(addAdministrator(newAdministrator))}
               placeholder={'Add admin'} />
           </div>
           <br />
         </>
 
   );
-}
+};

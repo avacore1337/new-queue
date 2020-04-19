@@ -1,21 +1,18 @@
 import React from 'react';
-import SocketConnection from '../../../../utils/SocketConnection';
-import RequestMessage from '../../../../utils/RequestMessage';
+import { useDispatch } from 'react-redux'
+import { removeTeacher } from '../../../../actions/administratorActions';
+import Queue from '../../../../models/Queue';
 import Teacher from '../../../../models/Teacher';
 import { Cross } from '../../../../viewcomponents/FontAwesome';
 
-export default function TeacherListViewComponent(props: any) {
+export default (props: any): JSX.Element => {
 
-  let queueName: string = props.queueName;
-  let teachers: Teacher[] = props.teachers;
-  let socket: SocketConnection = props.socket;
+  const queue: Queue = props.queue;
 
-  function removeTeacher(teacher: Teacher): void | undefined {
-    socket.send(new RequestMessage(`removeTeacher/${queueName}`, { username: teacher.username }));
-  }
+  const dispatch = useDispatch();
 
   return (
-    teachers.length
+    queue.teachers.length
       ? <>
           <table className="table table-striped">
             <thead>
@@ -26,11 +23,11 @@ export default function TeacherListViewComponent(props: any) {
             </thead>
             <tbody>
               {
-                teachers.map((teacher: Teacher) =>
+                queue.teachers.map((teacher: Teacher) =>
                   <tr key={teacher.username}>
                     <td>{ teacher.realname }</td>
                     <td>
-                      { teacher.username } <Cross color="red" title="Remove teacher" onClick={() => removeTeacher(teacher)} />
+                      { teacher.username } <Cross color="red" title="Remove teacher" onClick={() => dispatch(removeTeacher(queue.name, teacher.username))} />
                     </td>
                   </tr>)
               }
@@ -41,4 +38,4 @@ export default function TeacherListViewComponent(props: any) {
           Well... Someone's got to teach, right?
         </strong>
   );
-}
+};

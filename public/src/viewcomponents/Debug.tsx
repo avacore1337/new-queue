@@ -1,26 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import SocketConnection from '../utils/SocketConnection';
-import RequestMessage from '../utils/RequestMessage';
+import React from 'react';
+import { useDispatch } from 'react-redux'
+import { sendDebugMessage } from '../actions/debugActions';
 
-export default function DebugViewComponent(props: any) {
+export default (): JSX.Element => {
 
-  let [debugPath, setDebugPath] = useState('');
-  let [debugJson, setDebugJson] = useState('');
-
-  const socket: SocketConnection = props.socket;
-
-  function changeDebugMessage(event: any): void {
-    setDebugJson(event.target.value);
-  }
-
-  function changeDebugPath(event: any): void {
-    setDebugPath(event.target.value);
-  }
+  const dispatch = useDispatch();
 
   function handleKeyDownDebug(event: any): void {
     if (event.key === 'Enter') {
-      socket.send(new RequestMessage(debugPath, JSON.parse(debugJson)));
-      setDebugJson('');
+      const pathInput = document.querySelector('#debugPath') as (HTMLInputElement);
+      const jsonInput = document.querySelector('#debugJson') as (HTMLInputElement);
+
+      dispatch(sendDebugMessage(pathInput.value, JSON.parse(jsonInput.value)));
+
+      jsonInput.value = '';
     }
   }
 
@@ -30,20 +23,18 @@ export default function DebugViewComponent(props: any) {
         <div className="row">
           <div className="col-6">
             <input
+              id="debugPath"
               name="path"
               type="text"
               placeholder="Path"
-              value={debugPath}
-              onChange={changeDebugPath}
               style={{width: '100%', borderRadius: 0}} />
           </div>
           <div className="col-6">
             <input
-              name="debug"
+              id="debugJson"
+              name="json"
               type="text"
               placeholder="Json"
-              value={debugJson}
-              onChange={changeDebugMessage}
               onKeyDown={handleKeyDownDebug}
               style={{width: '100%', borderRadius: 0}} />
           </div>
@@ -51,4 +42,4 @@ export default function DebugViewComponent(props: any) {
       </div>
     </div>
   );
-}
+};

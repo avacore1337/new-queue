@@ -1,33 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { useDispatch } from 'react-redux'
 import './index.css';
 import App from './App';
 import store from './store';
 import * as serviceWorker from './serviceWorker';
-import SocketConnection from './utils/SocketConnection';
-import User from './models/User';
-
-const SERVER_URL = 'ws://localhost:7777/ws';
-const socket: SocketConnection = new SocketConnection(SERVER_URL);
-
-const userData = localStorage.getItem('User');
-if (userData) {
-  socket.setToken(JSON.parse(userData).token);
-}
+import { closeSocket } from './actions/socketActions';
+import { loadUser } from './actions/userActions';
 
 function LifeCycle() {
-  let [user, setUser] = useState(userData ? new User(JSON.parse(userData)) : null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    return () => { socket.close(); };
+    dispatch(loadUser());
+
+    return () => { dispatch(closeSocket()); };
   }, []);
 
   return (
-    <App
-      socket={socket}
-      user={user}
-      setUser={setUser} />
+    <App />
   );
 }
 

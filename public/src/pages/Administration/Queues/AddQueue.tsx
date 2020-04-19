@@ -1,17 +1,15 @@
 import React from 'react';
-import SocketConnection from '../../../utils/SocketConnection';
-import RequestMessage from '../../../utils/RequestMessage';
+import { useSelector, useDispatch } from 'react-redux'
+import { GlobalStore } from '../../../store';
+import { addQueue } from '../../../actions/administratorActions';
 import User from '../../../models/User';
 import AddInputViewComponent from '../../../viewcomponents/AddInput';
 
-export default function AddQueueViewComponent(props: any) {
+export default (): JSX.Element | null => {
 
-  let user: User = props.user;
-  let socket: SocketConnection = props.socket;
+  const user = useSelector<GlobalStore, User | null>(store => store.user);
 
-  function addQueue(newQueue: string): void {
-    socket.send(new RequestMessage(`addQueue/${newQueue}`));
-  }
+  const dispatch = useDispatch();
 
   return (
     user === null || !user.isAdministrator
@@ -20,11 +18,12 @@ export default function AddQueueViewComponent(props: any) {
           <p>Insert the name of the new queue</p>
           <div className="col-12 col-lg-8 p-0">
             <AddInputViewComponent
-              callback={addQueue}
+              uniqueIdentifier="addQueue"
+              callback={(queueName: string) => dispatch(addQueue(queueName))}
               placeholder={'Add queue'} />
           </div>
           <br />
         </>
 
   );
-}
+};

@@ -7,7 +7,14 @@ export default class Teacher {
   public get username() { return this._username; }
 
   public constructor(data: any) {
-    this._realname = data.realname;
-    this._username = data.username;
+    this._realname = data.realname || '';
+    this._username = data.username || '';
+  }
+
+  public clone(): Teacher {
+    return new Teacher({
+      realname: this._realname,
+      username: this._username
+    });
   }
 }

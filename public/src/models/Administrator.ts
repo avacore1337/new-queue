@@ -7,7 +7,14 @@ export default class Administrator {
   public get username() { return this._username; }
 
   public constructor(data: any) {
-    this._realname = data.realname;
-    this._username = data.username;
+    this._realname = data.realname || '';
+    this._username = data.username || '';
+  }
+
+  public clone(): Administrator {
+    return new Administrator({
+      realname: this._realname,
+      username: this._username
+    });
   }
 }

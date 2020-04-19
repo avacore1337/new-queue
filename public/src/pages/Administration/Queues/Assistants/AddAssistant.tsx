@@ -1,20 +1,17 @@
 import React from 'react';
-import { Redirect } from "react-router-dom";
-import SocketConnection from '../../../../utils/SocketConnection';
-import RequestMessage from '../../../../utils/RequestMessage';
+import { useSelector, useDispatch } from 'react-redux'
+import { GlobalStore } from '../../../../store';
+import { addAssistant } from '../../../../actions/administratorActions';
 import User from '../../../../models/User';
 import Queue from '../../../../models/Queue';
 import AddInputViewComponent from '../../../../viewcomponents/AddInput';
 
-export default function AddAssistantViewComponent(props: any) {
+export default (props: any): JSX.Element | null => {
 
-  let queue: Queue = props.queue;
-  let user: User = props.user;
-  let socket: SocketConnection = props.socket;
+  const queue: Queue = props.queue;
+  const user = useSelector<GlobalStore, User | null>(store => store.user);
 
-  function addAssistant(newAssistant: string): void {
-    socket.send(new RequestMessage(`addAssistant/${queue.name}`, { username: newAssistant }));
-  }
+  const dispatch = useDispatch();
 
   return (
     user === null || queue === undefined || (!user.isAdministrator && !user.isTeacherIn(queue.name))
@@ -23,7 +20,8 @@ export default function AddAssistantViewComponent(props: any) {
           <p>Insert the new assistant's username</p>
           <div className="col-12 col-lg-8 p-0">
             <AddInputViewComponent
-              callback={addAssistant}
+              uniqueIdentifier="addAssistant"
+              callback={(username: string) => dispatch(addAssistant(queue.name, username))}
               placeholder={'Add assistant'}
               isDisabled={queue === null} />
           </div>
@@ -31,4 +29,4 @@ export default function AddAssistantViewComponent(props: any) {
         </>
 
   );
-}
+};

@@ -6,7 +6,7 @@ import Panda from '../../img/404/Panda.png';
 import Penguin from '../../img/404/Penguin.png';
 import Rabbit from '../../img/404/Rabbit.png';
 
-export default function NotFoundViewComponent() {
+export default (): JSX.Element => {
 
   const images = [ Coffee, DarthVader, Inside, Panda, Penguin, Rabbit ];
 
@@ -17,8 +17,6 @@ export default function NotFoundViewComponent() {
     maxWidth: '60vw'
   };
 
-  console.log(image);
-
   return (
     <div className="container h-100">
       <div className="row h-100 justify-content-center align-items-center">
@@ -26,5 +24,4 @@ export default function NotFoundViewComponent() {
       </div>
     </div>
   );
-
-}
+};

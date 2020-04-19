@@ -1,12 +1,14 @@
 import React from 'react';
 import { Link, useLocation  } from "react-router-dom";
+import { useSelector } from 'react-redux'
+import { GlobalStore } from '../store';
 import User from '../models/User';
 
-export default function NavBarViewComponent(props: any) {
+export default (): JSX.Element => {
 
-  let user: User = props.user;
+  const user = useSelector<GlobalStore, User | null>(store => store.user);
 
-  let location = useLocation();
+  const location = useLocation();
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -75,4 +77,4 @@ export default function NavBarViewComponent(props: any) {
       </div>
     </nav>
   );
-}
+};

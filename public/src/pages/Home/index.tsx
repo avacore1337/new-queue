@@ -1,52 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useEffect } from 'react';
 import { Link } from "react-router-dom";
-import SocketConnection from '../../utils/SocketConnection';
+import { useSelector, useDispatch } from 'react-redux'
+import { GlobalStore } from '../../store';
+import { loadQueues } from '../../actions/queueActions';
+import { subscribe, unsubscribe } from '../../actions/lobbyActions';
+import { clearFilter } from '../../actions/filterActions';
 import User from '../../models/User';
 import Queue from '../../models/Queue';
 import QueueCardViewComponent from './QueueCard';
 import SearchViewComponent from '../../viewcomponents/Search';
-import * as QueueActions from '../../actions/queueActions';
 
-export default function HomeViewComponent(props: any) {
+export default (): JSX.Element => {
 
-  let [filter, setFilter] = useState('');
-  let [queues, setQueues] = useState([] as Queue[]);
-
-  let user: User | null = props.user;
-  let socket: SocketConnection = props.socket;
+  const user = useSelector<GlobalStore, User | null>(store => store.user);
+  const queues = useSelector<GlobalStore, Queue[]>(store => store.queues);
+  const filter = useSelector<GlobalStore, string>(store => store.utils.filter);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(QueueActions.loadQueues());
+    dispatch(loadQueues());
+    dispatch(subscribe());
 
-    fetch('http://localhost:8000/api/queues')
-      .then(response => response.json())
-      .then((response: any) => response.queues.map((res: any) => new Queue(res)))
-      .then((response: Queue[]) => {
-        response.sort((queue1: Queue, queue2: Queue) => {
-          if (queue1.hiding && !queue2.hiding) { return 1; }
-          if (!queue1.hiding && queue2.hiding) { return -1; }
-          return queue1.name < queue2.name ? -1 : 1;
-        });
-        setQueues(response)
-      });
-  }, []);
-
-
-  function onJoin(data: any): void {
-    console.log(data);
-  }
-
-  function onLeave(data: any): void {
-    console.log(data);
-  }
-
-  useEffect(() => {
-    socket.enterLobby(onJoin, onLeave);
-
-    return () => { socket.leaveLobby(); };
+    return () => {
+      dispatch(clearFilter());
+      dispatch(unsubscribe());
+    };
   }, []);
 
   function canSee(queue: Queue): boolean {
@@ -54,16 +33,14 @@ export default function HomeViewComponent(props: any) {
   }
 
   function canClick(queue: Queue): boolean {
-    return !queue.locked || user !== null && (user.isAdministrator || user.isTeacherIn(queue.name) || user.isTeachingAssistantIn(queue.name));
+    return !queue.locked || user !== null && (user.isAdministrator || user.isTeacherIn(queue.name) || user.isAssistantIn(queue.name));
   }
 
   return (
     <div className="container">
       <div className="row">
         <div className="col-lg-4 offset-lg-8 p-0">
-          <SearchViewComponent
-            filter={filter}
-            setFilter={setFilter} />
+          <SearchViewComponent />
         </div>
       </div>
       {queues
@@ -71,13 +48,13 @@ export default function HomeViewComponent(props: any) {
         .map(queue =>
           canSee(queue)
           ? canClick(queue)
-            ? <Link to={"/Queue/" + queue.name} key={queue.name + 'link'}>
+            ? <Link to={`/Queue/${queue.name}`} key={`HomeLink_${queue.name}`}>
                 <QueueCardViewComponent queue={queue} />
               </Link>
-            : <QueueCardViewComponent queue={queue} key={queue.name + 'card'} />
+            : <QueueCardViewComponent queue={queue} key={`HomeCard_${queue.name}`} />
           : null
       )}
     </div>
   );
 
-}
+};

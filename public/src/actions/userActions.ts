@@ -1,16 +1,24 @@
-import { FluxStandardAction } from 'redux-promise-middleware';
-import ActionType from '../utils/ActionType';
-import User from '../models/User';
+import { FluxStandardAction, AsyncAction } from 'redux-promise-middleware';
+import axios from 'axios';
+import AsyncFunction from '../utils/AsyncFunction';
 
-export const Types = Object.freeze({
-  SetUser: new ActionType('SET_USER')
+export const ActionTypes = Object.freeze({
+  Login: new AsyncFunction('LOGIN'),
+  Logout: 'LOGOUT',
+  LoadUser: 'LOAD_USER'
 });
 
-export const loadUser = (): FluxStandardAction => {
-  const userData = localStorage.getItem('User');
-
+export const login = (username: string): AsyncAction => {
   return {
-    type: Types.SetUser,
-    payload: userData ? new User(JSON.parse(userData)) : null
+    type: ActionTypes.Login,
+    payload: axios.post('http://localhost:8000/api/users/login', { user: { username } })
   };
 };
+
+export const logout = (): FluxStandardAction => ({
+  type: ActionTypes.Logout
+});
+
+export const loadUser = (): FluxStandardAction => ({
+  type: ActionTypes.LoadUser
+});

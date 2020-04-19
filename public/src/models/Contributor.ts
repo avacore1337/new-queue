@@ -13,10 +13,10 @@ export default class Contributor {
   public get linkedIn() { return this._linkedIn; }
 
   public constructor(data: any) {
-    this._name = data.name;
-    this._gravatar = data.gravatar;
-    this._github = data.github;
-    this._linkedIn = data.linkedIn;
+    this._name = data.name || '';
+    this._gravatar = data.gravatar || '';
+    this._github = data.github || '';
+    this._linkedIn = data.linkedIn || '';
   }
 
   public static InitialValue: Contributor[] = [
@@ -33,4 +33,13 @@ export default class Contributor {
       "linkedIn": "332859123"
     })
   ];
+
+  public clone(): Contributor {
+    return new Contributor({
+      name: this._name,
+      gravatar: this._gravatar,
+      github: this._github,
+      linkedIn: this._linkedIn
+    });
+  }
 }

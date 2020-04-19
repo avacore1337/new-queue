@@ -30,32 +30,49 @@ export default class QueueEntry {
   private _realname: string;
   public get realname() { return this._realname; }
 
+  private _lastClicked: number | null;
+  public get lastClicked() { return this._lastClicked; }
+
+  private _isDisplayingTAOptions: boolean;
+  public get isDisplayingTAOptions() { return this._isDisplayingTAOptions; }
+
   public constructor(data: any) {
-    this._comment = data.comment;
-    this._location = data.location;
-    this._starttime = data.starttime;
-    this._gettinghelp = data.gettinghelp;
-    this._helper = data.helper;
-    this._help = data.help;
-    this._badlocation = data.badlocation;
-    this._username = data.username;
-    this._ugkthid = data.ugkthid;
-    this._realname = data.realname;
+    this._comment = data.comment || '';
+    this._location = data.location || '';
+    this._starttime = data.starttime || 0;
+    this._gettinghelp = data.gettinghelp || false;
+    this._helper = data.helper || '';
+    this._help = data.help || false;
+    this._badlocation = data.badlocation || false;
+    this._username = data.username || '';
+    this._ugkthid = data.ugkthid || '';
+    this._realname = data.realname || '';
+    this._lastClicked = data.lastClicked || null;
+    this._isDisplayingTAOptions = data.isDisplayingTAOptions || false;
   }
 
-  public static InitialValue: QueueEntry =
-    new QueueEntry(
-      {
-        comment: 'I need assistance',
-        location: 'Red 01',
-        starttime: Date.now(),
-        gettinghelp: false,
-        helper: null,
-        help: true,
-        badlocation: false,
-        username: 'antbac',
-        ugkthid: 'u_123456789',
-        realname: 'Anton Bäckström'
-      }
-    );
+  public setLastClicked(time: number): void {
+    this._lastClicked = time;
+  }
+
+  public toggleTAOptions(): void {
+    this._isDisplayingTAOptions = !this._isDisplayingTAOptions;
+  }
+
+  public clone(): QueueEntry {
+    return new QueueEntry({
+      comment: this._comment,
+      location: this._location,
+      starttime: this._starttime,
+      gettinghelp: this._gettinghelp,
+      helper: this._helper,
+      help: this._help,
+      badlocation: this._badlocation,
+      username: this._username,
+      ugkthid: this._ugkthid,
+      realname: this._realname,
+      lastClicked: this._lastClicked,
+      isDisplayingTAOptions: this._isDisplayingTAOptions
+    });
+  }
 }

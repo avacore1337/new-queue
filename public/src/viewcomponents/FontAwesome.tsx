@@ -29,7 +29,7 @@ function parseProps(props: any): [string | undefined, string | undefined, ((even
   const color: string | undefined = props.color;
   const onClick: ((event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void) | undefined = props.onClick;
 
-  let cssClasses = [
+  const cssClasses = [
     onClick !== undefined ? 'clickable' : null,
     color !== undefined ? colorMapping[color] as string | null : null
   ];
@@ -43,7 +43,7 @@ function parseProps(props: any): [string | undefined, string | undefined, ((even
 
 function Markup(props: any, fontAwesomeCssClass: string): JSX.Element {
 
-  let [title, styling, onClick] = parseProps(props);
+  const [title, styling, onClick] = parseProps(props);
 
   return (
     title || styling || onClick

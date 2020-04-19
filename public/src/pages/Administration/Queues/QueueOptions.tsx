@@ -1,49 +1,22 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import SocketConnection from '../../../utils/SocketConnection';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux'
+import { GlobalStore } from '../../../store';
+import { loadAdditionalQueueData, selectQueue } from '../../../actions/administratorActions';
 import User from '../../../models/User';
 import Queue from '../../../models/Queue';
-import Teacher from '../../../models/Teacher';
-import Assistant from '../../../models/TeachingAssistant';
 import TeachersViewComponent from './Teachers/Teachers';
 import AssistantsViewComponent from './Assistants/Assistants';
 
-export default function QueueOptionsViewComponent(props: any) {
+export default (): JSX.Element | null => {
 
-  let queues: Queue[] = props.queues;
-  let setQueues: React.Dispatch<React.SetStateAction<Queue[]>> = props.setQueues;
-  queues.sort((queue1: Queue, queue2: Queue) => queue1.name.toLowerCase() < queue2.name.toLowerCase() ? -1 : 1);
+  const user = useSelector<GlobalStore, User | null>(store => store.user);
+  const queues = useSelector<GlobalStore, Queue[]>(store => store.queues);
+  const selectedQueue = useSelector<GlobalStore, string | null>(store => store.administration.selectedQueue || null);
 
-  let user: User = props.user;
-  let socket: SocketConnection = props.socket;
-
-  let [selectedQueue, setSelectedQueue] = useState(null as Queue | null);
-
-  function selectQueue(queue: Queue): void {
-    const teacherRequest = axios.get(`http://localhost:8000/api/queues/${queue.name}/teachers`, {
-      headers: { 'Authorization': `Token ${user.token}` }
-    })
-    .then(response => response.data);
-
-    const assistantRequest = axios.get(`http://localhost:8000/api/queues/${queue.name}/assistants`, {
-      headers: { 'Authorization': `Token ${user.token}` }
-    })
-    .then(response => response.data);
-
-    Promise
-    .all([teacherRequest, assistantRequest])
-    .then((values: any[]): void => {
-      queue.setTeachers(values[0].map((a: any) => new Teacher(a)));
-      queue.setAssistants(values[1].map((a: any) => new Assistant(a)));
-      console.log(queue);
-      setQueues([...queues.filter(q => q.name !== queue.name), queue]);
-    });
-
-    setSelectedQueue(queue);
-  }
+  const dispatch = useDispatch();
 
   return (
-    queues.length === 0
+    queues.length === 0 || user === null
       ? null
       : <>
           <div className="row mb-5">
@@ -57,16 +30,19 @@ export default function QueueOptionsViewComponent(props: any) {
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false" >
-                {selectedQueue ? selectedQueue.name : 'Select a queue'}
+                {selectedQueue || 'Select a queue'}
               </button>
               <div className="dropdown-menu" aria-labelledby="selectQueue">
                 {
-                  queues.map((queue: Queue, index: number) =>
+                  queues.map(queue =>
                     <button
                       className="dropdown-item"
                       type="button"
-                      key={'QueueOptionsViewComponent_' + queue.name}
-                      onClick={(e) => selectQueue(queue)} >
+                      key={`QueueOptions_${queue.name}`}
+                      onClick={() => {
+                        dispatch(loadAdditionalQueueData(queue.name, (user as User).token));
+                        dispatch(selectQueue(queue.name));
+                      }} >
                         {queue.name}
                       </button>
                   )
@@ -79,19 +55,13 @@ export default function QueueOptionsViewComponent(props: any) {
               ? null
               : <div className="row">
                   <div className="col-12 col-lg-6">
-                    <TeachersViewComponent
-                      queue={selectedQueue}
-                      user={user}
-                      socket={socket} />
+                    <TeachersViewComponent queue={queues.filter(q => q.name === selectedQueue)[0]} />
                   </div>
                   <div className="col-12 col-lg-6">
-                    <AssistantsViewComponent
-                      queue={selectedQueue}
-                      user={user}
-                      socket={socket} />
+                    <AssistantsViewComponent queue={queues.filter(q => q.name === selectedQueue)[0]} />
                   </div>
                 </div>
           }
         </>
   );
-}
+};

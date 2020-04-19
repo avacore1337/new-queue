@@ -2,9 +2,9 @@ import React from 'react';
 import Queue from '../../models/Queue';
 import { Invisible, Locked } from '../../viewcomponents/FontAwesome';
 
-export default function QueueCardViewComponent(props: any) {
+export default (props: any): JSX.Element => {
 
-  let queue: Queue = props.queue;
+  const queue: Queue = props.queue;
 
   const styles = {marginTop: '2em', color: 'inherit', fontSize: '1.3em'};
 
@@ -24,4 +24,4 @@ export default function QueueCardViewComponent(props: any) {
       </div>
     </div>
   );
-}
+};

@@ -1,26 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux'
+import { GlobalStore } from '../store';
+import { clearInput, setInput, giveFocus, loseFocus } from '../actions/addInputActions';
 import { Plus } from './FontAwesome';
+import AddInput from '../models/AddInput';
 
-export default function AddInputViewComponent(props: any) {
+export default (props: any): JSX.Element => {
 
-  let callback = props.callback;
-  let isDisabled: boolean = props.isDisabled;
+  const key: string = props.uniqueIdentifier;
+  const callback: (...args: [any]) => any = props.callback;
+  const isDisabled: boolean = props.isDisabled;
 
-  let [content, setContent] = useState('');
-  let [placeholder, setPlaceholder] = useState(props.placeholder as string);
+  const addInput = useSelector<GlobalStore, AddInput | null>(store => store.utils.addInputs[key] || null);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (addInput === null) {
+      dispatch(setInput(key, '', props.placeholder));
+    }
+
+    return () => { dispatch(clearInput(key)); }
+  }, []);
 
   function changeContent(event: any): void {
     if (!isDisabled) {
-      setContent(event.target.value);
+      dispatch(setInput(key, event.target.value, props.placeholder));
     }
   }
 
   function runCallback(event: any): void {
     if (!isDisabled) {
-      if (content !== '') {
+      if (addInput?.placeholder) {
         if (event.key === 'Enter' || event.button === 0) {
-          callback(content);
-          setContent('');
+          callback(addInput?.placeholder);
+          dispatch(clearInput(key));
         }
       }
     }
@@ -31,12 +45,12 @@ export default function AddInputViewComponent(props: any) {
       <input
         type="text"
         className="form-control"
-        placeholder={placeholder}
-        value={content}
+        placeholder={addInput?.placeholder || ''}
+        value={addInput?.content || ''}
         onChange={changeContent}
         onKeyUp={runCallback}
-        onFocus={() => {setPlaceholder('')}}
-        onBlur={() => {setPlaceholder(props.placeholder as string)}}
+        onFocus={() => {dispatch(giveFocus(key))}}
+        onBlur={() => {dispatch(loseFocus(key, props.placeholder))}}
         disabled={isDisabled} />
 
       <div className="input-group-append">
@@ -54,4 +68,4 @@ export default function AddInputViewComponent(props: any) {
       </div>
 		</div>
   );
-}
+};

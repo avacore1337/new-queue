@@ -1,5 +1,5 @@
 import QueueEntry from './QueueEntry';
-import Assistant from './TeachingAssistant';
+import Assistant from './Assistant';
 import Teacher from './Teacher';
 
 export default class Queue {
@@ -32,15 +32,15 @@ export default class Queue {
   public get teachers() { return this._teachers; }
 
   public constructor(data: any) {
-    this._id = data.id;
-    this._name = data.name;
-    this._info = data.info;
-    this._motd = data.motd;
-    this._locked = data.locked;
-    this._hiding = data.hiding;
+    this._id = data.id || -1;
+    this._name = data.name || '';
+    this._info = data.info || '';
+    this._motd = data.motd || '';
+    this._locked = data.locked || false;
+    this._hiding = data.hiding || false;
     this._assistants = data.assistants || [];
     this._teachers = data.teachers || [];
-    this._queueEntries = [QueueEntry.InitialValue];
+    this._queueEntries = data.queueEntries || [];
   }
 
   public addAssistant(assistant: Assistant): void {
@@ -67,28 +67,25 @@ export default class Queue {
     this._teachers = this._teachers.filter(a => a.username !== teacher.username);
   }
 
-  // public add(user: QueueEntry) {
-  //   this.queueEntries.push(user);
-  // }
-  //
-  // public remove(user: QueueEntry) {
-  //   let index = 0;
-  //   while (index < this.queueEntries.length) {
-  //     if (this.queueEntries[index].kthuid === user.kthuid) {
-  //       this.queueEntries.splice(index, 1);
-  //     }
-  //     else {
-  //       index++;
-  //     }
-  //   }
-  // }
+  public setInformationText(info: string): void {
+    this._info = info;
+  }
 
-  // public static InitialValue: Queue[] = [];
+  public setQueueEntries(queueEntries: QueueEntry[]): void {
+    this._queueEntries = queueEntries;
+  }
 
-  public static InitialValue: Queue[] = [
-    new Queue({name: 'TestQueue 1', info: 'Info 1', motd: 'Motd 1', locked: false, hiding: false}),
-    new Queue({name: 'TestQueue 2', info: 'Info 2', motd: 'Motd 2', locked: true, hiding: false}),
-    new Queue({name: 'TestQueue 3', info: 'Info 3', motd: 'Motd 3', locked: false, hiding: true}),
-    new Queue({name: 'TestQueue 4', info: 'Info 4', motd: 'Motd 4', locked: true, hiding: true})
-  ];
+  public clone(): Queue {
+    return new Queue({
+      id: this._id,
+      name: this._name,
+      info: this._info,
+      motd: this._motd,
+      locked: this._locked,
+      hiding: this._hiding,
+      queueEntries: this._queueEntries.map(e => e.clone()),
+      assistants: this._assistants.map(a => a.clone()),
+      teachers: this._teachers.map(t => t.clone())
+    });
+  }
 }
