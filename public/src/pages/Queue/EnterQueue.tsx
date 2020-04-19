@@ -112,7 +112,7 @@ export default (props: any): JSX.Element => {
                 <div
                   className="col-12 text-center yellow clickable"
                   style={{lineHeight: '3em'}}
-                  onClick={() => dispatch(recievingHelp(queueName))}>
+                  onClick={() => dispatch(recievingHelp(queueName, false /* TODO : Fix this */ ))}>
                   <strong>Recieving help</strong>
                 </div>
                 <div

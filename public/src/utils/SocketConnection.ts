@@ -94,7 +94,7 @@ export default class SocketConnection {
   public enterQueue(room: string, onJoin?: (data: any) => void, onLeave?: (data: any) => void, onUpdate?: (data: any) => void): void {
     this._callbacks['joinQueue/:queueName'] = onJoin;
     this._callbacks['leaveQueue/:queueName'] = onLeave;
-    this._callbacks['updateQueue/:queueName'] = onUpdate;
+    this._callbacks['updateQueueEntry/:queueName'] = onUpdate;
 
     const message = new RequestMessage(`subscribeQueue/${room}`);
     this._lastJoinRequest = message;

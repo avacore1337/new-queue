@@ -135,7 +135,8 @@ export default (state = initialState, action: FluxStandardAction) => {
 
     case Listeners.OnQueueEntryUpdated: {
       const queues = state.map(q => q.clone());
-      queues.filter(q => q.name === action.payload.queueName)[0].updateQueueEntry(new QueueEntry(action.payload));
+      const queue = queues.filter(q => q.name === action.payload.queueName)[0];
+      queue.updateQueueEntry(new QueueEntry(action.payload));
       return queues;
     }
 

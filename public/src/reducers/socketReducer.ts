@@ -73,6 +73,13 @@ export default (_ = socket, action: FluxStandardAction) => {
       break;
     }
 
+    case QueueActionTypes.RecievingHelp: {
+      socket.send(new RequestMessage(`setHelpStatus/${action.payload.queueName}`, {
+        status: action.payload.status
+      }));
+      break;
+    }
+
     case QueueActionTypes.SubscribeToQueue: {
       socket.enterQueue(
         action.payload,
@@ -149,8 +156,9 @@ export default (_ = socket, action: FluxStandardAction) => {
     }
 
     case AssistantActionTypes.Help: {
-      socket.send(new RequestMessage(`help/${action.payload.queueName}`, {
-        ugkthid: action.payload.ugkthid
+      socket.send(new RequestMessage(`setUserHelpStatus/${action.payload.queueName}`, {
+        ugkthid: action.payload.ugkthid,
+        status: true
       }));
       break;
     }

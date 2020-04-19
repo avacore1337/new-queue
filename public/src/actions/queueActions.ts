@@ -44,9 +44,9 @@ export const leaveQueue = (queueName: string): FluxStandardAction => ({
   payload: queueName
 });
 
-export const recievingHelp = (queueName: string): FluxStandardAction => ({
+export const recievingHelp = (queueName: string, status: boolean): FluxStandardAction => ({
   type: ActionTypes.RecievingHelp,
-  payload: queueName
+  payload: { queueName, status }
 });
 
 export const updatePersonalEntry = (queueName: string, comment: string, location: string, typeOfCommunication: string): FluxStandardAction => ({
