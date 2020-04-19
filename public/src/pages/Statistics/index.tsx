@@ -90,7 +90,7 @@ export default (): JSX.Element => {
     axios.get(`http://localhost:8000/api/queues/${selectedQueue}/user_events${from !== null || until !== null ? '?' : ''}${from !== null ? `from=${from}` : ''}${until !== null ? `${from !== null && until !== null ? '&' : ''}until=${until}` : ''}`, {
       headers: { 'Authorization': `Token ${user.token}` }
     })
-    .then(response => setStatistics(response.data.split('}, {').join('}, \n{')))
+    .then(response => setStatistics(JSON.stringify(response.data, null, 2)))
     .catch(response => setStatistics(response.toString()));
   }
 
@@ -164,8 +164,12 @@ export default (): JSX.Element => {
                 <div className={`text-white px-5 py-2 ${errorMessage || selectedQueue === null ? 'gray' : 'blue clickable'}`} onClick={getStatistics}>Get statistics</div>
               </div>
             </div>
-            <div className="col-lg-6">
-              <textarea rows={15} className="col-lg-12" value={statistics}></textarea>
+            <div className="col-lg-6" style={{overflow: 'hidden'}}>
+              <pre style={{overflowY: 'scroll', maxHeight: '70vh'}}>
+                <code>
+                  {statistics}
+                </code>
+              </pre>
             </div>
           </div>
         </div>
