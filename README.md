@@ -90,4 +90,11 @@ Backend:
 * statistics, done?
 
 Frontend:
-* fill in this list
+* Fix Help page
+* Fix About page
+* Fix Statistics page
+* Add assistant operations to queue-page
+* Add modal support
+* Rewrite some parts of Redux to pure React
+* Add delete & hide queue
+* Allow assistants to send custom messages
