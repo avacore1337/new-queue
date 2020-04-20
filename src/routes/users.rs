@@ -2,7 +2,10 @@ use crate::auth::Auth;
 use crate::config::AppState;
 use crate::db::{self};
 use crate::errors::{Errors, FieldValidator};
+use crate::util::{handle_login, Ticket};
 
+use rocket::request::Form;
+use rocket::response::Redirect;
 use rocket::State;
 use rocket_contrib::json::{Json, JsonValue};
 use serde::Deserialize;
@@ -38,3 +41,19 @@ pub fn post_users_login(
 pub fn get_user(auth: Auth, conn: db::DbConn, state: State<AppState>) -> Option<JsonValue> {
     db::users::find(&conn, auth.id).map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
 }
+
+#[get("/users/login2")]
+pub fn kth_login() -> Redirect {
+    Redirect::to("https://login.kth.se/login?service=http://queue.csc.kth.se/auth")
+}
+
+#[get("/auth?<params..>")]
+pub fn kth_auth(conn: db::DbConn, params: Form<Ticket>) -> Redirect {
+    let _auth = handle_login(&conn, params);
+    // TODO redirect to login target (where they came from)
+    Redirect::to("/")
+}
+
+// app.get('/login2', function(req, res) {
+//   res.redirect('https://login.kth.se/login?service=http://queue.csc.kth.se/auth');
+// });

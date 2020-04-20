@@ -27,6 +27,7 @@ validator = "0.10.0"
 validator_derive = "0.10.0"
 ws = "0.8.1"
 clokwerk = "0.3.0"
+reqwest = "0.10.4"
 
 
 [dependencies.rocket_contrib]

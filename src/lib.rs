@@ -12,8 +12,7 @@ use rocket_cors;
 #[macro_use]
 extern crate diesel;
 
-#[macro_use]
-extern crate diesel_derive_enum;
+extern crate reqwest;
 
 use dotenv::dotenv;
 
@@ -82,6 +81,8 @@ pub fn rocket() -> rocket::Rocket {
             routes![
                 routes::users::post_users_login,
                 routes::users::get_user,
+                routes::users::kth_auth,
+                routes::users::kth_login,
                 routes::queues::get_queues,
                 routes::queues::get_queue,
                 routes::queue_entries::get_queue_entries,
