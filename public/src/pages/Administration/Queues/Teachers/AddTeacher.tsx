@@ -20,9 +20,8 @@ export default (props: any): JSX.Element | null => {
           <p>Insert the new teacher's username</p>
           <div className="col-12 col-lg-8 p-0">
             <AddInputViewComponent
-              uniqueIdentifier="addTeacher"
               callback={(username: string) => dispatch(addTeacher(queue.name, username))}
-              placeholder={'Add teacher'}
+              placeholder="Add teacher"
               isDisabled={queue === null} />
           </div>
           <br />

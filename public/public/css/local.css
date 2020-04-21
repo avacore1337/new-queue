@@ -22,24 +22,16 @@ body {
   background-color: #0275d8;
 }
 
-.blue.clickable:hover {
-  background-color: #0b66b5;
-}
-
 .red {
   background-color: #f54f36;
-}
-
-.red.clickable:hover {
-  background-color: #d6432d;
 }
 
 .yellow {
   background-color: #f0d73a;
 }
 
-.yellow.clickable:hover {
-  background-color: #e8ca0e;
+.card.clickable:hover {
+  background-color: #F5F5F5;
 }
 
 img.frame {

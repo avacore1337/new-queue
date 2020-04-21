@@ -18,9 +18,8 @@ export default (): JSX.Element | null => {
           <p>Insert the new administrator's username</p>
           <div className="col-12 col-lg-8 p-0">
             <AddInputViewComponent
-              uniqueIdentifier="addAdmin"
               callback={(newAdministrator: string) => dispatch(addAdministrator(newAdministrator))}
-              placeholder={'Add admin'} />
+              placeholder="Add admin" />
           </div>
           <br />
         </>

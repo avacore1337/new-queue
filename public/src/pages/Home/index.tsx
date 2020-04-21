@@ -1,10 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../store';
 import { loadQueues } from '../../actions/queueActions';
 import { subscribe, unsubscribe } from '../../actions/lobbyActions';
-import { clearFilter } from '../../actions/filterActions';
 import User from '../../models/User';
 import Queue from '../../models/Queue';
 import QueueCardViewComponent from './QueueCard';
@@ -14,7 +13,8 @@ export default (): JSX.Element => {
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
   const queues = useSelector<GlobalStore, Queue[]>(store => store.queues);
-  const filter = useSelector<GlobalStore, string>(store => store.utils.filter);
+
+  const [filter, setFilter] = useState('');
 
   const dispatch = useDispatch();
 
@@ -23,7 +23,6 @@ export default (): JSX.Element => {
     dispatch(subscribe());
 
     return () => {
-      dispatch(clearFilter());
       dispatch(unsubscribe());
     };
   }, []);
@@ -40,7 +39,7 @@ export default (): JSX.Element => {
     <div className="container">
       <div className="row">
         <div className="col-lg-4 offset-lg-8 p-0">
-          <SearchViewComponent />
+          <SearchViewComponent filter={filter} setFilter={setFilter} />
         </div>
       </div>
       {queues

@@ -18,9 +18,8 @@ export default (): JSX.Element | null => {
           <p>Insert the name of the new queue</p>
           <div className="col-12 col-lg-8 p-0">
             <AddInputViewComponent
-              uniqueIdentifier="addQueue"
               callback={(queueName: string) => dispatch(addQueue(queueName))}
-              placeholder={'Add queue'} />
+              placeholder="Add queue" />
           </div>
           <br />
         </>

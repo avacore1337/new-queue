@@ -1,40 +1,26 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux'
-import { GlobalStore } from '../store';
-import { clearInput, setInput, giveFocus, loseFocus } from '../actions/addInputActions';
+import React, { useState } from 'react';
 import { Plus } from './FontAwesome';
-import AddInput from '../models/AddInput';
 
 export default (props: any): JSX.Element => {
 
-  const key: string = props.uniqueIdentifier;
+  const [content, setContent] = useState('');
+  const [placeholder, setPlaceholder] = useState(props.placeholder as string);
+
   const callback: (...args: [any]) => any = props.callback;
   const isDisabled: boolean = props.isDisabled;
 
-  const addInput = useSelector<GlobalStore, AddInput | null>(store => store.utils.addInputs[key] || null);
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (addInput === null) {
-      dispatch(setInput(key, '', props.placeholder));
-    }
-
-    return () => { dispatch(clearInput(key)); }
-  }, []);
-
   function changeContent(event: any): void {
     if (!isDisabled) {
-      dispatch(setInput(key, event.target.value, props.placeholder));
+      setContent(event.target.value);
     }
   }
 
   function runCallback(event: any): void {
     if (!isDisabled) {
-      if (addInput?.content) {
+      if (content !== '') {
         if (event.key === 'Enter' || event.button === 0) {
-          callback(addInput?.content);
-          dispatch(clearInput(key));
+          callback(content);
+          setContent('')
         }
       }
     }
@@ -45,12 +31,12 @@ export default (props: any): JSX.Element => {
       <input
         type="text"
         className="form-control"
-        placeholder={addInput?.placeholder || ''}
-        value={addInput?.content || ''}
+        placeholder={placeholder}
+        value={content}
         onChange={changeContent}
         onKeyUp={runCallback}
-        onFocus={() => {dispatch(giveFocus(key))}}
-        onBlur={() => {dispatch(loseFocus(key, props.placeholder))}}
+        onFocus={() => {setPlaceholder('')}}
+        onBlur={() => {if (content !== '') setPlaceholder(props.placeholder)}}
         disabled={isDisabled} />
 
       <div className="input-group-append">

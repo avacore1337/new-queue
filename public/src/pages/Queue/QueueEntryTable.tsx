@@ -1,6 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux'
-import { GlobalStore } from '../../store';
 import QueueEntry from '../../models/QueueEntry';
 import QueueEntryRowViewComponent from './QueueEntryRow';
 
@@ -8,8 +6,7 @@ export default (props: any): JSX.Element => {
 
   const queueName: string = props.queueName;
   const queueEntries: QueueEntry[] = props.queueEntries;
-
-  const filter = useSelector<GlobalStore, string>(store => store.utils.filter);
+  const filter: string = props.filter;
 
   function filterUsers(entry: QueueEntry) {
     const lowerCaseFilter = filter.toLowerCase();

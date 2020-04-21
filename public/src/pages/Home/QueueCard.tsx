@@ -16,7 +16,7 @@ export default (props: any): JSX.Element => {
   }
 
   return (
-    <div className="card row" style={styles}>
+    <div className="card row clickable" style={styles}>
       <div className="card-body">
         {queue.hiding ? <span style={{marginRight: '1em'}}><Invisible /></span> : null}
         {queue.locked ? <span style={{marginRight: '1em'}}><Locked /></span> : null}
