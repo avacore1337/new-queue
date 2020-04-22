@@ -14,9 +14,9 @@ export default (state: User | null = initialState, action: FluxStandardAction) =
         name: action.payload.data.user.realname,
         username: action.payload.data.user.username,
         token: action.payload.data.user.token,
-        isAdministrator: action.payload.data.user.isAdministrator || false,
-        teacherIn: action.payload.data.user.teacherIn || ['TestQueue 1', 'TestQueue 2', 'TestQueue 3', 'TestQueue 4'],
-        assistantIn: action.payload.data.user.assistantIn || ['TestQueue 1', 'TestQueue 2', 'TestQueue 3', 'TestQueue 4']
+        isAdministrator: action.payload.data.user.isAdministrator,
+        teacherIn: action.payload.data.user.teacherIn,
+        assistantIn: action.payload.data.user.assistantIn
       };
       localStorage.setItem('User', JSON.stringify(userData));
       return new User(userData);

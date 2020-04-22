@@ -1,7 +1,6 @@
 import { FluxStandardAction } from 'redux-promise-middleware';
 import { ActionTypes } from '../actions/queueActions';
 import { ActionTypes as AdministratorActionTypes } from '../actions/administratorActions';
-import { ActionTypes as AssistantActionTypes } from '../actions/assistantActions';
 import { Listeners } from '../actions/listenerActions';
 import Queue from '../models/Queue';
 import QueueEntry from '../models/QueueEntry';
@@ -54,49 +53,6 @@ export default (state = initialState, action: FluxStandardAction) => {
       queueToUpdate.setAssistants(assistants);
 
       const queues = [...state.filter(queue => queue.name !== action.meta.queueName), queueToUpdate];
-
-      queues.sort((queue1: Queue, queue2: Queue) => {
-        if (queue1.hiding && !queue2.hiding) { return 1; }
-        if (!queue1.hiding && queue2.hiding) { return -1; }
-        return queue1.name < queue2.name ? -1 : 1;
-      });
-
-      return queues;
-    }
-
-    case AssistantActionTypes.ClickRow: {
-      const queueToUpdate = state.filter(queue => queue.name === action.payload.queueName)[0].clone();
-      const queueEntryToUpdate = queueToUpdate.queueEntries.filter(e => e.ugkthid === action.payload.ugkthid)[0];
-
-      if (queueEntryToUpdate.lastClicked === null) {
-        queueEntryToUpdate.setLastClicked(Date.now());
-      }
-      else {
-        const intervallMilliseconds: number = 500;
-        if (Date.now() - queueEntryToUpdate.lastClicked <= intervallMilliseconds) {
-          queueEntryToUpdate.toggleTAOptions();
-        }
-
-        queueEntryToUpdate.setLastClicked(Date.now());
-      }
-
-      const queues = [...state.filter(queue => queue.name !== action.payload.queueName), queueToUpdate];
-
-      queues.sort((queue1: Queue, queue2: Queue) => {
-        if (queue1.hiding && !queue2.hiding) { return 1; }
-        if (!queue1.hiding && queue2.hiding) { return -1; }
-        return queue1.name < queue2.name ? -1 : 1;
-      });
-
-      return queues;
-    }
-
-    case AssistantActionTypes.TouchRow: {
-      const queueToUpdate = state.filter(queue => queue.name === action.payload.queueName)[0].clone();
-      const queueEntryToUpdate = queueToUpdate.queueEntries.filter(e => e.ugkthid === action.payload.ugkthid)[0];
-      queueEntryToUpdate.toggleTAOptions();
-
-      const queues = [...state.filter(queue => queue.name !== action.payload.queueName), queueToUpdate];
 
       queues.sort((queue1: Queue, queue2: Queue) => {
         if (queue1.hiding && !queue2.hiding) { return 1; }

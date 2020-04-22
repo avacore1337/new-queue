@@ -5,10 +5,14 @@ export const ActionTypes = Object.freeze({
   SendMessage: 'SEND_MESSAGE',
   Help: 'HELP',
   BadLocation: 'BAD_LOCATION',
+  Broadcast: 'BROADCAST',
+  BroadcastFaculty: 'BROADCAST_FACULTY',
+  SetMotd: 'SET_MOTD',
+  SetQueueInfo: 'SET_QUEUE_INFO',
+  PurgeQueue: 'PURGE_QUEUE',
+  LockQueue: 'LOCK_QUEUE',
   Completion: 'COMPLETION',
-  AddComment: 'ADD_COMMENT',
-  TouchRow: 'TOUCH_ROW',
-  ClickRow: 'CLICK_ROW'
+  AddComment: 'ADD_COMMENT'
 });
 
 export const kickUser = (queueName: string, ugkthid: string): FluxStandardAction => ({
@@ -31,6 +35,36 @@ export const badLocation = (queueName: string, ugkthid: string): FluxStandardAct
   payload: { queueName, ugkthid }
 });
 
+export const broadcast = (queueName: string, message: string): FluxStandardAction => ({
+  type: ActionTypes.Broadcast,
+  payload: { queueName, message }
+});
+
+export const broadcastFaculty = (queueName: string, message: string): FluxStandardAction => ({
+  type: ActionTypes.BroadcastFaculty,
+  payload: { queueName, message }
+});
+
+export const setMotd = (queueName: string, message: string): FluxStandardAction => ({
+  type: ActionTypes.SetMotd,
+  payload: { queueName, message }
+});
+
+export const setQueueInfo = (queueName: string, info: string): FluxStandardAction => ({
+  type: ActionTypes.SetQueueInfo,
+  payload: { queueName, info }
+});
+
+export const purgeQueue = (queueName: string): FluxStandardAction => ({
+  type: ActionTypes.PurgeQueue,
+  payload: queueName
+});
+
+export const lockQueue = (queueName: string, locked: boolean): FluxStandardAction => ({
+  type: ActionTypes.LockQueue,
+  payload: { queueName, locked }
+});
+
 export const markForCompletion = (queueName: string, ugkthid: string): FluxStandardAction => ({
   type: ActionTypes.Completion,
   payload: { queueName, ugkthid }
@@ -39,14 +73,4 @@ export const markForCompletion = (queueName: string, ugkthid: string): FluxStand
 export const addComment = (queueName: string, ugkthid: string, comment: string): FluxStandardAction => ({
   type: ActionTypes.AddComment,
   payload: { queueName, ugkthid, comment }
-});
-
-export const touchRow = (queueName: string, ugkthid: string): FluxStandardAction => ({
-  type: ActionTypes.TouchRow,
-  payload: { queueName, ugkthid }
-});
-
-export const clickRow = (queueName: string, ugkthid: string): FluxStandardAction => ({
-  type: ActionTypes.ClickRow,
-  payload: { queueName, ugkthid }
 });

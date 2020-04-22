@@ -194,6 +194,46 @@ export default (_ = socket, action: FluxStandardAction) => {
       break;
     }
 
+    case AssistantActionTypes.Broadcast: {
+      socket.send(new RequestMessage(`broadcast/${action.payload.queueName}`, {
+        message: action.payload.message
+      }));
+      break;
+    }
+
+    case AssistantActionTypes.BroadcastFaculty: {
+      socket.send(new RequestMessage(`broadcastFaculty/${action.payload.queueName}`, {
+        message: action.payload.message
+      }));
+      break;
+    }
+
+    case AssistantActionTypes.SetMotd: {
+      socket.send(new RequestMessage(`setMOTD/${action.payload.queueName}`, {
+        message: action.payload.message
+      }));
+      break;
+    }
+
+    case AssistantActionTypes.SetQueueInfo: {
+      socket.send(new RequestMessage(`setQueueInfo/${action.payload.queueName}`, {
+        message: action.payload.info
+      }));
+      break;
+    }
+
+    case AssistantActionTypes.PurgeQueue: {
+      socket.send(new RequestMessage(`purgeQueue/${action.payload.queueName}`));
+      break;
+    }
+
+    case AssistantActionTypes.LockQueue: {
+      socket.send(new RequestMessage(`setQueueLockStatus/${action.payload.queueName}`, {
+        status: action.payload.locked
+      }));
+      break;
+    }
+
     case DebugActionTypes.SendDebugMessage: {
       socket.send(new RequestMessage(action.payload.path, action.payload.json));
       break;

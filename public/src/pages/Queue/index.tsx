@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { loadQueueData, subscribe, unsubscribe } from '../../actions/queueActions';
 import Queue from '../../models/Queue';
 import EnterQueueViewComponent from './EnterQueue';
+import QueueAdministratorOptionsViewComponent from './QueueAdministratorOptions';
 import QueueEntryTableViewComponent from './QueueEntryTable';
 import PageNotFound from '../NoMatch';
 import SearchViewComponent from '../../viewcomponents/Search';
@@ -45,11 +46,16 @@ export default (): JSX.Element | null => {
               </div>
             </div>
             <div className="row" style={{marginTop: '5em'}}>
-              <EnterQueueViewComponent queueName={queue.name} />
-              <QueueEntryTableViewComponent
-                filter={filter}
-                queueEntries={queue.queueEntries}
-                queueName={queue.name} />
+              <div className="col-12 col-lg-3">
+                <EnterQueueViewComponent queueName={queue.name} />
+                <QueueAdministratorOptionsViewComponent queue={queue} />
+              </div>
+              <div className="col-12 col-lg-9">
+                <QueueEntryTableViewComponent
+                  filter={filter}
+                  queueEntries={queue.queueEntries}
+                  queueName={queue.name} />
+              </div>
             </div>
           </div>
   );

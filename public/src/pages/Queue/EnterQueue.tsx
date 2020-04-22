@@ -50,7 +50,7 @@ export default (props: any): JSX.Element => {
   }
 
   return (
-    <div className="col-12 col-lg-3">
+    <>
       <form onSubmit={() => dispatch(joinQueue(queueName, comment, location, help))}>
 
         <label htmlFor="location">Location:</label>
@@ -148,6 +148,6 @@ export default (props: any): JSX.Element => {
               </div>
         }
       </form>
-    </div>
+    </>
   );
 };

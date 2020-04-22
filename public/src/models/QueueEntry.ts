@@ -30,12 +30,6 @@ export default class QueueEntry {
   private _realname: string;
   public get realname() { return this._realname; }
 
-  private _lastClicked: number | null;
-  public get lastClicked() { return this._lastClicked; }
-
-  private _isDisplayingTAOptions: boolean;
-  public get isDisplayingTAOptions() { return this._isDisplayingTAOptions; }
-
   public constructor(data: any) {
     this._comment = data.comment || '';
     this._location = data.location || '';
@@ -47,16 +41,6 @@ export default class QueueEntry {
     this._username = data.username || '';
     this._ugkthid = data.ugkthid || '';
     this._realname = data.realname || '';
-    this._lastClicked = data.lastClicked || null;
-    this._isDisplayingTAOptions = data.isDisplayingTAOptions || false;
-  }
-
-  public setLastClicked(time: number): void {
-    this._lastClicked = time;
-  }
-
-  public toggleTAOptions(): void {
-    this._isDisplayingTAOptions = !this._isDisplayingTAOptions;
   }
 
   public clone(): QueueEntry {
@@ -71,8 +55,6 @@ export default class QueueEntry {
       username: this._username,
       ugkthid: this._ugkthid,
       realname: this._realname,
-      lastClicked: this._lastClicked,
-      isDisplayingTAOptions: this._isDisplayingTAOptions
     });
   }
 }

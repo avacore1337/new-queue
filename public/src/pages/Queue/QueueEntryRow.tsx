@@ -1,11 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../store';
-import {
-  kickUser, sendMessage, toggleHelp,
-  badLocation, markForCompletion,
-  addComment, touchRow, clickRow
-} from '../../actions/assistantActions';
+import { kickUser, sendMessage, toggleHelp, badLocation, markForCompletion, addComment } from '../../actions/assistantActions';
 import TimeAgo from 'react-timeago';
 import QueueEntry from '../../models/QueueEntry';
 import User from '../../models/User';
@@ -18,16 +14,37 @@ export default (props: any): JSX.Element => {
   const queueName: string = props.queueName;
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
+  const [mayAdministerQueue, setMayAdministerQueue] = useState(user !== null && (user.isAssistantIn(queueName) || user.isTeacherIn(queueName)));
 
-  const displayTAOptions = queueEntry.isDisplayingTAOptions;
+  useEffect(() => {
+    setMayAdministerQueue(user !== null && (user.isAssistantIn(queueName) || user.isTeacherIn(queueName)));
+  }, [user]);
+
+  const [displayAdministrationOptions, setDisplayAdministrationOptions] = useState(false);
+  const [lastClicked, setLastClicked] = useState(null as number | null);
 
   const dispatch = useDispatch();
+
+  function clickRow(): void {
+    if (lastClicked !== null) {
+      const intervallMilliseconds: number = 500;
+      if (Date.now() - lastClicked <= intervallMilliseconds) {
+        setDisplayAdministrationOptions(!displayAdministrationOptions);
+      }
+    }
+
+      setLastClicked(Date.now());
+  }
+
+  function touchRow(): void {
+    setDisplayAdministrationOptions(!displayAdministrationOptions);
+  }
 
   return (
     <>
       <tr
-        onClick={() => dispatch(clickRow(queueName, queueEntry.ugkthid))}
-        onTouchEnd={() => dispatch(touchRow(queueName, queueEntry.ugkthid))}
+        onClick={mayAdministerQueue ? () => clickRow() : undefined}
+        onTouchEnd={mayAdministerQueue ? () => touchRow() : undefined}
         className={queueEntry.badlocation ? 'table-danger' : undefined}>
         <th scope="row">{index + 1}</th>
         <td>
@@ -43,7 +60,7 @@ export default (props: any): JSX.Element => {
         <td><TimeAgo date={queueEntry.starttime} /></td>
       </tr>
       {
-        !displayTAOptions
+        !displayAdministrationOptions
           ? null
           : <>
               <tr style={{display: 'none'}}></tr>

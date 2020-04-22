@@ -22,7 +22,7 @@ export default (props: any): JSX.Element => {
   }
 
   return (
-    <div className="col-12 col-lg-9 row pr-lg-0">
+    <div className="row pr-lg-0">
       {
         queueEntries.length === 0
           ? <h3>This queue is empty</h3>
