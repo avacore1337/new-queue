@@ -81,6 +81,34 @@ pub struct NewAdmin {
     admin_type: AdminEnum,
 }
 
+pub fn assistant_queue_names(conn: &PgConnection, user_id: i32) -> Vec<String> {
+    admins::table
+        .inner_join(queues::table)
+        .filter(
+            admins::user_id
+                .eq(user_id)
+                .and(admins::admin_type.eq(AdminEnum::Assistant)),
+        )
+        .select(queues::name)
+        .get_results(conn)
+        .ok()
+        .unwrap_or_default()
+}
+
+pub fn teacher_queue_names(conn: &PgConnection, user_id: i32) -> Vec<String> {
+    admins::table
+        .inner_join(queues::table)
+        .filter(
+            admins::user_id
+                .eq(user_id)
+                .and(admins::admin_type.eq(AdminEnum::Teacher)),
+        )
+        .select(queues::name)
+        .get_results(conn)
+        .ok()
+        .unwrap_or_default()
+}
+
 pub fn admin_for_queue(conn: &PgConnection, queue_name: &str, auth: &Auth) -> Option<AdminEnum> {
     admins::table
         .inner_join(queues::table)

@@ -59,7 +59,7 @@ pub fn validate_auth(
             }
         }
         AuthLevel::SuperOrTeacher => Ok(auth),
-        AuthLevel::Super => match db::super_admins::is_super(conn, &auth) {
+        AuthLevel::Super => match db::super_admins::is_super(conn, auth.id) {
             Some(_) => Ok(auth),
             None => Err(Box::new(BadAuth)),
         },

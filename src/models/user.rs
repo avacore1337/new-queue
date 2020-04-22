@@ -1,4 +1,5 @@
 use crate::auth::Auth;
+use crate::db;
 use crate::schema::users;
 use chrono::{Duration, Utc};
 use serde::Serialize;
@@ -30,7 +31,7 @@ pub struct Profile {
 }
 
 impl User {
-    pub fn to_user_auth(&self, secret: &[u8]) -> UserAuth {
+    pub fn to_user_auth(&self, conn: &db::DbConn, secret: &[u8]) -> Option<UserAuth> {
         let exp = Utc::now() + Duration::days(60); // TODO: make sure it works as expected when it expires
         let token = Auth {
             id: self.id,
@@ -41,14 +42,17 @@ impl User {
         }
         .token(secret);
 
-        UserAuth {
+        let superadmin = db::super_admins::is_super(conn, self.id).map(|_| true)?;
+        let assistant_in = db::admins::assistant_queue_names(conn, self.id);
+        let teacher_in = db::admins::teacher_queue_names(conn, self.id);
+        Some(UserAuth {
             username: &self.username,
             ugkthid: &self.ugkthid,
             realname: &self.realname,
-            superadmin: false,
-            assistant_in: vec!["INDA".to_string()],
-            teacher_in: vec!["ADK".to_string()],
+            superadmin,
+            assistant_in,
+            teacher_in,
             token,
-        }
+        })
     }
 }

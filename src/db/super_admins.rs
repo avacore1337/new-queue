@@ -1,4 +1,3 @@
-use crate::auth::Auth;
 use crate::db;
 use crate::models::super_admin::SuperAdmin;
 use crate::models::user::User;
@@ -30,9 +29,9 @@ pub struct NewSuperAdmin {
     user_id: i32,
 }
 
-pub fn is_super(conn: &PgConnection, auth: &Auth) -> Option<SuperAdmin> {
+pub fn is_super(conn: &PgConnection, user_id: i32) -> Option<SuperAdmin> {
     super_admins::table
-        .filter(super_admins::user_id.eq(auth.id))
+        .filter(super_admins::user_id.eq(user_id))
         .first(conn)
         .ok()
 }

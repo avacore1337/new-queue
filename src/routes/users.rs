@@ -31,9 +31,13 @@ pub fn post_users_login(
     let username = extractor.extract("username", user.username);
     extractor.check()?;
 
-    db::users::login(&conn, &username)
-        .map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
-        .ok_or_else(|| Errors::new(&[("username", "does not exist")]))
+    match db::users::login(&conn, &username) {
+        Some(user) => match user.to_user_auth(&conn, &state.secret) {
+            Some(user_auth) => Ok(json!({ "user": user_auth })),
+            None => Err(Errors::new(&[("database", "experienced unknown problems")])),
+        },
+        None => Err(Errors::new(&[("username", "does not exist")])),
+    }
 }
 
 #[get("/users/login2")]
