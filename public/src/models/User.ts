@@ -32,7 +32,7 @@ export default class User {
     this._assistantIn = data.AssistantIn || [];
     this._token = data.token || '';
     this._location = data.location || '';
-    this._teacherIn = data.teacherIn || ['INDA'];
+    this._teacherIn = data.teacherIn || [];
     this._assistantIn = data.assistantIn || [];
   }
 

@@ -12,6 +12,8 @@ export const ActionTypes = Object.freeze({
   RemoveAssistant: 'REMOVE_ASSISTANT',
   AddQueue: 'ADD_QUEUE',
   RemoveQueue: 'REMOVE_QUEUE',
+  HideQueue: 'HIDE_QUEUE',
+  RevealQueue: 'REVEAL_QUEUE',
   LoadAdditionalQueueData: new AsyncFunction('LOAD_ADDITIONAL_QUEUE_DATA'),
   SelectQueue: 'SELECT_QUEUE',
   SetServerMessage: 'SET_SERVER_MESSAGE'
@@ -64,6 +66,16 @@ export const removeQueue = (queueName: string): FluxStandardAction => ({
   payload: queueName
 });
 
+export const hideQueue = (queueName: string): FluxStandardAction => ({
+  type: ActionTypes.HideQueue,
+  payload: queueName
+});
+
+export const revealQueue = (queueName: string): FluxStandardAction => ({
+  type: ActionTypes.RevealQueue,
+  payload: queueName
+});
+
 export const loadAdditionalQueueData = (queueName: string, token: string): AsyncAction => {
   const teacherRequest = axios.get(`http://localhost:8000/api/queues/${queueName}/teachers`, {
     headers: { 'Authorization': `Token ${token}` }
@@ -79,11 +91,6 @@ export const loadAdditionalQueueData = (queueName: string, token: string): Async
     meta: { queueName }
   };
 };
-
-export const selectQueue = (queueName: string): FluxStandardAction => ({
-  type: ActionTypes.SelectQueue,
-  payload: queueName
-});
 
 export const setServerMessage = (message: string): FluxStandardAction => ({
   type: ActionTypes.SetServerMessage,

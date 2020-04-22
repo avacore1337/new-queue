@@ -55,7 +55,21 @@ export default (_ = socket, action: FluxStandardAction) => {
     }
 
     case AdministratorActionTypes.RemoveQueue: {
-      socket.send(new RequestMessage(`removeQueue/${action.payload.queueName}`));
+      socket.send(new RequestMessage(`removeQueue/${action.payload}`));
+      break;
+    }
+
+    case AdministratorActionTypes.HideQueue: {
+      socket.send(new RequestMessage(`setQueueHideStatus/${action.payload}`, {
+        status: true
+      }));
+      break;
+    }
+
+    case AdministratorActionTypes.RevealQueue: {
+      socket.send(new RequestMessage(`setQueueHideStatus/${action.payload}`, {
+        status: false
+      }));
       break;
     }
 
