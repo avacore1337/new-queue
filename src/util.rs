@@ -23,7 +23,9 @@ pub struct Ticket {
     ticket: Option<String>,
 }
 
-pub fn fetch_ldap_data(ugkthid: &str) -> Option<LdapUser> {
+//
+// ldapsearch -x -H ldaps://ldap.kth.se -b ou=Unix,dc=kth,dc=se uid=ransin ugKthid | grep "ugKthid"
+pub fn fetch_ldap_data(_ugkthid: &str) -> Option<LdapUser> {
     Some(LdapUser {
         username: "robertwb".to_string(),
         ugkthid: "ug12345".to_string(),
@@ -35,11 +37,9 @@ fn validate_ticket(ticket: &str) -> Option<String> {
     let url = "https://login.kth.se/serviceValidate?ticket=".to_string()
         + ticket
         + "&service=http://queue.csc.kth.se/auth";
-    // let body = reqwest::get(&url).await?.text().await?;
-
-    // println!("body = {:?}", body);
-
-    Some("ug12345".to_string())
+    let res = reqwest::blocking::get(&url).ok()?.text().ok()?;
+    println!("body = {:?}", res);
+    Some(res)
 }
 
 pub fn handle_login(conn: &db::DbConn, params: Form<Ticket>) -> Option<User> {

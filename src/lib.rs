@@ -80,7 +80,6 @@ pub fn rocket() -> rocket::Rocket {
             "/api",
             routes![
                 routes::users::post_users_login,
-                routes::users::get_user,
                 routes::users::kth_auth,
                 routes::users::kth_login,
                 routes::queues::get_queues,

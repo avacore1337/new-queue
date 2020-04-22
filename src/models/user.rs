@@ -16,6 +16,9 @@ pub struct UserAuth<'a> {
     username: &'a str,
     ugkthid: &'a str,
     realname: &'a str,
+    superadmin: bool,
+    assistant_in: Vec<String>,
+    teacher_in: Vec<String>,
     token: String,
 }
 
@@ -42,6 +45,9 @@ impl User {
             username: &self.username,
             ugkthid: &self.ugkthid,
             realname: &self.realname,
+            superadmin: false,
+            assistant_in: vec!["INDA".to_string()],
+            teacher_in: vec!["ADK".to_string()],
             token,
         }
     }

@@ -90,6 +90,8 @@ Backend:
 * nightly reset, done?
 * message history
 * max string lengths
+* Lobby, broadcasts should also go to lobby and new route with all data should be added.
+* fix nginx frontend to get both ws-rs and rocket on the same port
 
 Frontend:
 * Fix Help page

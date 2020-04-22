@@ -1,4 +1,3 @@
-use crate::auth::Auth;
 use crate::config::AppState;
 use crate::db::{self};
 use crate::errors::{Errors, FieldValidator};
@@ -35,11 +34,6 @@ pub fn post_users_login(
     db::users::login(&conn, &username)
         .map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
         .ok_or_else(|| Errors::new(&[("username", "does not exist")]))
-}
-
-#[get("/user")]
-pub fn get_user(auth: Auth, conn: db::DbConn, state: State<AppState>) -> Option<JsonValue> {
-    db::users::find(&conn, auth.id).map(|user| json!({ "user": user.to_user_auth(&state.secret) }))
 }
 
 #[get("/users/login2")]
