@@ -75,7 +75,7 @@ pub fn rocket() -> rocket::Rocket {
         .unwrap();
 
     rocket::custom(config::from_env())
-        .mount("/public", StaticFiles::from("/public/public"))
+        .mount("/", StaticFiles::from("public/build"))
         .mount(
             "/api",
             routes![

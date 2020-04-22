@@ -31,7 +31,7 @@ pub struct Profile {
 
 impl User {
     pub fn to_user_auth(&self, secret: &[u8]) -> UserAuth {
-        let exp = Utc::now() + Duration::days(60); // TODO: move to config
+        let exp = Utc::now() + Duration::days(60); // TODO: make sure it works as expected when it expires
         let token = Auth {
             id: self.id,
             username: self.username.clone(),
@@ -51,13 +51,4 @@ impl User {
             token,
         }
     }
-
-    // pub fn to_profile(self, following: bool) -> Profile {
-    //     Profile {
-    //         username: self.username,
-    //         bio: self.bio,
-    //         image: self.image,
-    //         following,
-    //     }
-    // }
 }
