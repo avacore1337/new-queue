@@ -78,11 +78,11 @@ export const revealQueue = (queueName: string): FluxStandardAction => ({
 });
 
 export const loadAdditionalQueueData = (queueName: string, token: string): AsyncAction => {
-  const teacherRequest = axios.get(`http://localhost:8000/api/queues/${queueName}/teachers`, {
+  const teacherRequest = axios.get(`${HTTP_SERVER_URL}/api/queues/${queueName}/teachers`, {
     headers: { 'Authorization': `Token ${token}` }
   });
 
-  const assistantRequest = axios.get(`http://localhost:8000/api/queues/${queueName}/assistants`, {
+  const assistantRequest = axios.get(`${HTTP_SERVER_URL}/api/queues/${queueName}/assistants`, {
     headers: { 'Authorization': `Token ${token}` }
   });
 

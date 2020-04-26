@@ -23,10 +23,10 @@ export const loadQueues = (): AsyncAction => ({
 });
 
 export const loadQueueData = (queueName: string): AsyncAction => {
-  const queueEntriesRequest = fetch(`http://localhost:8000/api/queues/${queueName}/queue_entries`)
+  const queueEntriesRequest = fetch(`${HTTP_SERVER_URL}/api/queues/${queueName}/queue_entries`)
                               .then(response => response.json());
 
-  const queueInfoRequest = fetch(`http://localhost:8000/api/queues/${queueName}`)
+  const queueInfoRequest = fetch(`${HTTP_SERVER_URL}/api/queues/${queueName}`)
                            .then(response => response.json());
 
   return {

@@ -7,6 +7,7 @@ import { GlobalStore } from '../../store';
 import { loadQueues } from '../../actions/queueActions';
 import PageNotFound from '../NoMatch';
 import User from '../../models/User';
+import { HTTP_SERVER_URL } from '../../configuration';
 
 export default (): JSX.Element => {
 
@@ -87,7 +88,7 @@ export default (): JSX.Element => {
       return;
     }
 
-    axios.get(`http://localhost:8000/api/queues/${selectedQueue}/user_events${from !== null || until !== null ? '?' : ''}${from !== null ? `from=${from}` : ''}${until !== null ? `${from !== null && until !== null ? '&' : ''}until=${until}` : ''}`, {
+    axios.get(`${HTTP_SERVER_URL}/api/queues/${selectedQueue}/user_events${from !== null || until !== null ? '?' : ''}${from !== null ? `from=${from}` : ''}${until !== null ? `${from !== null && until !== null ? '&' : ''}until=${until}` : ''}`, {
       headers: { 'Authorization': `Token ${user.token}` }
     })
     .then(response => setStatistics(JSON.stringify(response.data, null, 2)))
