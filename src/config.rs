@@ -41,10 +41,12 @@ impl AppState {
 pub fn from_env() -> Config {
     let environment = Environment::active().expect("No environment found");
 
-    let port = env::var("PORT")
+    let port = env::var("ROCKET_PORT")
         .unwrap_or_else(|_| "8000".to_string())
         .parse::<u16>()
         .expect("PORT environment variable should parse to an integer");
+
+    let address = env::var("ROCKET_ADDRESS").unwrap_or_else(|_| "127.0.0.1".to_string());
 
     let mut database_config = HashMap::new();
     let mut databases = HashMap::new();
@@ -56,6 +58,7 @@ pub fn from_env() -> Config {
     Config::build(environment)
         .environment(environment)
         .port(port)
+        .address(address)
         .extra("databases", databases)
         .finalize()
         .unwrap()
