@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{from_str, from_value, json};
 use std::cell::{Cell, RefCell, RefMut};
 use std::collections::HashMap;
+use std::env;
 use std::rc::Rc;
 use ws::{listen, CloseCode, Handler, Handshake, Message, Request, Response, Sender};
 
@@ -357,7 +358,9 @@ pub fn websocket() -> () {
     let rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>> = Rc::new(RefCell::new(HashMap::new()));
     let ugid_map: Rc<RefCell<HashMap<String, Sender>>> = Rc::new(RefCell::new(HashMap::new()));
     let pool: Rc<RefCell<db::PgPool>> = Rc::new(RefCell::new(db::init_pool()));
-    listen("127.0.0.1:7777", |out| RoomHandler {
+
+    let address = env::var("ROCKET_ADDRESS").unwrap_or_else(|_| "127.0.0.1".to_string());
+    listen(address + ":7777", |out| RoomHandler {
         out: out,
         count: count.clone(),
         rooms: rooms.clone(),
