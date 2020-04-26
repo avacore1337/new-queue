@@ -1,13 +1,8 @@
 import { FluxStandardAction } from 'redux-promise-middleware';
 
 export const ActionTypes = Object.freeze({
-  CloseSocket: 'CLOSE_SOCKETS',
   Listen: 'LISTEN_TO',
   StopListening: 'LISTEN_TO'
-});
-
-export const closeSocket = (): FluxStandardAction => ({
-  type: ActionTypes.CloseSocket
 });
 
 export const listenTo = (path: string, callback: (...args: any[]) => FluxStandardAction): FluxStandardAction => ({

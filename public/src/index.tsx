@@ -6,7 +6,6 @@ import './index.css';
 import App from './App';
 import store from './store';
 import * as serviceWorker from './serviceWorker';
-import { closeSocket } from './actions/socketActions';
 import { loadUser } from './actions/userActions';
 import { loadQueues } from './actions/queueActions';
 
@@ -16,8 +15,6 @@ function LifeCycle() {
   useEffect(() => {
     dispatch(loadUser());
     dispatch(loadQueues());
-
-    return () => { dispatch(closeSocket()); };
   }, []);
 
   return (

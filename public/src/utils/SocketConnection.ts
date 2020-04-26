@@ -3,7 +3,7 @@ import RequestMessage from './RequestMessage';
 
 export default class SocketConnection {
 
-  private _socket: WebSocket;
+  private _socket: WebSocket | null;
   private _callbacks: any;
   private _connectionEstablished: boolean;
   private _pendingRequests: RequestMessage[];
@@ -15,16 +15,22 @@ export default class SocketConnection {
     this._pendingRequests = [];
     this._lastJoinRequest = null;
     this._connectionEstablished = false;
-    this._socket = new WebSocket(serverUrl);
+    this._socket = null;
 
     this._token = null;
+
+    console.log('Initial socket creation (this should only occur once)');
 
     this.connect(serverUrl);
   }
 
   private connect(serverUrl: string): void {
+    console.log('Starting connection to server');
+
     this._socket = new WebSocket(serverUrl);
     this._socket.onopen = (): void => {
+      console.log('Connection established');
+
       this._connectionEstablished = true;
 
       if (this._lastJoinRequest !== null) {
@@ -40,9 +46,13 @@ export default class SocketConnection {
         this.send(request);
         this._pendingRequests.shift();
       }
+
+      console.log('Sent all queued requests (if there were any)');
     };
 
     this._socket.onmessage = (event: MessageEvent): void => {
+      console.log('Recieved a message from the server: ' + JSON.stringify(event.data));
+
       const data = JSON.parse(event.data);
       const path: string = data.path;
 
@@ -74,8 +84,14 @@ export default class SocketConnection {
     };
 
     this._socket.onclose = (): any | undefined => {
+      console.log('Closed connection to server');
       this._connectionEstablished = false;
-      this.connect(serverUrl);
+
+      const self = this;
+      setTimeout(function() {
+        self.connect(serverUrl);
+        console.log('Triggered reconnect attempt');
+      }, 1000);
     };
   }
 
@@ -142,16 +158,12 @@ export default class SocketConnection {
       this._callbacks[message.path] = callback;
     }
 
-    if (this._connectionEstablished) {
+    if (this._connectionEstablished && this._socket !== null) {
       message.token = this._token || "";
       this._socket.send(message.stringify());
     }
     else {
       this._pendingRequests.push(message);
     }
-  }
-
-  public close(): void {
-    this._socket.close();
   }
 }

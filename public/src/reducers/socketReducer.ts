@@ -137,11 +137,6 @@ export default (_ = socket, action: FluxStandardAction) => {
       break;
     }
 
-    case SocketActionTypes.CloseSocket: {
-      socket.close();
-      break;
-    }
-
     case UserActionTypes.Login.Fulfilled: {
       socket.setToken(action.payload.data.user.token);
       socket.listen('message', onMessageRecieved);
