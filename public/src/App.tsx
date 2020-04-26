@@ -20,7 +20,7 @@ export default (): JSX.Element => {
 
   return (
     <Router>
-      <Modal header="Head World" body="Hello World" footer="Hello Foot" show={show} onHide={() => setShow(false)} />
+      <Modal />
       <NavBar />
       <DebugComponent />
       <Switch>

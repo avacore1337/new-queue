@@ -145,6 +145,7 @@ export default (_ = socket, action: FluxStandardAction) => {
     case UserActionTypes.Login.Fulfilled: {
       socket.setToken(action.payload.data.user.token);
       socket.listen('message', onMessageRecieved);
+      socket.listen('message/:queueName', onMessageRecieved);
       break;
     }
 

@@ -1,6 +1,7 @@
 import { FluxStandardAction, AsyncAction } from 'redux-promise-middleware';
 import AsyncFunction from '../utils/AsyncFunction';
 import Queue from '../models/Queue';
+import { HTTP_SERVER_URL } from '../configuration';
 
 export const ActionTypes = Object.freeze({
   GetQueues: new AsyncFunction('GET_QUEUES'),
@@ -16,7 +17,7 @@ export const ActionTypes = Object.freeze({
 
 export const loadQueues = (): AsyncAction => ({
   type: ActionTypes.GetQueues,
-  payload:  fetch('http://localhost:8000/api/queues')
+  payload:  fetch(`${HTTP_SERVER_URL}/api/queues`)
             .then(response => response.json())
             .then((response: any) => response.queues.map((res: any) => new Queue(res)))
 });

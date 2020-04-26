@@ -32,11 +32,6 @@ export default (state: User | null = initialState, action: FluxStandardAction) =
       return userData ? new User(JSON.parse(userData)) : state;
     }
 
-    case Listeners.OnMessageRecieved: {
-      alert(action.payload.message);
-      return state;
-    }
-
   }
 
   return state;

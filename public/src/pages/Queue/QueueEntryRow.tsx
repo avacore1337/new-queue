@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../store';
-import { kickUser, sendMessage, toggleHelp, badLocation, markForCompletion, addComment } from '../../actions/assistantActions';
+import { kickUser, toggleHelp, badLocation, markForCompletion, addComment } from '../../actions/assistantActions';
+import { openSendMessageModal } from '../../actions/modalActions';
 import TimeAgo from 'react-timeago';
 import QueueEntry from '../../models/QueueEntry';
 import User from '../../models/User';
@@ -74,7 +75,7 @@ export default (props: any): JSX.Element => {
                         <Cross />
                       </div>
                     </div>
-                    <div title="send message" className="col-12 col-lg-2 px-3 my-1" onClick={() => dispatch(sendMessage(queueName, queueEntry.ugkthid, 'Hello there cutie'))}>
+                    <div title="send message" className="col-12 col-lg-2 px-3 my-1" onClick={() => dispatch(openSendMessageModal(queueName, queueEntry.ugkthid, queueEntry.realname))}>
                       <div
                         className="text-center yellow clickable"
                         style={{lineHeight: '2em'}}>

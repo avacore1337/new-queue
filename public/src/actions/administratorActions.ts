@@ -1,6 +1,7 @@
 import { FluxStandardAction, AsyncAction } from 'redux-promise-middleware';
 import axios from 'axios';
 import AsyncFunction from '../utils/AsyncFunction';
+import { HTTP_SERVER_URL } from '../configuration';
 
 export const ActionTypes = Object.freeze({
   LoadAdministrators: new AsyncFunction('LOAD_ADMINISTRATORS'),
@@ -21,7 +22,7 @@ export const ActionTypes = Object.freeze({
 
 export const loadAdministrators = (token: string): AsyncAction => ({
   type: ActionTypes.LoadAdministrators,
-  payload:  axios.get('http://localhost:8000/api/superadmins', {
+  payload:  axios.get(`${HTTP_SERVER_URL}/api/superadmins`, {
               headers: { 'Authorization': `Token ${token}` }
             })
 });

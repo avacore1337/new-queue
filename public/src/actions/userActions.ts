@@ -1,6 +1,7 @@
 import { FluxStandardAction, AsyncAction } from 'redux-promise-middleware';
 import axios from 'axios';
 import AsyncFunction from '../utils/AsyncFunction';
+import { HTTP_SERVER_URL } from '../configuration';
 
 export const ActionTypes = Object.freeze({
   Login: new AsyncFunction('LOGIN'),
@@ -11,7 +12,7 @@ export const ActionTypes = Object.freeze({
 export const login = (username: string): AsyncAction => {
   return {
     type: ActionTypes.Login,
-    payload: axios.post('http://localhost:8000/api/users/login', { user: { username } })
+    payload: axios.post(`${HTTP_SERVER_URL}/api/users/login`, { user: { username } })
   };
 };
 
