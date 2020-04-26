@@ -31,16 +31,27 @@ mod sql_types;
 mod util;
 mod wsroutes;
 
-use rocket_contrib::json::JsonValue;
+use rocket::response::NamedFile;
+use rocket::Request;
 use rocket_contrib::serve::StaticFiles;
 use rocket_cors::Cors;
 
+use rocket::response::status::NotFound;
+
 #[catch(404)]
-fn not_found() -> JsonValue {
-    json!({
-        "status": "error",
-        "reason": "Resource was not found."
-    })
+fn not_found(req: &Request) -> Result<NamedFile, NotFound<String>> {
+    println!(
+        "I couldn't find '{}'. Try something else?",
+        req.uri().path()
+    );
+    format!("I couldn't find '{}'. Try something else?", req.uri());
+    // match req.uri().path().split('/').collect::<Vec<&str>>().as_slice() {
+    if req.uri().path().starts_with("/api/") {
+        Err(NotFound("Invalid api call".to_string()))
+    } else {
+        NamedFile::open("public/build/index.html")
+            .map_err(|_| NotFound("index.html not found. Boy do we have a problem".to_string()))
+    }
 }
 
 fn cors_fairing() -> Cors {
