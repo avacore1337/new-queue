@@ -31,7 +31,7 @@ pub struct Profile {
 }
 
 impl User {
-    pub fn to_user_auth(&self, conn: &db::DbConn, secret: &[u8]) -> Option<UserAuth> {
+    pub fn to_user_auth(&self, conn: &db::DbConn, secret: &[u8]) -> UserAuth {
         let exp = Utc::now() + Duration::days(60); // TODO: make sure it works as expected when it expires
         let token = Auth {
             id: self.id,
@@ -42,10 +42,12 @@ impl User {
         }
         .token(secret);
 
-        let superadmin = db::super_admins::is_super(conn, self.id).map(|_| true)?;
+        let superadmin = db::super_admins::is_super(conn, self.id)
+            .map(|_| true)
+            .unwrap_or(false);
         let assistant_in = db::admins::assistant_queue_names(conn, self.id);
         let teacher_in = db::admins::teacher_queue_names(conn, self.id);
-        Some(UserAuth {
+        UserAuth {
             username: &self.username,
             ugkthid: &self.ugkthid,
             realname: &self.realname,
@@ -53,6 +55,6 @@ impl User {
             assistant_in,
             teacher_in,
             token,
-        })
+        }
     }
 }
