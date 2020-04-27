@@ -118,6 +118,7 @@ pub fn for_queue(conn: &PgConnection, queue_name: &str) -> Option<Vec<SendableQu
 }
 
 pub fn remove_all(conn: &PgConnection) -> Result<(), diesel::result::Error> {
+    println!("Deleting all entiries");
     diesel::delete(queue_entries::table)
         .execute(conn)
         .map(|_| ())

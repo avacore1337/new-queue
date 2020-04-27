@@ -4,7 +4,6 @@ use crate::models::user::User;
 use crate::reqwest;
 use diesel::pg::PgConnection;
 use rocket::request::Form;
-// use diesel::prelude::*;
 
 pub fn cleanup(conn: &PgConnection) {
     if let Err(e) = remove_all(conn) {

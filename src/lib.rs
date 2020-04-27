@@ -62,13 +62,14 @@ pub fn rocket() -> rocket::Rocket {
     dotenv().ok();
 
     thread::Builder::new()
-        .name("Thread for Rust Chat with ws-rs".into())
+        .name("chrono thread".into())
         .spawn(move || loop {
             // or a scheduler with a given timezone
             let pool = db::init_pool();
 
             let mut scheduler = Scheduler::with_tz(chrono::Utc);
             scheduler.every(1.day()).at("03:00").run(move || {
+                println!("Running nightly cleanup task");
                 let conn = pool.get().unwrap();
                 util::cleanup(&db::DbConn(conn));
             });
@@ -78,7 +79,7 @@ pub fn rocket() -> rocket::Rocket {
         .unwrap();
 
     thread::Builder::new()
-        .name("Thread for Rust Chat with ws-rs".into())
+        .name("ws-rs thread".into())
         // .stack_size(83886 * 1024) // 80mib in killobytes
         .spawn(|| {
             wsroutes::ws_rs::websocket();
