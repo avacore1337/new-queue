@@ -3,6 +3,7 @@ use crate::schema::queues;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use diesel::result::{DatabaseErrorKind, Error};
+use unicode_truncate::UnicodeTruncateStr;
 
 pub enum QueueCreationError {
     DuplicatedName,
@@ -90,6 +91,7 @@ pub fn remove(conn: &PgConnection, queue_name: &str) -> Result<(), diesel::resul
 }
 
 pub fn create(conn: &PgConnection, name: &str) -> Result<Queue, QueueCreationError> {
+    let (name, _) = name.unicode_truncate(50);
     let new_queue = &NewQueue { name };
 
     diesel::insert_into(queues::table)

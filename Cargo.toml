@@ -28,6 +28,7 @@ validator_derive = "0.10.0"
 ws = "0.8.1"
 clokwerk = "0.3.0"
 reqwest = { version = "0.10.4", features = ["blocking"] }
+unicode-truncate = "0.1.1"
 
 
 [dependencies.rocket_contrib]

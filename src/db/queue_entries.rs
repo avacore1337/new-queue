@@ -4,6 +4,7 @@ use crate::schema::{queue_entries, users};
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use diesel::result::{DatabaseErrorKind, Error};
+use unicode_truncate::UnicodeTruncateStr;
 
 pub enum QueueEntryCreationError {
     DuplicatedName,
@@ -50,14 +51,16 @@ pub fn update_user_data(
     queue_id: i32,
     user_id: i32,
     location: &str,
-    comment: &str,
+    usercomment: &str,
     help: bool,
 ) -> Result<QueueEntry, diesel::result::Error> {
     let entry = find(conn, queue_id, user_id)?;
+    let (location, _) = location.unicode_truncate(50);
+    let (usercomment, _) = usercomment.unicode_truncate(140);
     diesel::update(&entry)
         .set((
             queue_entries::location.eq(location),
-            queue_entries::usercomment.eq(comment),
+            queue_entries::usercomment.eq(usercomment),
             queue_entries::help.eq(help),
             queue_entries::badlocation.eq(false),
         ))
@@ -143,6 +146,8 @@ pub fn create(
     usercomment: &str,
     help: bool,
 ) -> Result<QueueEntry, diesel::result::Error> {
+    let (location, _) = location.unicode_truncate(50);
+    let (usercomment, _) = usercomment.unicode_truncate(140);
     let new_queue = &NewQueueEntry {
         user_id,
         queue_id,
