@@ -63,7 +63,7 @@ pub fn rocket() -> rocket::Rocket {
 
     thread::Builder::new()
         .name("chrono thread".into())
-        .spawn(move || loop {
+        .spawn(move || {
             // or a scheduler with a given timezone
             let pool = db::init_pool();
 
@@ -73,8 +73,10 @@ pub fn rocket() -> rocket::Rocket {
                 let conn = pool.get().unwrap();
                 util::cleanup(&db::DbConn(conn));
             });
-            scheduler.run_pending();
-            thread::sleep(Duration::from_millis(500));
+            loop {
+                scheduler.run_pending();
+                thread::sleep(Duration::from_millis(500));
+            }
         })
         .unwrap();
 
