@@ -87,7 +87,6 @@ Backend:
 * statistics, done?
 * backend websockets leave/errors
 * leaving needs to leave for messaging
-* nightly reset, done?
 * message history
 * Lobby, broadcasts should also go to lobby and new route with all data should be added.
 

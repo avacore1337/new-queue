@@ -24,9 +24,8 @@ pub struct QueueEntry {
     pub badlocation: bool,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Queryable)]
 pub struct SendableQueueEntry {
-    pub id: i32,
     pub username: String,
     pub ugkthid: String,
     pub realname: String,
@@ -45,12 +44,11 @@ impl QueueEntry {
             .get_result::<User>(conn)
             .unwrap();
         SendableQueueEntry {
-            id: self.id,
             username: user.username,
             ugkthid: user.ugkthid,
             realname: user.realname,
-            comment: self.comment.clone(),
             location: self.location.clone(),
+            comment: self.comment.clone(),
             starttime: self.starttime,
             gettinghelp: self.gettinghelp,
             help: self.help,

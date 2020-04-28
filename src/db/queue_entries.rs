@@ -109,14 +109,21 @@ pub fn find_by_ugkthid(
 
 pub fn for_queue(conn: &PgConnection, queue_name: &str) -> Option<Vec<SendableQueueEntry>> {
     let queue = queues::find_by_name(conn, queue_name).ok()?;
-    QueueEntry::belonging_to(&queue)
-        .load(conn)
-        .map(|entries: Vec<QueueEntry>| {
-            entries
-                .into_iter()
-                .map(|entry| entry.to_sendable(conn))
-                .collect()
-        })
+    queue_entries::table
+        .inner_join(users::table)
+        .filter(queue_entries::queue_id.eq(queue.id))
+        .select((
+            users::username,
+            users::ugkthid,
+            users::realname,
+            queue_entries::location,
+            queue_entries::usercomment,
+            queue_entries::starttime,
+            queue_entries::gettinghelp,
+            queue_entries::help,
+            queue_entries::badlocation,
+        ))
+        .get_results::<SendableQueueEntry>(conn)
         .ok()
 }
 
