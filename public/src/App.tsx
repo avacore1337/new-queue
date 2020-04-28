@@ -1,8 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { useDispatch } from 'react-redux'
 import './App.css';
-import { setTitle } from './actions/titleActions';
 import HomePage from './pages/Home';
 import Queue from './pages/Queue';
 import NavBar from './viewcomponents/NavBar';
@@ -16,9 +14,6 @@ import AdministrationPage from './pages/Administration';
 import Modal from './viewcomponents/Modal';
 
 export default (): JSX.Element => {
-
-  const dispatch = useDispatch();
-  dispatch(setTitle('Stay A While 2'));
 
   return (
     <Router>
