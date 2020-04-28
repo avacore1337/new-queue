@@ -70,11 +70,13 @@ pub fn rocket() -> rocket::Rocket {
     rocket::custom(config::from_env())
         .mount("/", StaticFiles::from("public/build"))
         .mount(
+            "/",
+            routes![routes::users::kth_auth, routes::users::kth_login,],
+        )
+        .mount(
             "/api",
             routes![
                 routes::users::post_users_login,
-                routes::users::kth_auth,
-                routes::users::kth_login,
                 routes::queues::get_queues,
                 routes::queues::get_queue,
                 routes::queue_entries::get_queue_entries,
