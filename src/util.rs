@@ -52,13 +52,18 @@ pub fn fetch_ldap_data(ugkthid: &str) -> Result<LdapUser, Box<dyn std::error::Er
         .search(
             "ou=Unix,dc=kth,dc=se",
             Scope::Subtree,
-            &("uid=".to_string() + ugkthid),
+            &("ugKthid=".to_string() + ugkthid),
             vec!["l"],
         )?
         .success()?;
+    println!("rs length {}", rs.len());
     for entry in rs {
         println!("{:?}", SearchEntry::construct(entry));
     }
+    println!(
+        "We did crash when we sent a ldap query to search for: {}",
+        ugkthid
+    );
     Ok(LdapUser {
         username: "robertwb".to_string(),
         ugkthid: "ug12345".to_string(),
