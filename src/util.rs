@@ -56,14 +56,10 @@ pub fn fetch_ldap_data(ugkthid: &str) -> Result<LdapUser, Box<dyn std::error::Er
             vec!["l"],
         )?
         .success()?;
-    println!("rs length {}", rs.len());
     for entry in rs {
+        println!("{:?}", entry);
         println!("{:?}", SearchEntry::construct(entry));
     }
-    println!(
-        "We did crash when we sent a ldap query to search for: {}",
-        ugkthid
-    );
     Ok(LdapUser {
         username: "robertwb".to_string(),
         ugkthid: "ug12345".to_string(),
@@ -130,36 +126,6 @@ pub fn handle_login(conn: &db::DbConn, params: Form<Ticket>) -> Option<User> {
 //     res.on('end', function(result) {
 //       console.log('status: ' + result.status);
 //     });
-//   });
-// }
-
-// function getUID (ticket, callback) {
-//   var url = 'https://login.kth.se/serviceValidate?ticket='+ ticket  + '&service=http://queue.csc.kth.se/auth';
-//   request({ url: url}, function (err, response, body) {
-//     if (err) {
-//       console.log("err", err);
-//     }
-//     else{
-//       // console.log(body);
-//       var uid = "";
-//       // console.log("statusCode:");
-//       // console.log(response.statusCode);
-//       // console.log(body);
-//       var failure = body.match("authenticationFailure");
-//       if (failure) {
-//         console.log("well, that failed");
-//       }
-//       else{
-//         var uidMatches = body.match(/u1[\d|\w]+/g);
-//         if (uidMatches) {
-//           uid = uidMatches[0];
-//         }
-//         else{
-//           console.log("no match found");
-//         }
-//       }
-//       callback(uid);
-//     }
 //   });
 // }
 
