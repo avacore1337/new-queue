@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../../store';
-import { loadAdditionalQueueData, removeQueue, hideQueue, revealQueue } from '../../../actions/administratorActions';
+import { loadAdditionalQueueData } from '../../../actions/administratorActions';
+import { openShowQueueModal, openHideQueueModal, openDeleteQueueModal } from '../../../actions/modalActions';
 import User from '../../../models/User';
 import Queue from '../../../models/Queue';
 import TeachersViewComponent from './Teachers/Teachers';
@@ -40,7 +41,7 @@ export default (): JSX.Element | null => {
             <p className="col-12 p-0">Choose which queue you wish to edit</p>
             <div className="dropdown col-12 p-0">
               <button
-                className="btn btn-info dropdown-toggle"
+                className="btn btn-primary dropdown-toggle"
                 type="button"
                 id="selectQueue"
                 data-toggle="dropdown"
@@ -70,10 +71,10 @@ export default (): JSX.Element | null => {
                   <div className="row mb-5">
                     {
                       selectedQueue.hiding
-                        ? <button className="btn btn-success mb-2 mb-lg-0 mr-0 mr-lg-2" onClick={() => dispatch(revealQueue(selectedQueue.name))}>Reveal queue</button>
-                        : <button className="btn btn-warning mb-2 mb-lg-0 mr-0 mr-lg-2" onClick={() => dispatch(hideQueue(selectedQueue.name))}>Hide queue</button>
+                        ? <button className="btn btn-success mb-2 mb-lg-0 mr-0 mr-lg-2" onClick={() => dispatch(openShowQueueModal(selectedQueue.name))}>Reveal queue</button>
+                        : <button className="btn btn-warning mb-2 mb-lg-0 mr-0 mr-lg-2" onClick={() => dispatch(openHideQueueModal(selectedQueue.name))}>Hide queue</button>
                     }
-                    <button className="btn btn-danger" onClick={() => dispatch(removeQueue(selectedQueue.name))}>Delete queue</button>
+                    <button className="btn btn-danger" onClick={() => dispatch(openDeleteQueueModal(selectedQueue.name))}>Delete queue</button>
                   </div>
                   <div className="row">
                     <div className="col-12 col-lg-6">

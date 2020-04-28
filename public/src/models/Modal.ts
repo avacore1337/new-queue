@@ -9,7 +9,7 @@ export default class Modal {
   private _isVisible: any;
   public get isVisible() { return this._isVisible; }
 
-  public constructor(modalType: string, data: any, isVisible?: boolean) {
+  public constructor(modalType: string, data?: any, isVisible?: boolean) {
     this._modalType = modalType;
     this._modalData = data || {};
     this._isVisible = isVisible !== undefined ? isVisible : true;

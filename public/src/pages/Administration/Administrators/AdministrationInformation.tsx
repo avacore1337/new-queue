@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../../store';
-import { setServerMessage } from '../../../actions/administratorActions';
+import { openSetServerMessageModal } from '../../../actions/modalActions';
 import User from '../../../models/User';
 
 export default function AdministrationInformationViewComponent() {
@@ -11,7 +11,7 @@ export default function AdministrationInformationViewComponent() {
   const dispatch = useDispatch();
 
   function displayMotd() {
-    dispatch(setServerMessage('TODO'));
+    dispatch(openSetServerMessageModal());
   }
 
   return (

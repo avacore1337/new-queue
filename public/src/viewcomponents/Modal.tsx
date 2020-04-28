@@ -6,6 +6,10 @@ import ModalInformation from '../models/Modal';
 import SendMessage, { ModalType as SendMessageModal } from './Modals/SendMessageModal';
 import ShowMessage, { ModalType as ShowMessageModal } from './Modals/ShowMessageModal';
 import Broadcast, { ModalType as BroadcastModal } from './Modals/BroadcastModal';
+import ServerMessage, { ModalType as ServerMessageModal } from './Modals/ServerMessageModal';
+import ShowQueue, { ModalType as ShowQueueModal } from './Modals/ShowQueueModal';
+import HideQueue, { ModalType as HideQueueModal } from './Modals/HideQueueModal';
+import DeleteQueue, { ModalType as DeleteQueueModal } from './Modals/DeleteQueueModal';
 
 export default (): JSX.Element => {
 
@@ -28,18 +32,31 @@ export default (): JSX.Element => {
     switch (modal.modalType) {
 
       case SendMessageModal: {
-        console.log('Redrawing : SendMessageModal');
         return (<SendMessage { ...props } />);
       }
 
       case ShowMessageModal: {
-        console.log('Redrawing : ShowMessageModal');
         return (<ShowMessage { ...props } />);
       }
 
       case BroadcastModal: {
-        console.log('Redrawing : BroadcastModal');
         return (<Broadcast { ...props } />);
+      }
+
+      case ServerMessageModal: {
+        return (<ServerMessage { ...props } />);
+      }
+
+      case ShowQueueModal: {
+        return (<ShowQueue { ...props } />);
+      }
+
+      case HideQueueModal: {
+        return (<HideQueue { ...props } />);
+      }
+
+      case DeleteQueueModal: {
+        return (<DeleteQueue { ...props } />);
       }
 
     }

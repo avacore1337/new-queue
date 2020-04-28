@@ -5,6 +5,10 @@ import Modal from '../models/Modal';
 import { ModalType as ShowMessageModal } from '../viewcomponents/Modals/ShowMessageModal';
 import { ModalType as SendMessageModal } from '../viewcomponents/Modals/SendMessageModal';
 import { ModalType as BroadcastModal } from '../viewcomponents/Modals/BroadcastModal';
+import { ModalType as SetServerMessageModal } from '../viewcomponents/Modals/ServerMessageModal';
+import { ModalType as ShowQueueModal } from '../viewcomponents/Modals/ShowQueueModal';
+import { ModalType as HideQueueModal } from '../viewcomponents/Modals/HideQueueModal';
+import { ModalType as DeleteQueueModal } from '../viewcomponents/Modals/DeleteQueueModal';
 
 const initialState = {
   modalList: [] as Modal[],
@@ -44,6 +48,22 @@ export default (state = initialState, action: FluxStandardAction) => {
 
     case ModalActionTypes.OpenBroadcastModal: {
       return { ...state, modalList: [...state.modalList, new Modal(BroadcastModal, action.payload)] }
+    }
+
+    case ModalActionTypes.OpenSetServerMessageModal: {
+      return { ...state, modalList: [...state.modalList, new Modal(SetServerMessageModal)] }
+    }
+
+    case ModalActionTypes.OpenShowQueueModal: {
+      return { ...state, modalList: [...state.modalList, new Modal(ShowQueueModal, action.payload)] }
+    }
+
+    case ModalActionTypes.OpenHideQueueModal: {
+      return { ...state, modalList: [...state.modalList, new Modal(HideQueueModal, action.payload)] }
+    }
+
+    case ModalActionTypes.OpenDeleteQueueModal: {
+      return { ...state, modalList: [...state.modalList, new Modal(DeleteQueueModal, action.payload)] }
     }
 
   }

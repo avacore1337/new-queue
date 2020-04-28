@@ -73,6 +73,13 @@ export default (_ = socket, action: FluxStandardAction) => {
       break;
     }
 
+    case AdministratorActionTypes.SetServerMessage: {
+      socket.send(new RequestMessage(`setServerMessage`, {
+        message: action.payload
+      }));
+      break;
+    }
+
     case QueueActionTypes.JoinQueue: {
       socket.send(new RequestMessage(`joinQueue/${action.payload.queueName}`, {
         location: action.payload.location,
