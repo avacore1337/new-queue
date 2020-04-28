@@ -4,6 +4,8 @@ use crate::models::user::User;
 use crate::reqwest;
 use clokwerk::{Scheduler, TimeUnits};
 use diesel::pg::PgConnection;
+use ldap3::{LdapConn, Scope, SearchEntry};
+use regex::Regex;
 use rocket::request::Form;
 use std::thread;
 use std::time::Duration;
@@ -43,10 +45,21 @@ pub struct Ticket {
     ticket: Option<String>,
 }
 
-//
 // ldapsearch -x -H ldaps://ldap.kth.se -b ou=Unix,dc=kth,dc=se uid=ransin ugKthid | grep "ugKthid"
-pub fn fetch_ldap_data(_ugkthid: &str) -> Option<LdapUser> {
-    Some(LdapUser {
+pub fn fetch_ldap_data(ugkthid: &str) -> Result<LdapUser, Box<dyn std::error::Error>> {
+    let ldap = LdapConn::new("ldaps://ldap.kth.se")?;
+    let (rs, _res) = ldap
+        .search(
+            "ou=Unix,dc=kth,dc=se",
+            Scope::Subtree,
+            &("uid=".to_string() + ugkthid),
+            vec!["l"],
+        )?
+        .success()?;
+    for entry in rs {
+        println!("{:?}", SearchEntry::construct(entry));
+    }
+    Ok(LdapUser {
         username: "robertwb".to_string(),
         ugkthid: "ug12345".to_string(),
         realname: "Robert Welin-Berger".to_string(),
@@ -60,7 +73,12 @@ fn validate_ticket(ticket: &str) -> Option<String> {
         + "&service=http://queue.csc.kth.se/auth";
     let res = reqwest::blocking::get(&url).ok()?.text().ok()?;
     println!("body = {:?}", res);
-    Some(res)
+    if res.contains("authenticationFailure") {
+        None
+    } else {
+        let re = Regex::new(r"(u1[\d|\w]+)").unwrap();
+        re.captures(&res).map(|cap| cap[0].to_string())
+    }
 }
 
 pub fn handle_login(conn: &db::DbConn, params: Form<Ticket>) -> Option<User> {
@@ -68,14 +86,17 @@ pub fn handle_login(conn: &db::DbConn, params: Form<Ticket>) -> Option<User> {
     match db::users::find_by_ugkthid(conn, &ugkthid) {
         Ok(user) => Some(user),
         Err(_) => match fetch_ldap_data(&ugkthid) {
-            Some(ldap_user) => db::users::create(
+            Ok(ldap_user) => db::users::create(
                 conn,
                 &ldap_user.username,
                 &ldap_user.ugkthid,
                 &ldap_user.realname,
             )
             .ok(),
-            None => None,
+            Err(e) => {
+                println!("Encountered error {}", e);
+                None
+            }
         },
     }
 }

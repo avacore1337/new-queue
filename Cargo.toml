@@ -10,6 +10,7 @@ Replacement for the computer lab queue system at KTH.
 readme = "README.md"
 
 [dependencies]
+regex = "1"
 chrono = { version = "0.4", features = ["serde"] }
 diesel = { version = "1.4.4", features = ["postgres", "chrono", "r2d2"] }
 diesel-derive-enum = { version = "0.4", features = ["postgres"] }
