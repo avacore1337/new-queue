@@ -28,11 +28,10 @@ export default (): JSX.Element | null => {
     if (queue !== null && user !== null) {
       for (let i = 0; i < queue.queueEntries.length; i++) {
           if (queue.queueEntries[i].ugkthid === user.ugkthid) {
-            dispatch(setTitle(`${queue.name} | ${i+1} of ${queue.queueEntries.length}`));
+            dispatch(setTitle(`[${i+1}/${queue.queueEntries.length}] ${queue.name} | Stay A While 2`));
             return;
           }
       }
-      dispatch(setTitle(`Stay A While 2 | ${queue.name}`));
     }
   }
   updateTitle();

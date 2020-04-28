@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { useDispatch } from 'react-redux'
 import './App.css';
+import { setTitle } from './actions/titleActions';
 import HomePage from './pages/Home';
 import Queue from './pages/Queue';
 import NavBar from './viewcomponents/NavBar';
@@ -8,7 +10,6 @@ import AboutPage from './pages/About';
 import HelpPage from './pages/Help';
 import StatisticsPage from './pages/Statistics';
 import PageNotFound from './pages/NoMatch';
-import DebugComponent from './viewcomponents/Debug';
 import LoginPage from './pages/Login';
 import LogoutPage from './pages/Logout';
 import AdministrationPage from './pages/Administration';
@@ -16,13 +17,13 @@ import Modal from './viewcomponents/Modal';
 
 export default (): JSX.Element => {
 
-  const [show, setShow] = useState(true);
+  const dispatch = useDispatch();
+  dispatch(setTitle('Stay A While 2'));
 
   return (
     <Router>
       <Modal />
       <NavBar />
-      <DebugComponent />
       <Switch>
         <Route exact path="/">
           <HomePage />

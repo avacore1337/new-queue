@@ -6,7 +6,6 @@ import { ActionTypes as LobbyActionTypes } from '../actions/lobbyActions';
 import { ActionTypes as SocketActionTypes } from '../actions/socketActions';
 import { ActionTypes as UserActionTypes } from '../actions/userActions';
 import { ActionTypes as AssistantActionTypes } from '../actions/assistantActions';
-import { ActionTypes as DebugActionTypes } from '../actions/debugActions';
 import {
   onQueueEntryAdded, onQueueEntryRemoved, onQueueEntryUpdated,
   onMessageRecieved
@@ -248,11 +247,6 @@ export default (_ = socket, action: FluxStandardAction) => {
       socket.send(new RequestMessage(`setQueueLockStatus/${action.payload.queueName}`, {
         status: action.payload.locked
       }));
-      break;
-    }
-
-    case DebugActionTypes.SendDebugMessage: {
-      socket.send(new RequestMessage(action.payload.path, action.payload.json));
       break;
     }
 
