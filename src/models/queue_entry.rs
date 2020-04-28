@@ -8,7 +8,7 @@ use serde::Serialize;
 
 use chrono::{DateTime, Utc};
 
-#[derive(Identifiable, Queryable, Associations)]
+#[derive(Identifiable, Queryable, Associations, Debug)]
 #[belongs_to(parent = "User")]
 #[belongs_to(parent = "Queue")]
 #[table_name = "queue_entries"]
@@ -16,8 +16,8 @@ pub struct QueueEntry {
     pub id: i32,
     pub user_id: i32,
     pub queue_id: i32,
-    pub comment: String,
     pub location: String,
+    pub comment: String,
     pub starttime: DateTime<Utc>,
     pub gettinghelp: bool,
     pub help: bool,
@@ -30,8 +30,8 @@ pub struct SendableQueueEntry {
     pub username: String,
     pub ugkthid: String,
     pub realname: String,
-    pub comment: String,
     pub location: String,
+    pub comment: String,
     pub starttime: DateTime<Utc>,
     pub gettinghelp: bool,
     pub help: bool,

@@ -273,7 +273,7 @@ pub fn join_queue_route(
         queue_entry.help,
     )?;
     db::user_events::create(conn, &queue_entry, false)?;
-    println!("QueueEntry ID: {}", queue_entry.id);
+    println!("QueueEntry {:?}", queue_entry);
 
     handler.broadcast_room(
         queue_name,
@@ -354,7 +354,7 @@ pub fn update_queue_entry_route(
         &queue_entry.comment,
         queue_entry.help,
     )?;
-    println!("QueueEntry ID: {}", queue_entry.id);
+    println!("QueueEntry : {:?}", queue_entry);
 
     handler.broadcast_room(
         queue_name,
