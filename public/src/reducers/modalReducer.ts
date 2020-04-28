@@ -6,38 +6,44 @@ import { ModalType as ShowMessageModal } from '../viewcomponents/Modals/ShowMess
 import { ModalType as SendMessageModal } from '../viewcomponents/Modals/SendMessageModal';
 import { ModalType as BroadcastModal } from '../viewcomponents/Modals/BroadcastModal';
 
-const initialState = [] as Modal[];
+const initialState = {
+  modalList: [] as Modal[],
+  current: 0
+};
 
 export default (state = initialState, action: FluxStandardAction) => {
   switch (action.type) {
 
     case Listeners.OnMessageRecieved: {
-      return [...state, new Modal(ShowMessageModal, action.payload)];
+      return { ...state, modalList: [...state.modalList, new Modal(ShowMessageModal, action.payload)] }
     }
 
     case ModalActionTypes.CloseModal: {
-      var modals = [...state];
-      for (let i = 0; i < modals.length; i++) {
-          if (modals[i].isVisible) {
-            modals[i] = modals[i].clone();
-            modals[i].hide();
-            break;
-          }
-      }
-      return modals;
+      var nextState = {
+        current: state.current + 1,
+        modalList: [ ...state.modalList ]
+      };
+
+      nextState.modalList[state.current] = nextState.modalList[state.current].clone();
+      nextState.modalList[state.current].hide();
+
+      return nextState;
     }
 
     case ModalActionTypes.RemoveModal: {
-      break;
-      // return state.some(modal => modal.isVisible) ? state : [];
+      if (state.modalList.some(modal => modal.isVisible)) {
+        return state;
+      }
+
+      return initialState;
     }
 
     case ModalActionTypes.OpenSendMessageModal: {
-      return [...state, new Modal(SendMessageModal, action.payload)];
+      return { ...state, modalList: [...state.modalList, new Modal(SendMessageModal, action.payload)] }
     }
 
     case ModalActionTypes.OpenBroadcastModal: {
-      return [...state, new Modal(BroadcastModal, { queueName: action.payload })];
+      return { ...state, modalList: [...state.modalList, new Modal(BroadcastModal, action.payload)] }
     }
 
   }

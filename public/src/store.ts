@@ -19,7 +19,10 @@ export interface GlobalStore {
     administrators: Administrator[]
     selectedQueue: string
   },
-  modals: Modal[]
+  modals: {
+    modalList: Modal[],
+    current: number
+  }
 }
 
 const middleware = applyMiddleware(promise, thunk);

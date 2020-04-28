@@ -93,9 +93,6 @@ Backend:
 Frontend:
 * Fix Help page
 * Fix About page
-* Fix Statistics page
-* Add assistant operations to queue-page
-* Add modal support
-* Rewrite some parts of Redux to pure React
-* Add delete & hide queue
-* Allow assistants to send custom messages
+* Fix Statistics page (half done)
+* Add modal support (half done)
+* Rewrite socket handling to follow event driven design

@@ -9,38 +9,36 @@ import Broadcast, { ModalType as BroadcastModal } from './Modals/BroadcastModal'
 
 export default (): JSX.Element => {
 
-  const modals = useSelector<GlobalStore, ModalInformation[]>(store => store.modals);
+  const modals = useSelector<GlobalStore, {modalList: ModalInformation[], current: number}>(store => store.modals);
 
   const dispatch = useDispatch();
 
   function onHide(): void {
     dispatch(closeModal());
-    setTimeout(() => dispatch(removeModal()), 500);
+    setTimeout(() => dispatch(removeModal()), 1000);
   }
 
-  console.log('Redrawing');
-
-  function toJSX(modal: ModalInformation, firstVisible: ModalInformation): JSX.Element | null {
+  function toJSX(modal: ModalInformation, isVisible: boolean): JSX.Element | null {
     const props = {
       ...modal.modalData,
-      show: modal.isVisible,
-      onHide: modal === firstVisible ? () => onHide() : undefined
+      show: isVisible,
+      onHide: isVisible ? () => onHide() : undefined
     };
-
-    console.log(modal.modalType);
 
     switch (modal.modalType) {
 
       case SendMessageModal: {
+        console.log('Redrawing : SendMessageModal');
         return (<SendMessage { ...props } />);
       }
 
       case ShowMessageModal: {
-        console.log('Drawing show');
-        return (<ShowMessage { ...props } show={props.show} />);
+        console.log('Redrawing : ShowMessageModal');
+        return (<ShowMessage { ...props } />);
       }
 
       case BroadcastModal: {
+        console.log('Redrawing : BroadcastModal');
         return (<Broadcast { ...props } />);
       }
 
@@ -49,12 +47,14 @@ export default (): JSX.Element => {
     return null;
   }
 
+  const modalList = modals.modalList.reverse();
+
   return (
     <>
       {
-        modals.reverse().map((modal, index) =>
+        modalList.map((modal, index) =>
           <div key={`modal_${modal.modalType}_${JSON.stringify(modal.modalData)}_${index}`}>
-            { toJSX(modal, modals.reverse().filter(m => m.isVisible)[0]) }
+            { toJSX(modal, index === modals.current) }
           </div>
         )
       }

@@ -25,9 +25,14 @@ export default (props: any): JSX.Element => {
   );
 
   useEffect(() => {
-    setLocation(user?.location || personalQueueEntry?.location || '');
-    setComment(personalQueueEntry?.location || '');
-    setHelp(personalQueueEntry?.help || true);
+    const newLocation = user?.location || personalQueueEntry?.location || '';
+    const newComment = personalQueueEntry?.comment || '';
+    const newHelp = personalQueueEntry?.help || true;
+
+    setLocation(newLocation);
+    setComment(newComment);
+    setHelp(newHelp);
+
   }, [personalQueueEntry]);
 
   function changeLocation(event: any): void {
