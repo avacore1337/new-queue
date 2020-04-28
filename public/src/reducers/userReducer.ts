@@ -10,13 +10,13 @@ export default (state: User | null = initialState, action: FluxStandardAction) =
 
     case ActionTypes.Login.Fulfilled: {
       const userData = {
-        ugkthid: action.payload.data.user.ugkthid,
-        name: action.payload.data.user.realname,
-        username: action.payload.data.user.username,
-        token: action.payload.data.user.token,
-        isAdministrator: action.payload.data.user.superadmin,
-        teacherIn: action.payload.data.user.teacher_in,
-        assistantIn: action.payload.data.user.assistant_in
+        ugkthid: action.payload.data.ugkthid,
+        name: action.payload.data.realname,
+        username: action.payload.data.username,
+        token: action.payload.data.token,
+        isAdministrator: action.payload.data.superadmin,
+        teacherIn: action.payload.data.teacher_in,
+        assistantIn: action.payload.data.assistant_in
       };
       localStorage.setItem('User', JSON.stringify(userData));
       return new User(userData);

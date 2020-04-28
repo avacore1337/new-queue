@@ -28,7 +28,7 @@ export default (props: any): JSX.Element => {
   function changeLocation(event: any): void {
     setLocation(event.target.value);
     if (personalQueueEntry !== null && event.target.value && comment) {
-      sendPersonalEntry(queueName, event.target.value, comment, help);
+      sendPersonalEntry(queueName, comment, event.target.value, help);
     }
     else {
       sendPersonalEntry.cancel();
@@ -38,7 +38,7 @@ export default (props: any): JSX.Element => {
   function changeComment(event: any): void {
     setComment(event.target.value);
     if (personalQueueEntry !== null && location && event.target.value) {
-      sendPersonalEntry(queueName, location, event.target.value, help);
+      sendPersonalEntry(queueName, event.target.value, location, help);
     }
     else {
       sendPersonalEntry.cancel();
