@@ -16,9 +16,6 @@ extern crate reqwest;
 
 use dotenv::dotenv;
 
-use clokwerk::{Scheduler, TimeUnits};
-use std::time::Duration;
-
 mod auth;
 mod config;
 mod db;
@@ -60,25 +57,7 @@ fn cors_fairing() -> Cors {
 
 pub fn rocket() -> rocket::Rocket {
     dotenv().ok();
-
-    thread::Builder::new()
-        .name("chrono thread".into())
-        .spawn(move || {
-            // or a scheduler with a given timezone
-            let pool = db::init_pool();
-
-            let mut scheduler = Scheduler::with_tz(chrono::Utc);
-            scheduler.every(1.day()).at("03:00").run(move || {
-                println!("Running nightly cleanup task");
-                let conn = pool.get().unwrap();
-                util::cleanup(&db::DbConn(conn));
-            });
-            loop {
-                scheduler.run_pending();
-                thread::sleep(Duration::from_millis(500));
-            }
-        })
-        .unwrap();
+    util::start_scheduled_tasks();
 
     thread::Builder::new()
         .name("ws-rs thread".into())

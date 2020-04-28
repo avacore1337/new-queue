@@ -1,3 +1,4 @@
+use diesel::Connection;
 use rocket_contrib::databases::diesel;
 
 pub mod admins;
@@ -17,6 +18,11 @@ use std::env;
 use diesel::r2d2::{ConnectionManager, Pool};
 
 pub type PgPool = Pool<ConnectionManager<PgConnection>>;
+
+pub fn get_single_connection() -> PgConnection {
+    PgConnection::establish(&database_url())
+        .expect(&format!("Error connecting to {}", database_url()))
+}
 
 // fn init_pool() -> Result<PgPool, PoolError> {
 pub fn init_pool() -> PgPool {

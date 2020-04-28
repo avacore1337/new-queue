@@ -2,9 +2,30 @@ use crate::db;
 use crate::db::queue_entries::remove_all;
 use crate::models::user::User;
 use crate::reqwest;
+use clokwerk::{Scheduler, TimeUnits};
 use diesel::pg::PgConnection;
 use rocket::request::Form;
+use std::thread;
+use std::time::Duration;
 
+pub fn start_scheduled_tasks() {
+    thread::Builder::new()
+        .name("chrono thread".into())
+        .spawn(move || {
+            // or a scheduler with a given timezone
+            let mut scheduler = Scheduler::with_tz(chrono::Utc);
+            scheduler.every(1.day()).at("03:00").run(move || {
+                let conn = db::get_single_connection();
+                println!("Running nightly cleanup task");
+                cleanup(&conn);
+            });
+            loop {
+                scheduler.run_pending();
+                thread::sleep(Duration::from_millis(500));
+            }
+        })
+        .unwrap();
+}
 pub fn cleanup(conn: &PgConnection) {
     if let Err(e) = remove_all(conn) {
         println!("Something went wrong! {}", e);
