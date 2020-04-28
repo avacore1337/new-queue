@@ -26,7 +26,7 @@ export default (props: any): JSX.Element => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        Are you sure that you wish to remove {props.queueName} permanently?
+        Are you sure that you wish to remove <strong>{props.queueName}</strong> permanently?
       </Modal.Body>
       <Modal.Footer>
         <button
