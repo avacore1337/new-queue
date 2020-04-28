@@ -10,7 +10,6 @@ export const ActionTypes = Object.freeze({
   LeaveQueue: 'LEAVE_QUEUE',
   RecievingHelp: 'RECIEVING_HELP',
   UpdatePersonalEntry: 'UPDATE_PERSONAL_ENTRY',
-  SendUpdatedPersonalEntry: 'SEND_UPDATED_PERSONAL_ENTRY',
   SubscribeToQueue: 'SUBSCRIBE_TO_QUEUE',
   UnsubscribeToQueue: 'UNSUBSCRIBE_TO_QUEUE'
 });
@@ -51,13 +50,8 @@ export const recievingHelp = (queueName: string, status: boolean): FluxStandardA
   payload: { queueName, status }
 });
 
-export const updatePersonalEntry = (queueName: string, comment: string, location: string, typeOfCommunication: string): FluxStandardAction => ({
+export const updatePersonalEntry = (queueName: string, comment: string, location: string, help: boolean): FluxStandardAction => ({
   type: ActionTypes.UpdatePersonalEntry,
-  payload: { queueName, comment, location, typeOfCommunication }
-});
-
-export const sendUpdatedPersonalEntry = (queueName: string, comment: string, location: string, help: boolean): FluxStandardAction => ({
-  type: ActionTypes.SendUpdatedPersonalEntry,
   payload: { queueName, comment, location, help }
 });
 

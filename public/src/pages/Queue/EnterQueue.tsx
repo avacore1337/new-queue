@@ -2,10 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import debounce from 'lodash.debounce';
 import { GlobalStore } from '../../store';
-import {
-  joinQueue, leaveQueue, recievingHelp,
-  updatePersonalEntry, sendUpdatedPersonalEntry
-} from '../../actions/queueActions';
+import { joinQueue, leaveQueue, recievingHelp, updatePersonalEntry } from '../../actions/queueActions';
 import User from '../../models/User';
 import QueueEntry from '../../models/QueueEntry';
 
@@ -18,12 +15,20 @@ export default (props: any): JSX.Element => {
 
   const dispatch = useDispatch();
 
-  const [location, setLocation] = useState(personalQueueEntry?.location || '');
-  const [comment, setComment] = useState(personalQueueEntry?.location || '');
+  const [location, setLocation] = useState(user?.location || personalQueueEntry?.location || '');
+  const [comment, setComment] = useState(personalQueueEntry?.comment || '');
   const [help, setHelp] = useState(personalQueueEntry?.help || true);
-  const [sendPersonalEntry] = useState(() => debounce((q: string, c: string, l: string, h: boolean): void => {
-      dispatch(sendUpdatedPersonalEntry(q, c, l, h));
-    }, 750));
+  const [sendPersonalEntry] = useState(
+    () => debounce((q: string, c: string, l: string, h: boolean): void => {
+      dispatch(updatePersonalEntry(q, c, l, h));
+    }, 750)
+  );
+
+  useEffect(() => {
+    setLocation(user?.location || personalQueueEntry?.location || '');
+    setComment(personalQueueEntry?.location || '');
+    setHelp(personalQueueEntry?.help || true);
+  }, [personalQueueEntry]);
 
   function changeLocation(event: any): void {
     setLocation(event.target.value);
@@ -60,7 +65,8 @@ export default (props: any): JSX.Element => {
             name="location"
             type="text"
             value={location}
-            onChange={changeLocation}
+            onChange={user?.location ? undefined : changeLocation}
+            disabled={user?.location ? true : false}
             style={{width: '100%', borderRadius: 0}} />
           {
             location === ''

@@ -94,7 +94,7 @@ export default (_ = socket, action: FluxStandardAction) => {
       break;
     }
 
-    case QueueActionTypes.SendUpdatedPersonalEntry: {
+    case QueueActionTypes.UpdatePersonalEntry: {
       socket.send(new RequestMessage(`updateQueueEntry/${action.payload.queueName}`, {
         comment: action.payload.comment,
         location: action.payload.location,
