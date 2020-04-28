@@ -333,12 +333,12 @@ impl RoomHandler {
             }
             ["setQueueLockStatus", queue_name] => {
                 let status = from_value::<Status>(wrapper.content.clone())?;
-                let _auth = self.get_auth(&wrapper, AuthLevel::Teacher)?;
+                let _auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
                 set_queue_lock_status(self, conn, status, queue_name)
             }
             ["setQueueHideStatus", queue_name] => {
                 let status = from_value::<Status>(wrapper.content.clone())?;
-                let _auth = self.get_auth(&wrapper, AuthLevel::Teacher)?;
+                let _auth = self.get_auth(&wrapper, AuthLevel::SuperOrTeacher)?;
                 set_queue_hide_status(self, conn, status, queue_name)
             }
             _ => {

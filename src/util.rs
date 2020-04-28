@@ -53,6 +53,7 @@ pub fn fetch_ldap_data(_ugkthid: &str) -> Option<LdapUser> {
     })
 }
 
+// ticket example: ST-675984-sfGECP3JozSUYekz9Vg3-login01
 fn validate_ticket(ticket: &str) -> Option<String> {
     let url = "https://login.kth.se/serviceValidate?ticket=".to_string()
         + ticket
