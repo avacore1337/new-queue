@@ -3,7 +3,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../store';
 import { useParams } from "react-router-dom";
 import { loadQueueData, subscribe, unsubscribe } from '../../actions/queueActions';
+import { setTitle } from '../../actions/titleActions';
 import Queue from '../../models/Queue';
+import User from '../../models/User';
 import EnterQueueViewComponent from './EnterQueue';
 import QueueAdministratorOptionsViewComponent from './QueueAdministratorOptions';
 import QueueEntryTableViewComponent from './QueueEntryTable';
@@ -14,12 +16,26 @@ export default (): JSX.Element | null => {
 
   const { queueName } = useParams();
 
+  const user = useSelector<GlobalStore, User | null>(store => store.user);
   const queue = useSelector<GlobalStore, Queue | null>(store => store.queues.filter(q => q.name === queueName)[0] || null);
   const queuesAreLoaded = useSelector<GlobalStore, boolean>(store => store.queues.length > 0);
 
   const [filter, setFilter] = useState('');
 
   const dispatch = useDispatch();
+
+  function updateTitle() {
+    if (queue !== null && user !== null) {
+      for (let i = 0; i < queue.queueEntries.length; i++) {
+          if (queue.queueEntries[i].ugkthid === user.ugkthid) {
+            dispatch(setTitle(`${queue.name} | ${i+1} of ${queue.queueEntries.length}`));
+            return;
+          }
+      }
+      dispatch(setTitle(`Stay A While 2 | ${queue.name}`));
+    }
+  }
+  updateTitle();
 
   useEffect(() => {
     if (queue !== null) {
@@ -31,6 +47,10 @@ export default (): JSX.Element | null => {
       };
     }
   }, [queuesAreLoaded]);
+
+  useEffect(() => {
+    updateTitle();
+  }, [queue]);
 
   return (
     !queuesAreLoaded

@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { useDispatch } from 'react-redux'
 import './index.css';
-import App from './App';
 import store from './store';
+import App from './App';
+import Helmet from './viewcomponents/Helmet';
 import * as serviceWorker from './serviceWorker';
 import { loadUser } from './actions/userActions';
 import { loadQueues } from './actions/queueActions';
@@ -25,6 +26,7 @@ function LifeCycle() {
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
+      <Helmet />
       <LifeCycle />
     </Provider>
   </React.StrictMode>,

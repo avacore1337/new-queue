@@ -7,6 +7,7 @@ import queueReducer from './reducers/queueReducer';
 import socketReducer from './reducers/socketReducer';
 import administratorReducer from './reducers/administratorReducer';
 import modalReducer from './reducers/modalReducer';
+import titleReducer from './reducers/titleReducer';
 import User from './models/User';
 import Queue from './models/Queue';
 import Administrator from './models/Administrator';
@@ -22,7 +23,8 @@ export interface GlobalStore {
   modals: {
     modalList: Modal[],
     current: number
-  }
+  },
+  title: string
 }
 
 const middleware = applyMiddleware(promise, thunk);
@@ -32,7 +34,8 @@ const reducer = combineReducers({
   queues: queueReducer,
   socket: socketReducer,
   administration: administratorReducer,
-  modals: modalReducer
+  modals: modalReducer,
+  title: titleReducer
 });
 
 const store = createStore(

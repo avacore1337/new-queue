@@ -96,3 +96,4 @@ Frontend:
 * Fix Statistics page (half done)
 * Add modal support (half done)
 * Rewrite socket handling to follow event driven design
+* If you kick a user, the assistant row is transfered to the next student
