@@ -1,10 +1,11 @@
 use crate::db;
 use crate::db::queue_entries::remove_all;
+use crate::errors::LdapError;
 use crate::models::user::User;
 use crate::reqwest;
 use clokwerk::{Scheduler, TimeUnits};
 use diesel::pg::PgConnection;
-use ldap3::{LdapConn, Scope, SearchEntry};
+use ldap3::{LdapConn, ResultEntry, Scope, SearchEntry};
 use regex::Regex;
 use rocket::request::Form;
 use std::thread;
@@ -45,6 +46,15 @@ pub struct Ticket {
     ticket: Option<String>,
 }
 
+pub fn convert_to_ldap_user(mut rs: Vec<ResultEntry>) -> Option<LdapUser> {
+    let mut entry = SearchEntry::construct(rs.pop()?);
+    Some(LdapUser {
+        username: entry.attrs.get_mut("uid")?.pop()?.to_string(),
+        ugkthid: entry.attrs.get_mut("ugkthid")?.pop()?.to_string(),
+        realname: entry.attrs.get_mut("cn")?.pop()?.to_string(),
+    })
+}
+
 // ldapsearch -x -H ldaps://ldap.kth.se -b ou=Unix,dc=kth,dc=se uid=ransin ugKthid | grep "ugKthid"
 pub fn fetch_ldap_data(ugkthid: &str) -> Result<LdapUser, Box<dyn std::error::Error>> {
     let ldap = LdapConn::new("ldaps://ldap.kth.se")?;
@@ -53,18 +63,13 @@ pub fn fetch_ldap_data(ugkthid: &str) -> Result<LdapUser, Box<dyn std::error::Er
             "ou=Unix,dc=kth,dc=se",
             Scope::Subtree,
             &("ugKthid=".to_string() + ugkthid),
-            vec!["l"],
+            vec!["ugkthid", "uid", "cn"],
         )?
         .success()?;
-    for entry in rs {
-        println!("{:?}", entry);
-        println!("{:?}", SearchEntry::construct(entry));
-    }
-    Ok(LdapUser {
-        username: "robertwb".to_string(),
-        ugkthid: "ug12345".to_string(),
-        realname: "Robert Welin-Berger".to_string(),
-    })
+    // for entry in rs {
+    //     println!("{:?}", SearchEntry::construct(entry));
+    // }
+    convert_to_ldap_user(rs).ok_or(Box::new(LdapError))
 }
 
 // ticket example: ST-675984-sfGECP3JozSUYekz9Vg3-login01

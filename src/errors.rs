@@ -3,7 +3,29 @@ use rocket::request::Request;
 use rocket::response::status;
 use rocket::response::{self, Responder};
 use rocket_contrib::json::Json;
+use std::error;
+use std::fmt;
 use validator::{ValidationError, ValidationErrors};
+
+#[derive(Debug, Clone)]
+pub struct LdapError;
+
+impl fmt::Display for LdapError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Got ldap problems")
+    }
+}
+
+impl error::Error for LdapError {
+    fn description(&self) -> &str {
+        "Got ldap problems"
+    }
+
+    fn cause(&self) -> Option<&(dyn error::Error)> {
+        // Generic error, underlying cause isn't tracked.
+        None
+    }
+}
 
 #[derive(Debug)]
 pub struct Errors {
