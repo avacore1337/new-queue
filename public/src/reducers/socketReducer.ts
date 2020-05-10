@@ -239,7 +239,7 @@ export default (_ = socket, action: FluxStandardAction) => {
     }
 
     case AssistantActionTypes.PurgeQueue: {
-      socket.send(new RequestMessage(`purgeQueue/${action.payload.queueName}`));
+      socket.send(new RequestMessage(`purgeQueue/${action.payload}`));
       break;
     }
 
