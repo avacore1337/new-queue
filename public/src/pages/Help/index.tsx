@@ -1,5 +1,548 @@
 import React from 'react';
+import { useSelector } from 'react-redux'
+import { HashLink as Link } from 'react-router-hash-link';
+import { GlobalStore } from '../../store';
+import User from '../../models/User';
+import EditQueue from '../../img/edit-queue.png';
+import RemoveTeacher from '../../img/remove-teacher.png';
+import Allmanhand from '../../img/allmanhand.png';
+import Location from '../../img/location.png';
+import FindQueuesBox from '../../img/find-queues-box.png';
+import { Locked, Star } from '../../viewcomponents/FontAwesome';
 
-export default (): JSX.Element => (
-  <h1>Help page</h1>
-)
+export default (): JSX.Element => {
+
+  const user = useSelector<GlobalStore, User | null>(store => store.user);
+
+  return (
+    <div className="container">
+    	<h1>Help and FAQ</h1>
+    	<h4>Contact: <a href="mailto:robertwb@kth.se?Subject=Stay%20A%20While" target="_top">robertwb@kth.se</a></h4>
+
+      {
+        user?.isAdministrator
+          ? <div className="card p-3 mb-3">
+          		<h2 id="administrator">Administrators</h2>
+
+          		<p>
+          			Administrators are the supreme rulers of Stay A While 2, with privileges to perform just about anything.
+          			Their primary purpose is adding new queues, and adding teachers for those queues.
+          		</p>
+
+          		<h3 id="setServerMessage">Set server-message</h3>
+          		<p>
+          			To add a server-message, go to the <Link smooth to="/administration">Administration</Link> page.
+                Then click the <em>Set server-message</em> button and enter a message in the window that opens up.
+                Once you have entered your message, click the <em>Set message</em> button to save your message.
+                A server-message will then be shown to every user currently connected to <em>Stay A While 2</em> as
+                well as those that connect while the message is active.
+                A server-message may be useful to forewarn users upon updating the service.
+          		</p>
+          		<p>
+          			To remove a server-message, go to the <Link smooth to="/administration">Administration</Link> page.
+                Then click the <em>Set server-message</em> button and then click the <em>Remove message</em> button
+                on the window that opens up.
+          		</p>
+
+          		<h3 id="addAdmin">Add an administrator</h3>
+          		<p>
+          			To add an administrator, go to the <Link smooth to="/administration">Administration</Link> page.
+                Then enter the username of the user you wish to add as administrator in the field which
+                says <em>Add administrator</em> and click <em>Add</em>.
+          			If the entered username is correct, the user will immediately show up in the list of administrators
+                below the input field.
+          		</p>
+          		<p>
+          			<em>
+          				Note: New administrators will get their privileges once they login next time, so they may have to
+                  log out and back in again.
+          			</em>
+          		</p>
+
+          		<h3 id="removeAdmin">Remove an administrator</h3>
+          		<p>
+          			To remove an administrator, go to the <Link smooth to="/administration">Administration</Link> page.
+                Then, under <em>Administrators</em>, click the red cross next to the name of the administrator you wish to remove.
+                The user should now disappear from the administrator list.
+                If not, please refresh the page.
+                The administrator rights will be removed from the user immediately.
+          		</p>
+          		<p>
+          			<em>
+          				Note: There must always be at least one administrator.
+                  It is therefore not possible to remove an administrator if it is the last one remaining.
+          			</em>
+          		</p>
+
+          		<h3 id="addQueue">Add a queue</h3>
+          		<p>
+          			To add a new queue, go to the <Link smooth to="/administration">Administration</Link> page.
+                Then enter the name of the queue you wish to add in the field which says <em>Add queue</em> and click <em>Add</em>.
+          			The queue should now show up in the list of queues below the input field.
+          		</p>
+          		<p>
+          			To remove a queue, see <Link smooth to="/help#removeQueue">Remove queue</Link> under the <em>Teacher</em> section.
+          		</p>
+
+          		<h3>Add or remove teachers and assistants</h3>
+          		<p>
+          			See <Link smooth to="/help#addTeacherOrAssistant">Add a teacher or assistant</Link> and <Link smooth to="/help#removeTeacherOrAssistant">Remove a teacher or assistant</Link> under
+                the <em>Teacher</em> section.
+          		</p>
+
+          		<h3>Accessing statistics</h3>
+          		<p>
+                See <Link smooth to="/help#statistics">Statistics</Link> under the <em>Teacher</em> section
+              </p>
+          	</div>
+            : null
+      }
+
+      {
+        user?.isAdministrator || user?.isTeacher
+          ? <div className="card p-3 mb-3">
+          		<h2 id="teacher">Teacher</h2>
+
+          		<p>
+          			Teachers are in charge of specific queues.
+                In addition to the privileges of an assistant, they can also add and remove assistants as well
+                as teachers from their queues
+                and <Link smooth to="/help#hide">hide</Link> or <Link smooth to="/help#removeQueue">remove</Link> the queue itself.
+          		</p>
+
+          		<h3 id="addTeacherOrAssistant">Add a teacher or assistant</h3>
+          		<p>
+          			To add a teacher or assistant for a queue, go to the <Link smooth to="/administration">Administration</Link> page.
+          			Then choose the queue you wish to add a teacher or assistant for in the dropdown as below:
+          		</p>
+          		<img src={EditQueue} alt="Edit queue" />
+          		<p>
+          			Once you have selected a queue, enter the name of the user you wish to add either in the
+          			<em>Add teacher</em> or the <em>Add assistant</em> input fields, and click the <em>Add</em> button.
+          			If done correctly, the user should now show up in the list under the given input field.
+          		</p>
+
+          		<h3 id="removeTeacherOrAssistant">Remove a teacher or assistant</h3>
+          		<p>
+          			To remove a teacher or assistant from a queue, go to the <Link smooth to="/administration">Administration</Link> page.
+          			Choose the queue you wish to remove a teacher or assistant from in the dropdown, the way you would
+                when <Link smooth to="/help#addTeacherOrAssistant">adding a teacher</Link>.
+                Click the red cross beside the user you
+          			want to remove, as in the picture below.
+          		</p>
+          		<img src={RemoveTeacher} alt="Remove teacher" />
+          		<p>
+          			Once the name in the list is gone, so are their privileges.
+          		</p>
+
+          		<h3 id="hide">Hide a queue</h3>
+          		<p>
+          			Hiding a queue means both <Link smooth to="/help#purge">purging</Link> and hiding the queue.
+          			This can be used for example when there will be no labs in a queue for a longer time.
+          		</p>
+          		<p>
+          			To hide a queue, go to the <Link smooth to="/administration">Administration</Link> page.
+          			Then go into the <em>Select queue</em> dropdown as you would <Link smooth to="/help#addTeacherOrAssistant">adding
+                a teacher or assistant</Link>, and click the <em>Hide queue</em> button that shows up upon selecting a queue.
+          			Confirm in the popup that appears.
+          		</p>
+          		<p>
+          			When you want to show the queue again, follow the same procedure and click the <em>Reveal queue</em> button
+                which is now shown instead of the <em>Hide queue</em> button.
+          		</p>
+
+          		<h3 id="removeQueue">Removing a queue</h3>
+          		<p>
+          			Removing a queue means removing it from the system.
+                There is no reversing this action and all privileges will be removed along with the queue.
+          		</p>
+          		<p>
+          			To remove a queue, go to the <Link smooth to="/administration">Administration</Link> page.
+          			Then go into the <em>Select queue</em> dropdown as you would <Link smooth to="/help#addTeacherOrAssistant">adding
+                a teacher or assistant</Link>, and click the <em>Remove queue</em> button that shows up upon selecting a queue.
+          			Confirm in the popup that appears.
+          		</p>
+          		<p>
+          			<em>
+          				Note: If you wish to regain a removed queue, you will have to contact an administrator.
+          			</em>
+          		</p>
+
+          		<h3 id="statistics">Statistics</h3>
+          		<p>
+          			Stay A While 2 allows the teacher to access some information about how a queue has been used.
+          		</p>
+          		<p>
+          			To access the statistics, first go to the <Link smooth to="/statistics">Statistics</Link> page.
+                Then go into the <em>Select queue</em> dropdown, and select the desired queue.
+                Then enter a starting point and an end point.
+                Once the desired time-period has been entered click, the <em>Get statistics</em> button and the information
+                should be shown below.</p>
+          	</div>
+          : null
+      }
+
+    	{
+        user?.isAdministrator || user?.isTeacher || user?.isAssistant
+          ? <div className="card p-3 mb-3">
+          		<h2 id="assistant">Assistants</h2>
+
+          		<p>
+          			Queue assistants help with moderating specific queues.
+                In addition to removing specific users,
+          			they are also able to lock and <Link smooth to="/help#purge">purge</Link> queues, as well as sending messages and interact
+                with the users in the queue.
+          		</p>
+          		<p>
+          			<em>
+          				Note: All the assistants privileges are located in the queue.
+                  You get there by choosing the right queue from the list of <Link smooth to="/list">queues</Link>.
+          			</em>
+          		</p>
+
+          		<h3 id="kick">Kicking a user</h3>
+          		<p>
+          			To remove a queue position, first double-click the user you wish to remove and thereafter click the appering red
+                button with a cross on it.
+                Be careful when removing users from the queue, as this action can not be reverted.
+          		</p>
+          		<p>
+          			<em>
+          				Note: If you are accessing the service through a recognized smartphone device, you will only have to click once
+                  to show the option to kick a user.
+          			</em>
+          		</p>
+
+          		<h3 id="message">Message a user</h3>
+          		<p>
+          			In order to send a message to a certain user in the queue, access the options as you would <Link smooth to="/help#kick">kicking</Link> a
+                user, and click the blue button with an envelope on it.
+                Enter a message in the window that opens up and click <em>Send</em>.
+          		</p>
+          		<p>
+          			To send a message to everyone in the queue, see <Link smooth to="/help#broadcast">broadcast</Link>.
+          		</p>
+
+          		<h3 id="help">Help a user</h3>
+          		<p>
+          			By helping a user, you mark them using the green button with a checkmark accessed in the same way as you would access the
+                button to <Link smooth to="/help#kick">kick</Link> someone.
+          			When a user is receiving help, they will start pulsing, notifing any other assistant that they can move to the next person
+                in the queue.
+          		</p>
+
+          		<h3 id="badLocation">Bad location</h3>
+          		<p>
+          			If an assistant is unable to find a given user because they have entered a location that is not precise enough, the
+                assistant has the option to mark the user for <em>Bad location</em>.
+                Marking a user for <em>bad location</em> is done by clicking the yellow button with a question-mark on it.
+                The button is found at the same place as the one used to <Link smooth to="/help#kick">kick</Link> a user.
+          		</p>
+          		<p>
+          			The user will then receive a message prompting them to edit their location.
+                The user will then have a red color until they have edited their location.
+          		</p>
+
+          		<h3 id="completion">Completion</h3>
+          		<p>
+          			If a user presents a solution to an assistant but is failed and made to change some things about their assignment, the
+                assistant can mark the user for completion.
+          		</p>
+          		<p>
+          			Marking a user for completion is done by clicking the yellow button with a bookmark on it.
+                The button is found at the same place as the one used to <Link smooth to="/help#kick">kick</Link> a user.
+                Once the button is clicked, a window will open up allowing the assistant to add an <strong>optional</strong> comment
+                about what the completion contains.
+                When you are happy with the comment you click <em>Submit</em> to save it.
+                Upon marking a user for completion, the user is automatically kicked from the queue.
+                If a task was added by the assistant, it can be found by <Link smooth to="/help#readMessages">reading the messages</Link> about a user.
+          		</p>
+          		<p>
+          			A user marked for completion will have a yellow color the next time they enter the queue with the intention of presenting.
+          		</p>
+
+          		<h3 id="addMessage">Add message</h3>
+          		<p>
+          			An assistant can add a comment about a user in case they think that the next assistant to help that user should know
+                something specific.
+                A possible comment may be <em>"I might have given them too much code"</em>.
+          		</p>
+          		<p>
+          			To add a message about a user, click the yellow button with a tag-icon on it.
+                The button is found at the same place as the one used to <Link smooth to="/help#kick">kick</Link> a user.
+          		</p>
+          		<p>
+          			The message may then be read by <Link smooth to="/help#readMessages">reading the messages</Link> about a user as specified below.
+          		</p>
+
+          		<h3 id="readMessages">Read messages</h3>
+          		<p>
+          			By double-clicking a user in the queue, the administrative options are shown.
+                If the user has some messages connected to them, the magnifying glass to the right will show up in a blue color.
+                If the magnifying glass is gray, that means that no messages exist about the user.
+                Clicking the blue magnifying glass opens a window showing all the messages about the user.
+          		</p>
+          		<p>
+          			<em>
+          				Note: If you are accessing the service through a recognized smartphone device, you will only have to click once to
+                  show the option to kick a user.
+          			</em>
+          		</p>
+
+          		<h3 id="broadcast">Broadcast</h3>
+          		<p>
+          			If you want every user in the queue to know something you can user the ability to broadcast information.
+          		</p>
+          		<p id="assistantOptions">
+          			Below the option to <em>join the queue</em> assistants will find a dropdown with administrative options.
+                The first one being <em>Broadcast</em>.
+          		</p>
+          		<p>
+          			Broadcasting is done by clicking the dropdown with administrative options and clicking <em>Broadcast</em>, this will
+                open a window prompting the user to enter a message to broadcast.
+                Once the message is entered, click the <em>Broadcast</em> button to send it.
+          		</p>
+          		<p>
+          			<em>
+          				Note: By using this function, everyone in the room will see the message.
+                  If you only want the assistants and teachers to see the message, use <Link smooth to="/help#broadcastFaculty">Broadcast faculty</Link>
+                  as described below.
+          			</em>
+          		</p>
+
+          		<h3 id="broadcastFaculty">Broadcast faculty</h3>
+          		<p>
+          			If you want every assistant and teacher in the given <em>room</em> you can user the ability to broadcast information to faculty.
+          		</p>
+          		<p>
+          			Broadcasting to faculty is done by clicking the <Link smooth to="/help#assistantOptions">dropdown</Link> with administrative options
+                and clicking <em>Broadcast faculty</em>, this will open a window prompting the user to enter a message to broadcast.
+                Once the message is entered, click the <em>Broadcast</em> button to send it.
+          		</p>
+          		<p>
+          			<em>
+          				Note: By using this function, only assistants and teachers can see the message.
+                  If you want everyone in the queue to see the message, use <Link smooth to="/help#broadcast">Broadcast</Link> as described above.
+          			</em>
+          		</p>
+
+          		<h3 id="setMOTD">Set MOTD</h3>
+          		<p>
+          			MOTD stands for <em>Message Of The Day</em>.
+                If you want users to know something once they enter the <em>room</em>, you can set a MOTD.
+                The MOTD will be shown to every user once they enter the <em>room</em> and may i.e.
+                be used to let them know that you only accept presentations today.
+          		</p>
+          		<p>
+          			You set the MOTD by clicking the <Link smooth to="/help#assistantOptions">dropdown</Link> with administrative options and clicking
+                <em>Set MOTD</em>, this will open a window prompting the user to enter a message, as well as showing the current MOTD if
+                there is one.
+                Once the message is entered, click the <em>Set MTOD</em> button to save it.
+          		</p>
+          		<p>
+          			In order to remove the MOTD, follow the same procedure, but click <em>Remove MOTD</em> on the window that opens up.
+          		</p>
+          		<p>
+          			<em>
+          				Note: If you want the user to see the information for a longer amount of time,
+                  use <Link smooth to="/help#setInfo">Set queue info</Link> described below.
+          			</em>
+          		</p>
+
+          		<h3 id="setInfo">Set queue info</h3>
+          		<p>
+          			Information that you wish to show the user continuously should be entered as <em>queue info</em>.
+                The queue info is shown on the top of the screen if there is one and can only be removed by an assistant or teacher.
+          		</p>
+          		<p>
+          			You set the <em>queue info</em> by clicking the <Link smooth to="/help#assistantOptions">dropdown</Link> with administrative options
+                and clicking <em>Set queue info</em>, this will open a window prompting the user to enter some information.
+                Once the message is entered, click the <em>Set info</em> button to save it.
+          		</p>
+          		<p>
+          			In order to remove the info, follow the same procedure, but click <em>Remove info</em> on the window that opens up.
+          		</p>
+          		<p>
+          			<em>
+          				Note: If you only want the user to see the info once, when they enter the <em>room</em>, try using
+                  <Link smooth to="/help#setMOTD">MOTD</Link> instead.
+          			</em>
+          		</p>
+
+          		<h3 id="purge">Purge a queue</h3>
+          		<p>
+          			When a queue is being purged, all people in the queue will be removed.
+                Be careful though, as this action can not be reverted.
+          		</p>
+          		<p>
+          			To purge a queue, start off by clicking the <Link smooth to="/help#assistantOptions">dropdown</Link> with administrative options
+                and then clicking the <em>Purge queue</em> button.
+                Confirm in the popup that appears.
+          		</p>
+
+          		<h3 id="lock">Lock a queue</h3>
+          		<p>
+          			When a queue is locked, users can see the queue but not join it.
+                When locking a queue, users already
+          			in the queue will <strong>not</strong> be removed.
+          		</p>
+          		<p>
+          			To lock a queue start off by clicking the <Link smooth to="/help#assistantOptions">dropdown</Link> with administrative options
+                and clicking <em>Lock queue</em>.
+                Confirm in the popup that appears.
+          		</p>
+          		<p>
+          			To unlock a queue, perform the same procedure as above, but instead of choosing <em>Lock</em>, you choose <em>Unlock</em>.
+          		</p>
+          	</div>
+          : null
+      }
+
+    	{
+        user
+          ? <div ng-show="accessLevel >= 0" className="card p-3 mb-3">
+          		<h2 id="user">Users</h2>
+
+          		<h3 id="join">Join a queue</h3>
+          		<p>
+          			To join a queue, you will first need to find the queue (see <Link smooth to="/help#findAQueue">Find a queue</Link>).
+          			When you have found the queue, let's say you want to join the queue <em>Allmänhandledning</em>,
+          			click the queue name.
+          		</p>
+          		<img src={Allmanhand} alt="Allmänhandledning" />
+          		<p>
+          			You now reach the queue page, where all the queueing takes place.
+                If you are at a KTH computer, your
+          			location will be automatically obtained.
+          		</p>
+          		<img src={Location} alt="Your location" />
+          		<p>
+          			If your location is not automatically obtained, please type your location in the location field.
+          		</p>
+          		<p>
+                Now click the <em>Join queue</em> button, and you are done!
+              </p>
+          		<p>
+                <em>
+                  Note: On the queue list page, the queues you are currently queueing in become blue.
+                </em>
+              </p>
+
+          		<h3 id="leave">Leave a queue</h3>
+          		<p>
+          			To leave a queue, you must first join a queue.
+                If you haven't joined the queue you want to leave,
+          			we recommend you to not join that queue.
+                If you have already joined the queue you want to leave,
+          			go to the main page of the queue and click the <em>Leave queue</em> button.
+          		</p>
+
+          		<h3 id="receivingHelp">Receiving help</h3>
+          		<p>
+          			Once you have <Link smooth to="/help#join">joined</Link> a queue, you will notice that you are rewarded with a yellow
+                button saying <em>Receiving help</em>, this button should be used if you are receiving help from an assistant
+                who forgot to personally mark you as receiving help.
+                If this is the case, click the button to prevent more assistants to come to you while you are receiving help.
+          		</p>
+
+          		<h3 id="colors">Colors</h3>
+          		<p>
+          			When a person is standing in the queue, they may have different colored backgrounds, here are their respective description.
+          		</p>
+          		<h4 id="whiteAndGray"><span style={{'backgroundColor': '#E3AF81', 'color': 'white'}}>White</span>
+              and <span style={{'color': 'gray'}}>Gray</span></h4>
+          		<p>
+          			White and gray backgrounds indicates that the person is merely standing in the queueand the different colors are
+                only used to make it easier to distinguish between the different rows.
+          		</p>
+          		<h4 id="blueStar" style={{'color': '#90C3D4'}}>Blue <Star color="blue" /></h4>
+          		<p>
+          			If a preson has a blue star next to their name, that means it is you.
+          		</p>
+          		<h4 id="pulsing"><span style={{'backgroundColor': '#E3AF81'}}>Pulsing</span></h4>
+          		<p>
+          			When you see a person that keeps pulsing, this indicates that they are currently receiving help from an assistant.
+          		</p>
+          		<p>
+          			<em>
+          				Note: We do realise that there is no specific color, do not be THAT person ...
+          			</em>
+          		</p>
+          		<h4 id="yellow" style={{'color': '#ECD024'}}>Yellow</h4>
+          		<p>
+          			If you see a person with a yellow background color, that means that the person was previously given a completion
+                and has now come back to present their solution.
+          		</p>
+          		<h4 id="red" style={{'color': '#E54932'}}>Red</h4>
+          		<p>
+          			When a person has a red background color, that means that an assistant has told the person that they have to
+                enter a more descriptive location so that the assistants can find the person.
+          		</p>
+
+          		<h3>Queue status</h3>
+          		<p>
+          			The queues in Stay A While 2 can have different statuses, which can be good to know.
+          			The statuses are indicated by the color and style of the queue name.
+          		</p>
+          		<table className="table table-striped">
+          			<tbody><tr>
+          				<th>Style</th>
+          				<th>Icon</th>
+          				<th>Description</th>
+          			</tr>
+          			<tr>
+          				<td><strong>Active queue</strong></td>
+          				<td></td>
+          				<td>The queue is active and can be joined</td>
+          			</tr>
+          			<tr>
+          				<td className="text-red"><strong>Locked queue</strong></td>
+          				<td><Locked /></td>
+          				<td>The queue is locked and can't be joined</td>
+          			</tr>
+          		</tbody></table>
+
+          		<h3 id="findAQueue">Find a queue</h3>
+          		<p>
+          			The first step to queueing would be to find the queue you wish to join, right? So how is that done?
+          			Well, first go to the <Link smooth to="/list">Queues</Link> page.
+                There you can either scroll to find the queue
+          			you are searching for, or you could search for the queue.
+                To scroll, just scroll - more info on
+          			scrolling will not be covered in this help section.
+
+          			To search for a queue, type the queue name (or parts of the queue name) in the box that looks like this:
+          			<img src={FindQueuesBox} alt="Find Queues box" />
+          		</p>
+          	</div>
+          : null
+      }
+
+    	{
+        !user
+          ? <div className="card p-3">
+          		<h2 id="quest">Guests</h2>
+          		<p>
+          			You are not logged in.
+                If you only want to view a queue, that's cool,
+          			but to be able to join a queue, you will need to
+          			<Link smooth to="/login">log in</Link>.
+          		</p>
+
+          		<h4>Viewing a queue</h4>
+          		<p>
+          			If you don't want to log in, you can open up any queue and see the virtual line of eagerly
+          			waiting people.
+                This is done by clicking the name of the queue you want to look at in the
+          			<Link smooth to="/list">Queues</Link> page.
+          		</p>
+          		<p>
+          			For example, if you want to look at the queue for <em>Allmänhandledning</em>,
+          			you click like this:
+          		</p>
+          		<img src={Allmanhand} alt="Allmänhandledning" />
+          	</div>
+        : null
+      }
+    </div>
+)};
