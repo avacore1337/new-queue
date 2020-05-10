@@ -17,6 +17,9 @@ export default (props: any): JSX.Element => {
     styles.color = 'red';
   }
 
+  console.log(user?.ugkthid);
+  console.log(queue?.queueEntries);
+
   return (
     <div className="card row clickable" style={styles}>
       <div className="card-body">
@@ -25,14 +28,21 @@ export default (props: any): JSX.Element => {
           {queue.locked ? <span style={{marginRight: '1em'}}><Locked /></span> : null}
           {queue.name}
         </div>
-        <div className="float-right">
-          {
-            user !== null && queue.queueEntries.some(entry => entry.ugkthid === user.ugkthid)
-              ? `${queue.queueEntries.findIndex(entry => entry.ugkthid === user.ugkthid) + 1}/${queue.queueEntries.length}`
-              : queue.queueEntries.length
-          }
-          <Users />
-        </div>
+        {
+          queue.queueEntries
+            ? <div className="float-right">
+                {
+                  user !== null && queue.queueEntries.some(entry => entry.ugkthid === user.ugkthid)
+                    ? <>
+                        {`${queue.queueEntries.findIndex(entry => entry.ugkthid === user.ugkthid) + 1}/${queue.queueEntries.length}`} <Users />
+                      </>
+                    : <>
+                        {queue.queueEntries.length} <Users />
+                      </>
+                }
+              </div>
+            : null
+        }
       </div>
     </div>
   );

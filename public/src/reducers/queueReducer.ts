@@ -24,10 +24,10 @@ export default (state = initialState, action: FluxStandardAction) => {
         if (queue === undefined) {
           continue;
         }
-        queue.setQueueEntries = action.payload[1][queueName].map((e: any) => new QueueEntry(e));
+        queue.setQueueEntries(action.payload[1][queueName].map((e: any) => new QueueEntry(e)));
       }
 
-      return action.payload;
+      return queues;
     }
 
     case ActionTypes.LoadQueueData.Fulfilled: {
