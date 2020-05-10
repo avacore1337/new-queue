@@ -87,23 +87,14 @@ pub fn find_by_ugkthid(
     ugkthid: &str,
 ) -> Result<QueueEntry, diesel::result::Error> {
     queue_entries::table
-        .inner_join(users::table)
         .filter(
-            queue_entries::queue_id
-                .eq(queue_id)
-                .and(users::ugkthid.eq(ugkthid)),
+            queue_entries::queue_id.eq(queue_id).and(
+                queue_entries::user_id.nullable().eq(users::table
+                    .select(users::id)
+                    .filter(users::ugkthid.eq(ugkthid))
+                    .single_value()),
+            ),
         )
-        .select((
-            queue_entries::id,
-            queue_entries::user_id,
-            queue_entries::queue_id,
-            queue_entries::location,
-            queue_entries::usercomment,
-            queue_entries::starttime,
-            queue_entries::gettinghelp,
-            queue_entries::help,
-            queue_entries::badlocation,
-        ))
         .first(conn)
 }
 
