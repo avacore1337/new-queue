@@ -91,10 +91,10 @@ Backend:
 * Lobby, broadcasts should also go to lobby and new route with all data should be added.
 
 Frontend:
-* Fix Help page
-* Fix About page
+* An extra login
 * Fix Statistics page (half done)
-* Rewrite socket handling to follow event driven design
-* Once the socket reconnects, we need to make some HTTP requests again
 * If you kick a user, the assistant row is transfered to the next student
 * Sort queuelist purely alphabetically on admin page
+* Rewrite socket handling to follow event driven design
+* Fix About page
+* Fix Help page

@@ -6,6 +6,8 @@ import DateTimePicker from 'react-datetime';
 import { GlobalStore } from '../../store';
 import { loadQueues } from '../../actions/queueActions';
 import PageNotFound from '../NoMatch';
+import ErrorMessage from '../../viewcomponents/ErrorMessage';
+import LineChart from '../../viewcomponents/LineChart';
 import User from '../../models/User';
 import { HTTP_SERVER_URL } from '../../configuration';
 
@@ -99,80 +101,79 @@ export default (): JSX.Element => {
     user === null
       ? <PageNotFound />
       : <div className="container">
+          <ErrorMessage message={errorMessage} />
+
+          <div className="row">
+            <div className="dropdown col-lg-8 mb-3 pl-0">
+              <button
+                className="btn btn-info dropdown-toggle"
+                type="button"
+                id="selectQueue"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false" >
+                {selectedQueue || 'Select a queue'}
+              </button>
+              <div className="dropdown-menu" aria-labelledby="selectQueue">
+              {
+                user?.isAdministrator
+                  ? queues.map(queueName =>
+                      <button
+                        className="dropdown-item"
+                        type="button"
+                        key={`QueueOptions_${queueName}`}
+                        onClick={() => setSelectedQueue(queueName)} >
+                          {queueName}
+                      </button>
+                    )
+                  : user?.teacherIn.map(queueName =>
+                      <button
+                        className="dropdown-item"
+                        type="button"
+                        key={`QueueOptions_${queueName}`}
+                        onClick={() => setSelectedQueue(queueName)} >
+                          {queueName}
+                      </button>
+                    )
+              }
+              </div>
+            </div>
+          </div>
+
+          <div className="row">
+            <DateTimePicker
+              className="col-lg-6 mb-3 pl-0"
+              isValidDate={isValidFromDate}
+              defaultValue={new Date((from as number) * 1000)}
+              inputProps={{ placeholder: 'From' }}
+              onChange={(value) => updateFrom(value)} />
+            <DateTimePicker
+              className="col-lg-6 mb-3 pl-0"
+              isValidDate={isValidUntilDate}
+              defaultValue={new Date((until as number) * 1000)}
+              inputProps={{ placeholder: 'Until' }}
+              onChange={(value) => updateUntil(value)} />
+          </div>
+
+          <div className="row mb-5">
+            <div className={`text-white px-5 py-2 ${errorMessage || selectedQueue === null ? 'gray' : 'blue clickable'}`} onClick={getStatistics}>Get statistics</div>
+          </div>
+
+          <div className="row mb-5" style={{overflow: 'hidden'}}>
+            <pre style={{overflowY: 'scroll', maxHeight: '27vh', width: '100%'}}>
+              <code>
+                {statistics}
+              </code>
+            </pre>
+          </div>
+
           {
-            errorMessage
-              ? <div className="row">
-                  <div className="col-12 alert alert-danger" role="alert">
-                    {errorMessage}
-                  </div>
+            statistics
+              ? <div className="row mb-5">
+                  <LineChart data={JSON.parse(statistics)} />
                 </div>
               : null
           }
-          <div className="row">
-            <div className="col-lg-6">
-              <div className="row">
-                <div className="dropdown col-lg-8 mb-3 pl-0">
-                  <button
-                    className="btn btn-info dropdown-toggle"
-                    type="button"
-                    id="selectQueue"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false" >
-                    {selectedQueue || 'Select a queue'}
-                  </button>
-                  <div className="dropdown-menu" aria-labelledby="selectQueue">
-                    {
-                      user?.isAdministrator
-                        ? queues.map(queueName =>
-                            <button
-                              className="dropdown-item"
-                              type="button"
-                              key={`QueueOptions_${queueName}`}
-                              onClick={() => setSelectedQueue(queueName)} >
-                                {queueName}
-                              </button>
-                          )
-                      : user?.teacherIn.map(queueName =>
-                        <button
-                          className="dropdown-item"
-                          type="button"
-                          key={`QueueOptions_${queueName}`}
-                          onClick={() => setSelectedQueue(queueName)} >
-                            {queueName}
-                          </button>
-                      )
-                    }
-                  </div>
-                </div>
-              </div>
-
-              <div className="row">
-                <DateTimePicker
-                  className="col-lg-6 mb-3 pl-0"
-                  isValidDate={isValidFromDate}
-                  defaultValue={new Date((from as number) * 1000)}
-                  inputProps={{ placeholder: 'From' }}
-                  onChange={(value) => updateFrom(value)} />
-                <DateTimePicker
-                  className="col-lg-6 mb-3 pl-0"
-                  isValidDate={isValidUntilDate}
-                  defaultValue={new Date((until as number) * 1000)}
-                  inputProps={{ placeholder: 'Until' }}
-                  onChange={(value) => updateUntil(value)} />
-              </div>
-              <div className="row">
-                <div className={`text-white px-5 py-2 ${errorMessage || selectedQueue === null ? 'gray' : 'blue clickable'}`} onClick={getStatistics}>Get statistics</div>
-              </div>
-            </div>
-            <div className="col-lg-6" style={{overflow: 'hidden'}}>
-              <pre style={{overflowY: 'scroll', maxHeight: '70vh'}}>
-                <code>
-                  {statistics}
-                </code>
-              </pre>
-            </div>
-          </div>
         </div>
   );
 };
