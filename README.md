@@ -84,11 +84,8 @@ Install debuggin extensions for React and Redux
 # Features and Bugs
 
 Backend:
-* statistics, done?
 * backend websockets leave/errors
-* leaving needs to leave for messaging
 * message history
-* Lobby, broadcasts should also go to lobby and new route with all data should be added.
 
 Frontend:
 * DING

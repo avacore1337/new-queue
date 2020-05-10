@@ -31,7 +31,8 @@ pub struct RoomHandler {
     out: Sender,
     count: Rc<Cell<u32>>,
     rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>>,
-    ugid_map: Rc<RefCell<HashMap<String, Sender>>>,
+    ugkthid_map: Rc<RefCell<HashMap<String, Sender>>>,
+    user_ugkthid: Option<String>,
     secret: Vec<u8>,
     pool: Rc<RefCell<db::PgPool>>,
     active_room: Option<String>,
@@ -85,10 +86,20 @@ impl Handler for RoomHandler {
             _ => println!("The client encountered an error: {}", reason),
         }
         self.leave_room();
+        if let Some(ref ugkthid) = self.user_ugkthid {
+            let mut ugkthids: RefMut<_> = self.ugkthid_map.borrow_mut();
+            ugkthids.remove(ugkthid);
+            self.user_ugkthid = None;
+        }
         self.count.set(self.count.get() - 1)
     }
 
     fn on_error(&mut self, err: ws::Error) {
+        if let Some(ref ugkthid) = self.user_ugkthid {
+            let mut ugkthids: RefMut<_> = self.ugkthid_map.borrow_mut();
+            ugkthids.remove(ugkthid);
+            self.user_ugkthid = None;
+        }
         println!("The RoomHandler encountered an error: {:?}", err);
     }
 }
@@ -137,8 +148,8 @@ impl RoomHandler {
         message: &str,
         _sender_name: &str,
     ) {
-        let ugids = self.ugid_map.borrow();
-        if let Some(handler) = ugids.get(ugkthid) {
+        let ugkthids = self.ugkthid_map.borrow();
+        if let Some(handler) = ugkthids.get(ugkthid) {
             let message = &json!(SendWrapper {
                 path: "message".to_string(),
                 content: json!(Text {
@@ -238,8 +249,9 @@ impl RoomHandler {
             }
             ["subscribeQueue", queue_name] => {
                 if let Ok(auth) = self.get_auth(&wrapper, AuthLevel::Any) {
-                    let mut ugids: RefMut<_> = self.ugid_map.borrow_mut();
-                    ugids.insert(auth.ugkthid, self.out.clone());
+                    let mut ugkthids: RefMut<_> = self.ugkthid_map.borrow_mut();
+                    ugkthids.insert(auth.ugkthid.clone(), self.out.clone());
+                    self.user_ugkthid = Some(auth.ugkthid);
                 }
                 println!("joining room {}", queue_name);
                 self.join_room(&queue_name)
@@ -371,7 +383,7 @@ pub fn websocket() -> () {
     // Listen on an address and call the closure for each connection
     let count = Rc::new(Cell::new(0));
     let rooms: Rc<RefCell<HashMap<String, Vec<Sender>>>> = Rc::new(RefCell::new(HashMap::new()));
-    let ugid_map: Rc<RefCell<HashMap<String, Sender>>> = Rc::new(RefCell::new(HashMap::new()));
+    let ugkthid_map: Rc<RefCell<HashMap<String, Sender>>> = Rc::new(RefCell::new(HashMap::new()));
     let pool: Rc<RefCell<db::PgPool>> = Rc::new(RefCell::new(db::init_pool()));
 
     let address = env::var("ROCKET_ADDRESS").unwrap_or_else(|_| "127.0.0.1".to_string());
@@ -379,7 +391,8 @@ pub fn websocket() -> () {
         out: out,
         count: count.clone(),
         rooms: rooms.clone(),
-        ugid_map: ugid_map.clone(),
+        ugkthid_map: ugkthid_map.clone(),
+        user_ugkthid: None,
         secret: get_secret().into_bytes(),
         pool: pool.clone(),
         active_room: None,
