@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../store';
 import { broadcastFaculty, setMotd, setQueueInfo, purgeQueue, lockQueue } from '../../actions/assistantActions';
 import { openBroadcastModal } from '../../actions/modalActions';
+import { enableSounds, disableSounds } from '../../actions/soundActions';
 import User from '../../models/User';
 import Queue from '../../models/Queue';
 
@@ -11,11 +12,12 @@ export default (props: any): JSX.Element | null => {
   const queue: Queue = props.queue;
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
+  const playSounds = useSelector<GlobalStore, boolean>(store => store.playSounds);
   const [mayAdministerQueue, setMayAdministerQueue] = useState(user !== null && (user.isAssistantIn(queue.name) || user.isTeacherIn(queue.name)));
 
   useEffect(() => {
     setMayAdministerQueue(user !== null && (user.isAssistantIn(queue.name) || user.isTeacherIn(queue.name)));
-  }, [user]);
+  }, [user, queue.name]);
 
   const dispatch = useDispatch();
 
@@ -39,6 +41,11 @@ export default (props: any): JSX.Element | null => {
             <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(setQueueInfo(queue.name, 'setQueueInfo'))}>Set queue info</div>
             <div className="col red clickable col-10 offset-1 my-1" onClick={() => dispatch(purgeQueue(queue.name))}>Purge queue</div>
             <div className="col red clickable col-10 offset-1 my-1" onClick={() => dispatch(lockQueue(queue.name, !queue.locked))}>Lock queue</div>
+            {
+              playSounds
+                ? <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(disableSounds())}>Disable sounds</div>
+                : <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(enableSounds())}>Enable sounds</div>
+            }
           </div>
         </div>
   );

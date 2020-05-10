@@ -19,7 +19,7 @@ export default (props: any): JSX.Element => {
 
   useEffect(() => {
     setMayAdministerQueue(user !== null && (user.isAssistantIn(queueName) || user.isTeacherIn(queueName)));
-  }, [user]);
+  }, [user, queueName]);
 
   const [displayAdministrationOptions, setDisplayAdministrationOptions] = useState(false);
   const [lastClicked, setLastClicked] = useState(null as number | null);

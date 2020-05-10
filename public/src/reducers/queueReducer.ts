@@ -82,13 +82,12 @@ export default (state = initialState, action: FluxStandardAction) => {
       return queues;
     }
 
-    case Listeners.OnQueueRemoved: {
-      return state.filter(queue => queue.name !== action.payload);
-    }
-
     case Listeners.OnQueueEntryAdded: {
       const queues = state.map(q => q.clone());
-      queues.filter(q => q.name === action.payload.queueName)[0].addQueueEntry(new QueueEntry(action.payload));
+      const queue = queues.filter(q => q.name === action.payload.queueName)[0];
+
+      queue.addQueueEntry(new QueueEntry(action.payload));
+
       return queues;
     }
 

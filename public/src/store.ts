@@ -8,6 +8,7 @@ import socketReducer from './reducers/socketReducer';
 import administratorReducer from './reducers/administratorReducer';
 import modalReducer from './reducers/modalReducer';
 import titleReducer from './reducers/titleReducer';
+import soundReducer from './reducers/soundReducer';
 import User from './models/User';
 import Queue from './models/Queue';
 import Administrator from './models/Administrator';
@@ -24,7 +25,8 @@ export interface GlobalStore {
     modalList: Modal[],
     current: number
   },
-  title: string
+  title: string,
+  playSounds: boolean
 }
 
 const middleware = applyMiddleware(promise, thunk);
@@ -35,7 +37,8 @@ const reducer = combineReducers({
   socket: socketReducer,
   administration: administratorReducer,
   modals: modalReducer,
-  title: titleReducer
+  title: titleReducer,
+  playSounds: soundReducer
 });
 
 const store = createStore(

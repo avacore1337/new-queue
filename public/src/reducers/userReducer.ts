@@ -1,6 +1,5 @@
 import { FluxStandardAction } from 'redux-promise-middleware';
 import { ActionTypes } from '../actions/userActions';
-import { Listeners } from '../actions/listenerActions';
 import User from '../models/User';
 
 const initialState: User | null = null;

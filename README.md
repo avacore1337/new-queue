@@ -91,6 +91,7 @@ Backend:
 * Lobby, broadcasts should also go to lobby and new route with all data should be added.
 
 Frontend:
+* DING
 * Extract more view-components to make the HTML easier to read
 * An extra login
 * Rewrite socket handling to follow event driven design

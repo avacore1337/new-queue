@@ -20,6 +20,10 @@ export default (): JSX.Element => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (!dispatch) {
+      return;
+    }
+
     if (user && (user.isAdministrator || user.isTeacher)) {
       dispatch(listenTo('addSuperAdmin', Listeners.onAdministratorAdded));
       dispatch(listenTo('removeSuperAdmin', Listeners.onAdministratorRemoved));
@@ -44,10 +48,10 @@ export default (): JSX.Element => {
       dispatch(stopListeningTo('addAssistant/:queueName'));
       dispatch(stopListeningTo('removeAssistant/:queueName'));
     });
-  }, [user]);
+  }, [user, dispatch]);
 
   return (
-    user === null || !user.isAdministrator && !user.isTeacher
+    user === null || (!user.isAdministrator && !user.isTeacher)
       ? <PageNotFound />
       : <div className="container">
           <AdministrationInformationViewComponent />

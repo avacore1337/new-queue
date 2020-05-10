@@ -14,9 +14,13 @@ function LifeCycle() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (!dispatch) {
+      return;
+    }
+
     dispatch(loadUser());
     dispatch(loadQueues());
-  }, []);
+  }, [dispatch]);
 
   return (
     <App />

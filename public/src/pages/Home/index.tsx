@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../store';
-import { loadQueues } from '../../actions/queueActions';
 import { subscribe, unsubscribe } from '../../actions/lobbyActions';
 import { setTitle } from '../../actions/titleActions';
 import User from '../../models/User';
@@ -21,20 +20,23 @@ export default (): JSX.Element => {
   dispatch(setTitle('Stay A While 2'));
 
   useEffect(() => {
-    dispatch(loadQueues());
+    if (!dispatch) {
+      return;
+    }
+
     dispatch(subscribe());
 
     return () => {
       dispatch(unsubscribe());
     };
-  }, []);
+  }, [dispatch]);
 
   function canSee(queue: Queue): boolean {
-    return !queue.hiding || user !== null && (user.isAdministrator || user.isTeacherIn(queue.name));
+    return !queue.hiding || (user !== null && (user.isAdministrator || user.isTeacherIn(queue.name)));
   }
 
   function canClick(queue: Queue): boolean {
-    return !queue.locked || user !== null && (user.isAdministrator || user.isTeacherIn(queue.name) || user.isAssistantIn(queue.name));
+    return !queue.locked || (user !== null && (user.isAdministrator || user.isTeacherIn(queue.name) || user.isAssistantIn(queue.name)));
   }
 
   return (

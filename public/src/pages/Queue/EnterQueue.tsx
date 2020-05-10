@@ -33,7 +33,7 @@ export default (props: any): JSX.Element => {
     setComment(newComment);
     setHelp(newHelp);
 
-  }, [personalQueueEntry]);
+  }, [personalQueueEntry, user]);
 
   function changeLocation(event: any): void {
     setLocation(event.target.value);

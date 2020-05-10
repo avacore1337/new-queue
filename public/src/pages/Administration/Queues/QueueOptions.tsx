@@ -29,7 +29,7 @@ export default (): JSX.Element | null => {
     if (selectedQueueName !== null) {
       setSelectedQueue(queues.filter(q => q.name === selectedQueueName)[0] || null);
     }
-  }, [queues]);
+  }, [queues, selectedQueueName]);
 
   const dispatch = useDispatch();
 

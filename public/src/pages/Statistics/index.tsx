@@ -27,8 +27,12 @@ export default (): JSX.Element => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    if (!dispatch) {
+      return;
+    }
+    
     dispatch(loadQueues())
-  }, []);
+  }, [dispatch]);
 
   function updateFrom(value: moment.Moment | string): void {
     try {

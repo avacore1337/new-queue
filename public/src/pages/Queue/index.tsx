@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../store';
 import { useParams } from "react-router-dom";
-import { loadQueueData, subscribe, unsubscribe } from '../../actions/queueActions';
+import { subscribe, unsubscribe } from '../../actions/queueActions';
 import { setTitle } from '../../actions/titleActions';
 import Queue from '../../models/Queue';
 import User from '../../models/User';
@@ -11,6 +11,7 @@ import QueueAdministratorOptionsViewComponent from './QueueAdministratorOptions'
 import QueueEntryTableViewComponent from './QueueEntryTable';
 import PageNotFound from '../NoMatch';
 import SearchViewComponent from '../../viewcomponents/Search';
+import DingLing from '../../sounds/DingLing.mp3';
 
 export default (): JSX.Element | null => {
 
@@ -19,37 +20,67 @@ export default (): JSX.Element | null => {
   const user = useSelector<GlobalStore, User | null>(store => store.user);
   const queue = useSelector<GlobalStore, Queue | null>(store => store.queues.filter(q => q.name === queueName)[0] || null);
   const queuesAreLoaded = useSelector<GlobalStore, boolean>(store => store.queues.length > 0);
+  const playSounds = useSelector<GlobalStore, boolean>(store => store.playSounds);
 
   const [filter, setFilter] = useState('');
+  const [previousQueueEntryCount, setPreviousQueueEntryCount] = useState(0);
 
   const dispatch = useDispatch();
 
   function updateTitle() {
     if (queue !== null && user !== null) {
       for (let i = 0; i < queue.queueEntries.length; i++) {
-          if (queue.queueEntries[i].ugkthid === user.ugkthid) {
-            dispatch(setTitle(`[${i+1}/${queue.queueEntries.length}] ${queue.name} | Stay A While 2`));
-            return;
-          }
+        if (queue.queueEntries[i].ugkthid === user.ugkthid) {
+          dispatch(setTitle(`[${i+1}/${queue.queueEntries.length}] ${queue.name} | Stay A While 2`));
+          return;
+        }
       }
     }
   }
   updateTitle();
 
   useEffect(() => {
+    if (!dispatch) {
+      return;
+    }
+
     if (queue !== null) {
-      dispatch(loadQueueData(queue.name));
       dispatch(subscribe(queue.name));
 
       return () => {
         dispatch(unsubscribe(queue.name));
       };
     }
-  }, [queuesAreLoaded]);
+  }, [queuesAreLoaded, queue, dispatch]);
 
   useEffect(() => {
+    if (!updateTitle) {
+      return;
+    }
+
     updateTitle();
-  }, [queue]);
+  }, [queue, updateTitle]);
+
+  useEffect(() => {
+    if (!queue) {
+      return;
+    }
+
+    if (!user?.isTeacherIn(queue.name) && !user?.isAssistantIn(queue.name)) {
+      return;
+    }
+
+    if (!queue.queueEntries) {
+      setPreviousQueueEntryCount(0);
+    }
+    else {
+      const newEntryNumber = queue.queueEntries.length;
+      if (previousQueueEntryCount === 0 && newEntryNumber === 1 && playSounds) {
+        new Audio(DingLing).play();
+      }
+      setPreviousQueueEntryCount(newEntryNumber);
+    }
+  }, [queue?.queueEntries]);
 
   return (
     !queuesAreLoaded

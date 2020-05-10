@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import './App.css';
+import { useDispatch } from 'react-redux'
+import { loadQueues } from './actions/queueActions';
 import HomePage from './pages/Home';
 import Queue from './pages/Queue';
 import NavBar from './viewcomponents/NavBar';
@@ -14,6 +16,9 @@ import AdministrationPage from './pages/Administration';
 import Modal from './viewcomponents/Modal';
 
 export default (): JSX.Element => {
+
+  const dispatch = useDispatch();
+  dispatch(loadQueues());
 
   return (
     <Router>
