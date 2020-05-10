@@ -41,6 +41,7 @@ export default (props: any): JSX.Element => {
                 {
                   queueEntries.filter(filterUsers).map((queueEntry, index) =>
                     <QueueEntryRowViewComponent
+                      key={queueEntry.ugkthid}
                       index={index}
                       queueEntry={queueEntry}
                       queueName={queueName} />)
