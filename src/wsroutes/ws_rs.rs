@@ -174,6 +174,21 @@ impl RoomHandler {
         }
     }
 
+    pub fn broadcast_lobby(&self, room: &str, path: &str, content: Json) {
+        let rooms = self.rooms.borrow();
+        println!("broadcasting to lobby");
+        let message = &json!(SendWrapper {
+            path: path.to_string() + "/" + room,
+            content: content,
+        })
+        .to_string();
+        for sender in &rooms["lobby"] {
+            // TODO deal with errors
+            println!("Sending: '{}' to {}", &message, sender.connection_id());
+            sender.send(Message::Text(message.to_string())).unwrap();
+        }
+    }
+
     fn join_room(&mut self, room_name: &str) -> Result<()> {
         let conn = &self.get_db_connection();
         let _queue = db::queues::find_by_name(conn, room_name)?; // Making sure the queue exists

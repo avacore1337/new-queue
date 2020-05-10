@@ -24,7 +24,7 @@ pub struct QueueEntry {
     pub badlocation: bool,
 }
 
-#[derive(Serialize, Queryable)]
+#[derive(Serialize, Queryable, Clone)]
 pub struct SendableQueueEntry {
     pub username: String,
     pub ugkthid: String,

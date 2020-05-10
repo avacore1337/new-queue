@@ -70,6 +70,11 @@ pub fn leave_queue_route(
         "leaveQueue",
         json!({ "ugkthid": &auth.ugkthid }),
     );
+    handler.broadcast_lobby(
+        &queue.name,
+        "leaveQueue",
+        json!({ "ugkthid": &auth.ugkthid }),
+    );
     Ok(())
 }
 
@@ -116,13 +121,14 @@ pub fn remove_queue_route(
 pub fn kick_route(
     handler: &mut RoomHandler,
     conn: &PgConnection,
-    kick: Ugkthid,
+    ugkthid: Ugkthid,
     queue_name: &str,
 ) -> Result<()> {
     let queue = db::queues::find_by_name(conn, queue_name)?;
-    let entry = db::queue_entries::find_by_ugkthid(conn, queue.id, &kick.ugkthid)?;
+    let entry = db::queue_entries::find_by_ugkthid(conn, queue.id, &ugkthid.ugkthid)?;
     let _todo = diesel::delete(&entry).execute(&*conn);
-    handler.broadcast_room(queue_name, "leaveQueue", json!(kick));
+    handler.broadcast_room(queue_name, "leaveQueue", json!(ugkthid));
+    handler.broadcast_lobby(&queue.name, "leaveQueue", json!(ugkthid));
     Ok(())
 }
 
@@ -275,11 +281,9 @@ pub fn join_queue_route(
     db::user_events::create(conn, &queue_entry, false)?;
     println!("QueueEntry {:?}", queue_entry);
 
-    handler.broadcast_room(
-        queue_name,
-        "joinQueue",
-        json!(queue_entry.to_sendable(conn)),
-    );
+    let sendable = queue_entry.to_sendable(conn);
+    handler.broadcast_room(queue_name, "joinQueue", json!(sendable.clone()));
+    handler.broadcast_lobby(&queue.name, "joinQueue", json!(sendable));
     Ok(())
 }
 
