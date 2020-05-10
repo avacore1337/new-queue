@@ -83,7 +83,8 @@ pub fn add_super_admin_route(
     conn: &PgConnection,
     add_user: Username,
 ) -> Result<()> {
-    let admin = db::super_admins::create(conn, &add_user.username)?;
+    let user = db::users::get_or_create(conn, &add_user.username).map_err(|_| BadAuth)?;
+    let admin = db::super_admins::create(conn, user)?;
     handler.send_self("addSuperAdmin", json!(db::users::find(conn, admin.user_id)));
     Ok(())
 }
@@ -166,8 +167,8 @@ pub fn add_teacher_route(
             AdminEnum::Teacher => {}
         },
         Err(_) => {
-            let admin =
-                db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Assistant)?;
+            let user = db::users::get_or_create(conn, &add_user.username).map_err(|_| BadAuth)?;
+            let admin = db::admins::create(conn, queue_name, user, AdminEnum::Teacher)?;
             handler.send_self(
                 &("addTeacher/".to_string() + queue_name),
                 json!(db::users::find(conn, admin.user_id)),
@@ -186,8 +187,8 @@ pub fn add_assistant_route(
     match db::admins::find_by_name(conn, queue_name, &add_user.username) {
         Ok(_) => Ok(()),
         Err(_) => {
-            let admin =
-                db::admins::create(conn, queue_name, &add_user.username, AdminEnum::Assistant)?;
+            let user = db::users::get_or_create(conn, &add_user.username).map_err(|_| BadAuth)?;
+            let admin = db::admins::create(conn, queue_name, user, AdminEnum::Assistant)?;
             handler.send_self(
                 &("addAssistant/".to_string() + queue_name),
                 json!(db::users::find(conn, admin.user_id)),

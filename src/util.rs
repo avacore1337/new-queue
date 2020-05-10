@@ -50,7 +50,7 @@ pub struct Ticket {
     ticket: Option<String>,
 }
 
-pub fn convert_to_ldap_user(mut rs: Vec<ResultEntry>) -> Option<LdapUser> {
+fn convert_to_ldap_user(mut rs: Vec<ResultEntry>) -> Option<LdapUser> {
     let mut entry = SearchEntry::construct(rs.pop()?);
     println!("Got entry:\n{:?}", entry);
     Some(LdapUser {
@@ -61,7 +61,7 @@ pub fn convert_to_ldap_user(mut rs: Vec<ResultEntry>) -> Option<LdapUser> {
 }
 
 // ldapsearch -x -H ldaps://ldap.kth.se -b ou=Unix,dc=kth,dc=se uid=ransin ugKthid | grep "ugKthid"
-pub fn fetch_ldap_data(ugkthid: &str) -> Result<LdapUser, Box<dyn std::error::Error>> {
+fn fetch_ldap_data_by_ugkthid(ugkthid: &str) -> Result<LdapUser, Box<dyn std::error::Error>> {
     println!("fetching ldap data");
     let ldap = LdapConn::new("ldaps://ldap.kth.se")?;
     let (rs, _res) = ldap
@@ -72,10 +72,19 @@ pub fn fetch_ldap_data(ugkthid: &str) -> Result<LdapUser, Box<dyn std::error::Er
             vec![LDAP_UGKTHID, LDAP_USERNAME, LDAP_REALNAME],
         )?
         .success()?;
-    // for entry in rs {
-    //     println!("{:?}", SearchEntry::construct(entry));
-    // }
+    convert_to_ldap_user(rs).ok_or(Box::new(LdapError))
+}
 
+pub fn fetch_ldap_data_by_username(username: &str) -> Result<LdapUser, Box<dyn std::error::Error>> {
+    let ldap = LdapConn::new("ldaps://ldap.kth.se")?;
+    let (rs, _res) = ldap
+        .search(
+            "ou=Unix,dc=kth,dc=se",
+            Scope::Subtree,
+            &(LDAP_USERNAME.to_string() + "=" + username),
+            vec![LDAP_UGKTHID, LDAP_USERNAME, LDAP_REALNAME],
+        )?
+        .success()?;
     convert_to_ldap_user(rs).ok_or(Box::new(LdapError))
 }
 
@@ -99,7 +108,7 @@ pub fn handle_login(conn: &db::DbConn, params: Form<Ticket>) -> Option<User> {
     let ugkthid = validate_ticket(params.ticket.as_ref()?)?;
     match db::users::find_by_ugkthid(conn, &ugkthid) {
         Ok(user) => Some(user),
-        Err(_) => match fetch_ldap_data(&ugkthid) {
+        Err(_) => match fetch_ldap_data_by_ugkthid(&ugkthid) {
             Ok(ldap_user) => db::users::create(
                 conn,
                 &ldap_user.username,
@@ -114,75 +123,3 @@ pub fn handle_login(conn: &db::DbConn, params: Form<Ticket>) -> Option<User> {
         },
     }
 }
-
-// function getUsername (ugKthid, callback) {
-//   var opts = {
-//     filter: '(ugKthid=' + ugKthid + ')',
-//     scope: 'sub'
-//   };
-//   var client = ldap.createClient({
-//     url: 'ldaps://ldap.kth.se:636'
-//   });
-//   client.search('ou=Unix,dc=kth,dc=se', opts, function(err, res) {
-//     res.on('searchEntry', function(entry) {
-//       // console.log('entry: ' + JSON.stringify(entry.object));
-//       // console.log('entry: ' + entry.object.cn);
-//       // console.log('uid: ' + entry.object.uid);
-//       callback(entry.object.cn, entry.object.uid);
-//     });
-//     res.on('searchReference', function(referral) {
-//       console.log('referral: ' + referral.uris.join());
-//     });
-//     res.on('error', function(err) {
-//       console.error('error: ' + err.message);
-//     });
-//     res.on('end', function(result) {
-//       console.log('status: ' + result.status);
-//     });
-//   });
-// }
-
-// app.get('/auth', function(req, res) {
-//   // console.log('printing ticket data:');
-//   // console.log(req.query.ticket);
-//   if(req.session.user){
-//     req.session.user.location = "";
-//   }
-//   else{
-//     req.session.user = {};
-//     req.session.user.location = "";
-//     req.session.user.loginTarget = "";
-//   }
-
-//   var ip = req.connection.remoteAddress;
-//   // console.log("ip: " + ip);
-//   getUID(req.query.ticket, function (uid) {
-//       if(uid === ""){
-//           res.redirect('/#' + req.session.user.loginTarget);
-//           return;
-//       }
-
-//     getUsername(uid, function(cn, username) {
-//       req.session.user.realname = cn;
-//       req.session.user.username = username;
-//       // console.log("worked");
-
-//       // TODO implement username lookup fallback
-//       // catch(err){
-//       //   console.log(err);
-//       //   req.session.user.realname = uid;
-//       //   req.session.user.username = uid;
-//       //   console.log("failed");
-//       // }
-//       // console.log(req.session.user);
-//       // console.log("uid:" + uid);
-//       req.session.user.ugKthid = uid;
-//       getLocation(ip, function (location) {
-//         req.session.user.location = location;
-//         // console.log("Is this happening before ?");
-//         res.redirect('/#' + req.session.user.loginTarget);
-//       });
-
-//     });
-//   });
-// });

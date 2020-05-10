@@ -1,5 +1,6 @@
 use crate::models::user::User;
 use crate::schema::users;
+use crate::util::fetch_ldap_data_by_username;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use diesel::result::{DatabaseErrorKind, Error};
@@ -25,6 +26,29 @@ impl From<Error> for UserCreationError {
             }
         }
         panic!("Error creating user: {:?}", err)
+    }
+}
+
+pub fn get_or_create(conn: &PgConnection, username: &str) -> Result<User, UserCreationError> {
+    if let Ok(user) = users::table
+        .filter(users::username.eq(username))
+        .get_result::<User>(&*conn)
+    {
+        Ok(user)
+    } else {
+        let ldap_user = fetch_ldap_data_by_username(username)
+            .map_err(|_| UserCreationError::DuplicatedUsername)?;
+
+        let new_user = &NewUser {
+            username: &ldap_user.username,
+            ugkthid: &ldap_user.ugkthid,
+            realname: &ldap_user.realname,
+        };
+
+        diesel::insert_into(users::table)
+            .values(new_user)
+            .get_result::<User>(conn)
+            .map_err(Into::into)
     }
 }
 

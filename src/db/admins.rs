@@ -10,13 +10,12 @@ use diesel::prelude::*;
 pub fn create(
     conn: &PgConnection,
     queue_name: &str,
-    username: &str,
+    user: User,
     admin_type: AdminEnum,
 ) -> Result<Admin, diesel::result::Error> {
     let queue_id = db::queues::name_to_id(conn, queue_name)?;
-    let user_id = db::users::username_to_id(conn, username)?;
     let new_admin = &NewAdmin {
-        user_id,
+        user_id: user.id,
         queue_id,
         admin_type,
     };

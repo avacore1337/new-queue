@@ -5,9 +5,8 @@ use crate::schema::*;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 
-pub fn create(conn: &PgConnection, username: &str) -> Result<SuperAdmin, diesel::result::Error> {
-    let user_id = db::users::username_to_id(conn, username)?;
-    let new_admin = &NewSuperAdmin { user_id };
+pub fn create(conn: &PgConnection, user: User) -> Result<SuperAdmin, diesel::result::Error> {
+    let new_admin = &NewSuperAdmin { user_id: user.id };
 
     diesel::insert_into(super_admins::table)
         .values(new_admin)
