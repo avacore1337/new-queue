@@ -13,11 +13,20 @@ export default (state = initialState, action: FluxStandardAction) => {
   switch (action.type) {
 
     case ActionTypes.GetQueues.Fulfilled: {
-      action.payload.sort((queue1: Queue, queue2: Queue) => {
+      const queues: Queue[] = action.payload[0].sort((queue1: Queue, queue2: Queue) => {
         if (queue1.hiding && !queue2.hiding) { return 1; }
         if (!queue1.hiding && queue2.hiding) { return -1; }
         return queue1.name < queue2.name ? -1 : 1;
       });
+
+      for (let queueName in action.payload[1]) {
+        const queue = queues.find(q => q.name === queueName);
+        if (queue === undefined) {
+          continue;
+        }
+        queue.setQueueEntries = action.payload[1][queueName].map((e: any) => new QueueEntry(e));
+      }
+
       return action.payload;
     }
 

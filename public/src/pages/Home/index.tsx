@@ -50,9 +50,9 @@ export default (): JSX.Element => {
           canSee(queue)
           ? canClick(queue)
             ? <Link to={`/Queue/${queue.name}`} key={`HomeLink_${queue.name}`}>
-                <QueueCardViewComponent queue={queue} />
+                <QueueCardViewComponent user={user} queue={queue} />
               </Link>
-            : <QueueCardViewComponent queue={queue} key={`HomeCard_${queue.name}`} />
+            : <QueueCardViewComponent user={user} queue={queue} key={`HomeCard_${queue.name}`} />
           : null
       )}
     </div>

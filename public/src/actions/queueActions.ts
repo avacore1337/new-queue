@@ -14,12 +14,20 @@ export const ActionTypes = Object.freeze({
   UnsubscribeToQueue: 'UNSUBSCRIBE_TO_QUEUE'
 });
 
-export const loadQueues = (): AsyncAction => ({
-  type: ActionTypes.GetQueues,
-  payload:  fetch(`${HTTP_SERVER_URL}/api/queues`)
-            .then(response => response.json())
-            .then((response: any) => response.queues.map((res: any) => new Queue(res)))
-});
+export const loadQueues = (): AsyncAction => {
+
+  const getQueuesRequest = fetch(`${HTTP_SERVER_URL}/api/queues`)
+                           .then(response => response.json())
+                           .then((response: any) => response.queues.map((res: any) => new Queue(res)));
+
+  const getQueueEntriesRequest = fetch(`${HTTP_SERVER_URL}/api/queue_entries`)
+                                 .then(response => response.json());
+
+  return {
+    type: ActionTypes.GetQueues,
+    payload:  Promise.all([getQueuesRequest, getQueueEntriesRequest])
+  };
+};
 
 export const loadQueueData = (queueName: string): AsyncAction => {
   const queueEntriesRequest = fetch(`${HTTP_SERVER_URL}/api/queues/${queueName}/queue_entries`)
