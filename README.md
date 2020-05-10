@@ -83,9 +83,18 @@ Install debuggin extensions for React and Redux
 
 # Features and Bugs
 
-Backend:
+Backend wants:
+* routing framework
 * backend websockets leave/errors
 * message history
+
+Backend needs:
+* Filtered lists of queues based on access
+* Fix remove queue
+* Implement server wide message
+* Fix all unwrap problems
+* fix hide/reveal problems
+* double check broadcasting
 
 Frontend:
 * Extract more view-components to make the HTML easier to read

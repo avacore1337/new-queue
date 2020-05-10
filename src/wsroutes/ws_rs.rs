@@ -355,7 +355,7 @@ impl RoomHandler {
                 set_queue_motd_route(self, conn, text, queue_name)
             }
             ["purgeQueue", queue_name] => {
-                let _auth = self.get_auth(&wrapper, AuthLevel::Teacher)?;
+                let _auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
                 purge_queue_route(self, conn, queue_name)
             }
             ["setQueueLockStatus", queue_name] => {
