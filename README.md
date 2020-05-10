@@ -93,3 +93,7 @@ Frontend:
 * An extra login
 * Fix About page (half done)
 * Fix Help page (half done)
+* Fix statistics issue with decimals
+* Title is not always updated
+* Styling
+* Hide/reveal ???
