@@ -88,9 +88,8 @@ Backend:
 * message history
 
 Frontend:
-* DING
 * Extract more view-components to make the HTML easier to read
-* An extra login
 * Rewrite socket handling to follow event driven design
+* An extra login
 * Fix About page (half done)
 * Fix Help page (half done)
