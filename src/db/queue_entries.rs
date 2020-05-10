@@ -1,9 +1,10 @@
-use crate::db::queues;
+use crate::db;
 use crate::models::queue_entry::{QueueEntry, SendableQueueEntry};
-use crate::schema::{queue_entries, users};
+use crate::schema::{queue_entries, queues, users};
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use diesel::result::{DatabaseErrorKind, Error};
+use std::collections::HashMap;
 use unicode_truncate::UnicodeTruncateStr;
 
 pub enum QueueEntryCreationError {
@@ -20,6 +21,33 @@ impl From<Error> for QueueEntryCreationError {
         }
         panic!("Error creating user: {:?}", err)
     }
+}
+
+pub fn all(conn: &PgConnection) -> HashMap<String, Vec<SendableQueueEntry>> {
+    let all_data = queue_entries::table
+        .inner_join(users::table)
+        .inner_join(queues::table)
+        .select((
+            queues::name,
+            (
+                users::username,
+                users::ugkthid,
+                users::realname,
+                queue_entries::location,
+                queue_entries::usercomment,
+                queue_entries::starttime,
+                queue_entries::gettinghelp,
+                queue_entries::help,
+                queue_entries::badlocation,
+            ),
+        ))
+        .load::<(String, SendableQueueEntry)>(conn)
+        .expect("Could not get queues");
+    let mut m = HashMap::new();
+    for (k, v) in all_data {
+        m.entry(k).or_insert_with(Vec::new).push(v)
+    }
+    m
 }
 
 pub fn update_help_status(
@@ -99,7 +127,7 @@ pub fn find_by_ugkthid(
 }
 
 pub fn for_queue(conn: &PgConnection, queue_name: &str) -> Option<Vec<SendableQueueEntry>> {
-    let queue = queues::find_by_name(conn, queue_name).ok()?;
+    let queue = db::queues::find_by_name(conn, queue_name).ok()?;
     queue_entries::table
         .inner_join(users::table)
         .filter(queue_entries::queue_id.eq(queue.id))
