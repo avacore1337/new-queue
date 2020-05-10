@@ -91,6 +91,7 @@ Backend:
 * Lobby, broadcasts should also go to lobby and new route with all data should be added.
 
 Frontend:
+* Extract more view-components to make the HTML easier to read
 * An extra login
 * If you kick a user, the assistant row is transfered to the next student
 * Rewrite socket handling to follow event driven design
