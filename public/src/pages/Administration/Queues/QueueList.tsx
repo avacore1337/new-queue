@@ -6,6 +6,7 @@ import Queue from '../../../models/Queue';
 export default (): JSX.Element => {
 
   const queues = useSelector<GlobalStore, Queue[]>(store => store.queues);
+  queues.sort((queue1: Queue, queue2: Queue) => queue1.name < queue2.name ? -1 : 1);
 
   return (
     queues.length
