@@ -92,7 +92,6 @@ Backend:
 
 Frontend:
 * An extra login
-* Fix Statistics page (half done)
 * If you kick a user, the assistant row is transfered to the next student
 * Sort queuelist purely alphabetically on admin page
 * Rewrite socket handling to follow event driven design
