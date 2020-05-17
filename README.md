@@ -96,7 +96,6 @@ Backend needs:
 
 Frontend:
 * Bug - Why do we subscribe and unsubscribe twice upon receiving help?
-* Bug - Location is reset if user is in queue and tries to empty their location
 * Bug - Can enter with empty location and comment
 * Feature - A real login
 * Feature - Broadcast faculty
