@@ -27,7 +27,7 @@ export default class User {
     this._ugkthid = data.ugkthid || '';
     this._name = data.name || '';
     this._username = data.username || '';
-    this._isAdministrator = data.isAdministrator || true;
+    this._isAdministrator = data.isAdministrator === undefined || true;
     this._teacherIn = data.teacherIn || [];
     this._assistantIn = data.AssistantIn || [];
     this._token = data.token || '';
