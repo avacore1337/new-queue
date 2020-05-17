@@ -156,7 +156,12 @@ impl RoomHandler {
                     message: message.to_string()
                 }),
             });
-            handler.send(Message::Text(message.to_string())).unwrap();
+            if let Err(err) = handler.send(Message::Text(message.to_string())) {
+                println!(
+                    "Got error while sending message to client with ugkthid {}: {}",
+                    ugkthid, err
+                );
+            };
         }
     }
 
@@ -166,11 +171,12 @@ impl RoomHandler {
             content: content,
         })
         .to_string();
-        self.out.send(Message::Text(message.to_string())).unwrap();
+        if let Err(err) = self.out.send(Message::Text(message.to_string())) {
+            println!("Got error while sending message to own client: {}", err);
+        }
     }
 
     pub fn broadcast_room(&self, room: &str, path: &str, content: Json) {
-        let rooms = self.rooms.borrow();
         println!("broadcasting in room: {}", room);
         let internal_name = "room_".to_string() + room;
         let message = &json!(SendWrapper {
@@ -178,25 +184,32 @@ impl RoomHandler {
             content: content,
         })
         .to_string();
-        for sender in &rooms[&internal_name] {
+        let mut rooms: RefMut<_> = self.rooms.borrow_mut();
+        for sender in rooms.entry(internal_name).or_insert_with(Vec::new) {
             // TODO deal with errors
             println!("Sending: '{}' to {}", &message, sender.connection_id());
-            sender.send(Message::Text(message.to_string())).unwrap();
+            if let Err(err) = sender.send(Message::Text(message.to_string())) {
+                println!(
+                    "Got error while broadcasting in room '{}' with message {} :\n {}",
+                    room, message, err
+                );
+            }
         }
     }
 
     pub fn broadcast_lobby(&self, room: &str, path: &str, content: Json) {
-        let rooms = self.rooms.borrow();
         println!("broadcasting to lobby");
         let message = &json!(SendWrapper {
             path: path.to_string() + "/" + room,
             content: content,
         })
         .to_string();
-        for sender in &rooms["lobby"] {
-            // TODO deal with errors
+        let mut rooms: RefMut<_> = self.rooms.borrow_mut();
+        for sender in rooms.entry("lobby".to_string()).or_insert_with(Vec::new) {
             println!("Sending: '{}' to {}", &message, sender.connection_id());
-            sender.send(Message::Text(message.to_string())).unwrap();
+            if let Err(err) = sender.send(Message::Text(message.to_string())) {
+                println!("Got error while broadcasting message to lobby: {}", err);
+            }
         }
     }
 
@@ -211,8 +224,10 @@ impl RoomHandler {
     fn join_room_internal(&mut self, room_name: String) -> Result<()> {
         self.leave_room(); // Leave any previous room if any
         let mut rooms: RefMut<_> = self.rooms.borrow_mut();
-        rooms.entry(room_name.clone()).or_insert_with(Vec::new);
-        rooms.get_mut(&room_name).unwrap().push(self.out.clone());
+        rooms
+            .entry(room_name.clone())
+            .or_insert_with(Vec::new)
+            .push(self.out.clone());
         self.active_room = Some(room_name);
         Ok(())
     }

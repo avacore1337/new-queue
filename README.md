@@ -89,12 +89,12 @@ Backend wants:
 * message history
 
 Backend needs:
-* Filtered lists of queues based on access
-* Fix remove queue
-* Implement server wide message
 * Fix all unwrap problems
 * fix hide/reveal problems
 * double check broadcasting
+* Filtered lists of queues based on access
+* Fix remove queue
+* Implement server wide message
 
 Frontend:
 * Title is not always updated
