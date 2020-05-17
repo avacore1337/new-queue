@@ -97,12 +97,25 @@ Backend needs:
 * double check broadcasting
 
 Frontend:
+* Hit [Enter] to join queue
+* Touch functionality on login page
+* Title is not always updated
+* Lock queue => Unlock queue
+* Delete Completion & Add comment
+* Why do we subscribe and unsubscribe twice upon receiving help?
+* Location is reset if user is in queue and tries to empty their location
+* Can enter with empty location and comment
+* An real login
+* Broadcast faculty
+* Set MOTD
+* Set queue info
+* Close title bar on clicked item
 * Extract more view-components to make the HTML easier to read
 * Rewrite socket handling to follow event driven design
-* An extra login
+* Styling
+* Show lock status in queue
+* Symbols on assistant buttons
+* Server message?
 * Fix About page (half done)
 * Fix Help page (half done)
-* Fix statistics issue with decimals
-* Title is not always updated
-* Styling
 * Hide/reveal ???
