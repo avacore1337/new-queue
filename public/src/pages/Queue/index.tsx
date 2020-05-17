@@ -50,7 +50,7 @@ export default (): JSX.Element | null => {
     if (queue !== null) {
       dispatch(subscribe(queue.name));
 
-      if (queuesAreLoaded && !hasShownMotd) {
+      if (queuesAreLoaded && !hasShownMotd && queue.motd) {
         dispatch(openShowMotdModal(queue.motd));
         setHasShownMotd(true);
       }
