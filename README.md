@@ -98,7 +98,6 @@ Frontend:
 * Bug - Why do we subscribe and unsubscribe twice upon receiving help?
 * Feature - Broadcast faculty
 * Feature - Set queue info
-* Feature - Close title bar on clicked item in mobile view
 * Feature - Extract more view-components to make the HTML easier to read
 * Feature - Rewrite socket handling to follow event driven design
 * Feature - Styling
