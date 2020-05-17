@@ -24,16 +24,14 @@ export default class User {
   private _assistantIn: string[];
 
   public constructor(data: any) {
-    this._ugkthid = data.ugkthid || '';
-    this._name = data.name || '';
-    this._username = data.username || '';
-    this._isAdministrator = data.isAdministrator === undefined || true;
-    this._teacherIn = data.teacherIn || [];
-    this._assistantIn = data.AssistantIn || [];
-    this._token = data.token || '';
-    this._location = data.location || '';
-    this._teacherIn = data.teacherIn || [];
-    this._assistantIn = data.assistantIn || [];
+    this._ugkthid = data.ugkthid;
+    this._name = data.name;
+    this._username = data.username;
+    this._isAdministrator = data.isAdministrator;
+    this._teacherIn = data.teacherIn;
+    this._assistantIn = data.AssistantIn;
+    this._token = data.token;
+    this._location = data.location;
   }
 
   public isTeacher(): boolean {
