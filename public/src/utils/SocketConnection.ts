@@ -24,20 +24,6 @@ export default class SocketConnection {
     this.connect(serverUrl);
   }
 
-  private constructor(data: any) {
-    this._callbacks = data.callbacks || {};
-    this._pendingRequests = data.pendingRequests ||  [];
-    this._lastJoinRequest = data.lastJoinRequest ||  null;
-    this._connectionEstablished = data.connectionEstablished ||  false;
-    this._socket = data.socket ||  null;
-
-    this._token = data.token ||  null;
-
-    console.log('Initial socket creation (this should only occur once)');
-
-    this.connect(serverUrl);
-  }
-
   private connect(serverUrl: string): void {
     console.log('Starting connection to server');
 
@@ -184,7 +170,7 @@ export default class SocketConnection {
     }
   }
 
-  public clone(): SocketConnection {
-
-  }
+  // public clone(): SocketConnection {
+  //
+  // }
 }
