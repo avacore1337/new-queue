@@ -10,7 +10,7 @@ export default class SocketConnection {
   private _lastJoinRequest: RequestMessage | null;
   private _token: string | null;
 
-  public constructor(serverUrl: string) {
+  public constructor(serverUrl?: string) {
     this._callbacks = {};
     this._pendingRequests = [];
     this._lastJoinRequest = null;
@@ -21,7 +21,9 @@ export default class SocketConnection {
 
     console.log('Initial socket creation (this should only occur once)');
 
-    this.connect(serverUrl);
+    if (serverUrl) {
+      this.connect(serverUrl);
+    }
   }
 
   private connect(serverUrl: string): void {
@@ -170,7 +172,16 @@ export default class SocketConnection {
     }
   }
 
-  // public clone(): SocketConnection {
-  //
-  // }
+  public clone(): SocketConnection {
+    const socket = new SocketConnection();
+
+    socket._socket = this._socket;
+    socket._callbacks = {...this._callbacks};
+    socket._connectionEstablished = this._connectionEstablished;
+    socket._pendingRequests = [...this._pendingRequests];
+    socket._lastJoinRequest = this._lastJoinRequest;
+    socket._token = this._token;
+
+    return socket;
+  }
 }
