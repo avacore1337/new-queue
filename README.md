@@ -97,20 +97,20 @@ Backend needs:
 * Implement server wide message
 
 Frontend:
-* Title is not always updated
-* Why do we subscribe and unsubscribe twice upon receiving help?
-* Location is reset if user is in queue and tries to empty their location
-* Can enter with empty location and comment
-* A real login
-* Broadcast faculty
-* Set MOTD
-* Set queue info
-* Close title bar on clicked item in mobile view
-* Extract more view-components to make the HTML easier to read
-* Rewrite socket handling to follow event driven design
-* Styling
-* Symbols on assistant buttons
-* Server message?
-* Fix About page (half done)
-* Fix Help page (half done)
-* Hide/reveal ???
+* Bug - Title is not always updated
+* Bug - Why do we subscribe and unsubscribe twice upon receiving help?
+* Bug - Location is reset if user is in queue and tries to empty their location
+* Bug - Can enter with empty location and comment
+* Feature - A real login
+* Feature - Broadcast faculty
+* Feature - Set MOTD
+* Feature - Set queue info
+* Feature - Close title bar on clicked item in mobile view
+* Feature - Extract more view-components to make the HTML easier to read
+* Feature - Rewrite socket handling to follow event driven design
+* Feature - Styling
+* Feature - Symbols on assistant buttons
+* Feature - Server message?
+* Feature - Fix About page (half done)
+* Feature - Fix Help page (half done)
+* Bug - Event listeners seem to be disappearing when we lock/unlock a queue
