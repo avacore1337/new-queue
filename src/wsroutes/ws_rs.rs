@@ -176,6 +176,20 @@ impl RoomHandler {
         }
     }
 
+    pub fn broadcast_server(&self, content: Json) {
+        println!("broadcasting to entire server");
+        let message = &json!(SendWrapper {
+            path: "broadcastServer".to_string(),
+            content: content,
+        })
+        .to_string();
+        if let Err(err) = self.out.broadcast(Message::Text(message.to_string())) {
+            println!(
+                "Got error while broadcasting to everyone with message: {}",
+                err
+            )
+        }
+    }
     pub fn broadcast_room(&self, room: &str, path: &str, content: Json) {
         println!("broadcasting in room: {}", room);
         let internal_name = "room_".to_string() + room;
@@ -358,6 +372,12 @@ impl RoomHandler {
                 let auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
                 let message = from_value::<Text>(wrapper.content.clone())?;
                 broadcast_faculty_route(self, auth, conn, message, queue_name)
+            }
+            ["broadcastServer"] => {
+                let _auth = self.get_auth(&wrapper, AuthLevel::Super)?;
+                let message = from_value::<Text>(wrapper.content.clone())?;
+                self.broadcast_server(json!(message));
+                Ok(())
             }
             ["badLocation", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;

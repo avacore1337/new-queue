@@ -294,7 +294,7 @@ pub fn broadcast_route(
     message: Text,
     queue_name: &str,
 ) -> Result<()> {
-    println!("Joining queue: {}", queue_name);
+    println!("Broadcasting in room: {}", queue_name);
     handler.broadcast_room(
         queue_name,
         "message",
@@ -313,7 +313,7 @@ pub fn broadcast_faculty_route(
     message: Text,
     queue_name: &str,
 ) -> Result<()> {
-    println!("Joining queue: {}", queue_name);
+    println!("Broadcasting to faculty in queue: {}", queue_name);
 
     if let Some(faculty) = db::admins::for_queue(conn, queue_name) {
         for user in faculty {
