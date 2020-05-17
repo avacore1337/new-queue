@@ -27,7 +27,19 @@ export default (state: User | null = initialState, action: FluxStandardAction) =
     }
 
     case ActionTypes.LoadUser: {
-      const userData = localStorage.getItem('User');
+      const prefix = 'userdata=';
+      const cookieData = document.cookie.split(';').map(cookie => cookie.trim()).filter(cookie => cookie.startsWith(prefix))[0];
+
+      let userData: any = null;
+      if (cookieData) {
+        userData = JSON.parse(decodeURIComponent(cookieData.substr(prefix.length)));
+        localStorage.setItem('User', JSON.stringify(userData));
+        document.cookie = document.cookie.split(';').map(cookie => cookie.trim()).filter(cookie => !cookie.startsWith(prefix)).join('; ');
+      }
+      else {
+        userData = localStorage.getItem('User');
+      }
+
       return userData ? new User(JSON.parse(userData)) : state;
     }
 
