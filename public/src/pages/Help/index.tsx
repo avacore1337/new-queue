@@ -39,7 +39,7 @@ export default (): JSX.Element => {
           			Their primary purpose is adding new queues, and adding teachers for those queues.
           		</p>
 
-          		<h3 id="setServerMessage">Set server-message</h3>
+          		<h3 id="sendServerMessage">Set server-message</h3>
           		<p>
           			To add a server-message, go to the <Link smooth to="/administration">Administration</Link> page.
                 Then click the <em>Set server-message</em> button and enter a message in the window that opens up.

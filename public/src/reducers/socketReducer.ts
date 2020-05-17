@@ -73,7 +73,7 @@ export default (_ = socket, action: FluxStandardAction) => {
     }
 
     case AdministratorActionTypes.SetServerMessage: {
-      socket.send(new RequestMessage(`setServerMessage`, {
+      socket.send(new RequestMessage(`broadcastServer`, {
         message: action.payload.message
       }));
       break;

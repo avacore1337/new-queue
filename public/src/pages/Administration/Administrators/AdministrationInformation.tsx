@@ -31,7 +31,7 @@ export default function AdministrationInformationViewComponent() {
                   <button
                     className="btn btn-primary mb-2"
                     onClick={displayMotd}>
-                    Set server-message
+                    Send server-message
                     </button>
                 </div>
           }

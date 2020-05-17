@@ -93,7 +93,7 @@ export const loadAdditionalQueueData = (queueName: string, token: string): Async
   };
 };
 
-export const setServerMessage = (message: string): FluxStandardAction => ({
+export const sendServerMessage = (message: string): FluxStandardAction => ({
   type: ActionTypes.SetServerMessage,
   payload: { message }
 });

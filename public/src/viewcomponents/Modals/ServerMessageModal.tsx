@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux'
 import Modal from 'react-bootstrap/Modal';
-import { setServerMessage } from '../../actions/administratorActions';
+import { sendServerMessage } from '../../actions/administratorActions';
 
 export const ModalType = 'SET_SERVER_MESSAGE_MODAL';
 
@@ -16,7 +16,7 @@ export default (props: any): JSX.Element => {
   }
 
   function submitMessage(): void {
-    dispatch(setServerMessage(message));
+    dispatch(sendServerMessage(message));
     props.onHide();
   }
 
@@ -28,7 +28,7 @@ export default (props: any): JSX.Element => {
       centered >
       <Modal.Header closeButton>
         <Modal.Title id="contained-modal-title-vcenter">
-          Set server-wide message
+          Send server-wide message
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -38,7 +38,7 @@ export default (props: any): JSX.Element => {
         <button
           className="btn btn-primary"
           onClick={submitMessage} >
-            Set message
+            Send message
           </button>
       </Modal.Footer>
     </Modal>

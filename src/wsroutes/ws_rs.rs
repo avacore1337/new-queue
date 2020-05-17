@@ -179,7 +179,7 @@ impl RoomHandler {
     pub fn broadcast_server(&self, content: Json) {
         println!("broadcasting to entire server");
         let message = &json!(SendWrapper {
-            path: "broadcastServer".to_string(),
+            path: "message".to_string(),
             content: content,
         })
         .to_string();
