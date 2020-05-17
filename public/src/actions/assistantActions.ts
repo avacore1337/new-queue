@@ -49,7 +49,7 @@ export const setMotd = (queueName: string, message: string): FluxStandardAction 
   payload: { queueName, message }
 });
 
-export const setQueueInfo = (queueName: string, info: string): FluxStandardAction => ({
+export const setQueueInformation = (queueName: string, info: string): FluxStandardAction => ({
   type: ActionTypes.SetQueueInfo,
   payload: { queueName, info }
 });

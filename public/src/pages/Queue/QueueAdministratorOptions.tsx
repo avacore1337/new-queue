@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../store';
-import { broadcastFaculty, setQueueInfo, purgeQueue, lockQueue, unlockQueue } from '../../actions/assistantActions';
-import { openBroadcastModal, openSetMotdModal } from '../../actions/modalActions';
+import { broadcastFaculty, purgeQueue, lockQueue, unlockQueue } from '../../actions/assistantActions';
+import { openBroadcastModal, openSetMotdModal, openSetQueueInformationModal } from '../../actions/modalActions';
 import { enableSounds, disableSounds } from '../../actions/soundActions';
 import User from '../../models/User';
 import Queue from '../../models/Queue';
@@ -44,7 +44,7 @@ export default (props: any): JSX.Element | null => {
               isTeacher
                 ? <>
                     <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(openSetMotdModal(queue.name))}>Set MOTD <Sign /></div>
-                    <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(setQueueInfo(queue.name, 'setQueueInfo'))}>Set queue info <Information /></div>
+                    <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(openSetQueueInformationModal(queue.name))}>Set queue information <Information /></div>
                   </>
                 : null
             }

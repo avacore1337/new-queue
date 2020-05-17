@@ -12,6 +12,7 @@ import ShowQueue, { ModalType as ShowQueueModal } from './Modals/ShowQueueModal'
 import HideQueue, { ModalType as HideQueueModal } from './Modals/HideQueueModal';
 import DeleteQueue, { ModalType as DeleteQueueModal } from './Modals/DeleteQueueModal';
 import SetMotd, { ModalType as SetMotdModal } from './Modals/SetMotdModal';
+import SetQueueInformation, { ModalType as SetQueueInformationModal } from './Modals/SetQueueInformationModal';
 
 export default (): JSX.Element => {
 
@@ -67,6 +68,10 @@ export default (): JSX.Element => {
 
       case ShowMotdModal: {
         return (<ShowMotd { ...props } />);
+      }
+
+      case SetQueueInformationModal: {
+        return (<SetQueueInformation { ...props } />);
       }
 
     }
