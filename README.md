@@ -97,7 +97,6 @@ Backend needs:
 * double check broadcasting
 
 Frontend:
-* Hit [Enter] to join queue
 * Touch functionality on login page
 * Title is not always updated
 * Lock queue => Unlock queue

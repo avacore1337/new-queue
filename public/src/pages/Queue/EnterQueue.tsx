@@ -59,6 +59,12 @@ export default (props: any): JSX.Element => {
     setHelp(event.target.value === 'help');
   }
 
+  function enterQueue(event: any) {
+    if (event.key === 'Enter' || event.button === 0) {
+      dispatch(joinQueue(queueName, comment, location, help));
+    }
+  }
+
   return (
     <>
       <form onSubmit={() => dispatch(joinQueue(queueName, comment, location, help))}>
@@ -93,6 +99,7 @@ export default (props: any): JSX.Element => {
             type="text"
             value={comment}
             onChange={changeComment}
+            onKeyUp={enterQueue}
             style={{width: '100%', borderRadius: 0}} />
           {
             comment === ''
@@ -154,7 +161,7 @@ export default (props: any): JSX.Element => {
             : <div
                 className="col-12 text-center blue clickable"
                 style={{lineHeight: '3em'}}
-                onClick={() => dispatch(joinQueue(queueName, comment, location, help))}>
+                onClick={enterQueue}>
                 <strong>Join queue</strong>
               </div>
         }
