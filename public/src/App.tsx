@@ -10,7 +10,7 @@ import AboutPage from './pages/About';
 import HelpPage from './pages/Help';
 import StatisticsPage from './pages/Statistics';
 import PageNotFound from './pages/NoMatch';
-import LoginPage from './pages/Login';
+import LoginPage from './pages/MockLogin';
 import LogoutPage from './pages/Logout';
 import AdministrationPage from './pages/Administration';
 import Modal from './viewcomponents/Modal';
@@ -43,7 +43,7 @@ export default (): JSX.Element => {
         <Route exact path="/Statistics">
           <StatisticsPage />
         </Route>
-        <Route exact path="/Login">
+        <Route exact path="/MockLogin">
           <LoginPage />
         </Route>
         <Route exact path="/Logout">

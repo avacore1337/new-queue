@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../store';
 import { subscribe, unsubscribe } from '../../actions/lobbyActions';
@@ -10,6 +10,8 @@ import QueueCardViewComponent from './QueueCard';
 import SearchViewComponent from '../../viewcomponents/Search';
 
 export default (): JSX.Element => {
+
+  const [lastVisitedUrl, setLastVisitedUrl] = useState(null as string | null);
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
   const queues = useSelector<GlobalStore, Queue[]>(store => store.queues);
@@ -30,6 +32,19 @@ export default (): JSX.Element => {
     };
   }, [dispatch]);
 
+  useEffect(() => {
+    console.log('Test');
+    const urlBeforeLoginRedirect = localStorage.getItem('LastVisitedUrl');
+
+    if (urlBeforeLoginRedirect) {
+      localStorage.removeItem('LastVisitedUrl');
+      setLastVisitedUrl(urlBeforeLoginRedirect);
+    }
+    else if (lastVisitedUrl) {
+      setLastVisitedUrl(null);
+    }
+  }, [lastVisitedUrl]);
+
   function canSee(queue: Queue): boolean {
     return !queue.hiding || (user !== null && (user.isAdministrator || user.isTeacherIn(queue.name)));
   }
@@ -39,24 +54,26 @@ export default (): JSX.Element => {
   }
 
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col-lg-4 offset-lg-8 p-0">
-          <SearchViewComponent filter={filter} setFilter={setFilter} />
+    lastVisitedUrl
+      ? <Redirect to={lastVisitedUrl} />
+      : <div className="container">
+          <div className="row">
+            <div className="col-lg-4 offset-lg-8 p-0">
+              <SearchViewComponent filter={filter} setFilter={setFilter} />
+            </div>
+          </div>
+          {queues
+            .filter(queue => filter === '' || queue.name.toLowerCase().includes(filter.toLowerCase()))
+            .map(queue =>
+              canSee(queue)
+              ? canClick(queue)
+                ? <Link to={`/Queue/${queue.name}`} key={`HomeLink_${queue.name}`}>
+                    <QueueCardViewComponent user={user} queue={queue} />
+                  </Link>
+                : <QueueCardViewComponent user={user} queue={queue} key={`HomeCard_${queue.name}`} />
+              : null
+          )}
         </div>
-      </div>
-      {queues
-        .filter(queue => filter === '' || queue.name.toLowerCase().includes(filter.toLowerCase()))
-        .map(queue =>
-          canSee(queue)
-          ? canClick(queue)
-            ? <Link to={`/Queue/${queue.name}`} key={`HomeLink_${queue.name}`}>
-                <QueueCardViewComponent user={user} queue={queue} />
-              </Link>
-            : <QueueCardViewComponent user={user} queue={queue} key={`HomeCard_${queue.name}`} />
-          : null
-      )}
-    </div>
   );
 
 };

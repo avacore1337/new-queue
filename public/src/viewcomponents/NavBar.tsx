@@ -56,11 +56,10 @@ export default (): JSX.Element => {
         <hr className="d-lg-none" />
         <ul className="navbar-nav ml-auto">
           {user === null
-            ? <li className={'nav-item' + (location.pathname === '/Login' ? ' active' : '')}>
-                <Link className="nav-link" to="/Login">
-                  Login
-                  {location.pathname === '/Login' ? <span className="sr-only">(current)</span> : null}
-                </Link>
+            ? <li className='nav-item' onClick={() => localStorage.setItem('LastVisitedUrl', window.location.pathname)}>
+                <a className="nav-link" href="https://login.kth.se/login?service=http://queue.csc.kth.se/auth">
+                  Login<span className="sr-only">(current)</span>
+                </a>
               </li>
             : <>
                 <span className="navbar-text">

@@ -23,7 +23,6 @@ function LifeCycle() {
     dispatch(loadUser());
     dispatch(loadQueues());
     dispatch(listenTo('updateQueue/:queueName', Listeners.onQueueUpdated));
-
   }, [dispatch]);
 
   return (
