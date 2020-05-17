@@ -101,7 +101,6 @@ Frontend:
 * Feature - Extract more view-components to make the HTML easier to read
 * Feature - Rewrite socket handling to follow event driven design
 * Feature - Styling
-* Feature - Symbols on assistant buttons
 * Feature - Server message?
 * Feature - Fix About page (half done)
 * Feature - Fix Help page (half done)
