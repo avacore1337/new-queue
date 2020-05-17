@@ -154,6 +154,7 @@ export default (_ = socket, action: FluxStandardAction) => {
       socket.send(new RequestMessage('logout'));
       socket.setToken(null);
       socket.stopListening('message');
+      socket.stopListening('message/:queueName');
       break;
     }
 
