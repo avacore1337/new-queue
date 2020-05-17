@@ -13,8 +13,6 @@ pub fn for_queue(
     queue_name: &str,
     params: Form<Interval>,
 ) -> Option<Vec<UserEvent>> {
-    // from: DateTime<Utc>,
-    // until: DateTime<Utc>,
     let queue = queues::find_by_name(conn, queue_name).ok()?;
     let mut query = UserEvent::belonging_to(&queue).into_boxed();
     if let Some(from) = params.from {
@@ -25,7 +23,6 @@ pub fn for_queue(
         let until: DateTime<Utc> = Utc.timestamp(until, 0);
         query = query.filter(user_events::time.le(until));
     }
-    // .and(user_events::time.le(until)));
 
     match query.load(conn) {
         Ok(events) => {

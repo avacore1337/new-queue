@@ -4,10 +4,6 @@ use rocket::request::Form;
 
 use rocket_contrib::json::JsonValue;
 
-// #[get("/articles/feed?<params..>")]
-// pub fn get_articles_feed(params: Form<FeedArticles>, auth: Auth, conn: db::Conn) -> JsonValue {
-//     let articles = db::articles::feed(&conn, &params, auth.id);
-
 #[get("/queues/<queue_name>/user_events?<params..>")]
 pub fn get_user_events(
     auth: Auth,

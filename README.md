@@ -89,7 +89,7 @@ Backend wants:
 * message history
 
 Backend needs:
-* login
+* broadcast and broadcast facultly should behave the same (send to self or not?)
 * Filtered lists of queues based on access
 * always update user data on login
 

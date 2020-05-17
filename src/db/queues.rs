@@ -1,5 +1,8 @@
+use crate::auth::Auth;
+use crate::db::super_admins;
 use crate::models::queue::Queue;
-use crate::schema::queues;
+use crate::schema::{admins, queues, users};
+use crate::sql_types::AdminEnum;
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
 use diesel::result::{DatabaseErrorKind, Error};
@@ -67,6 +70,30 @@ pub fn name_to_id(conn: &PgConnection, name: &str) -> Result<i32, diesel::result
         .select(queues::id)
         .first(&*conn)
         .map_err(Into::into)
+}
+
+pub fn teacher_filtered(conn: &PgConnection, auth: Auth) -> Vec<Queue> {
+    match super_admins::is_super(conn, auth.id) {
+        Some(_) => all(conn),
+        None => admins::table
+            .inner_join(queues::table)
+            .inner_join(users::table)
+            .filter(
+                users::ugkthid
+                    .eq(auth.ugkthid)
+                    .and(admins::admin_type.eq(AdminEnum::Teacher)),
+            )
+            .select((
+                queues::id,
+                queues::name,
+                queues::locked,
+                queues::hiding,
+                queues::motd,
+                queues::info,
+            ))
+            .get_results::<Queue>(&*conn)
+            .expect("Could not get queues"),
+    }
 }
 
 pub fn find_by_name(conn: &PgConnection, name: &str) -> Result<Queue, diesel::result::Error> {

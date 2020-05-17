@@ -1,6 +1,11 @@
+use crate::auth::Auth;
 use crate::db;
-
 use rocket_contrib::json::JsonValue;
+
+#[get("/queues/filtered")]
+pub fn get_queues_filtered(conn: db::DbConn, auth: Auth) -> JsonValue {
+    json!({ "queues": db::queues::teacher_filtered(&conn, auth) })
+}
 
 #[get("/queues")]
 pub fn get_queues(conn: db::DbConn) -> JsonValue {

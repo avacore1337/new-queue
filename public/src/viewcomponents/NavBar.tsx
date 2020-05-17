@@ -36,7 +36,7 @@ export default (): JSX.Element => {
               {location.pathname === '/Help' ? <span className="sr-only">(current)</span> : null}
             </Link>
           </li>
-          {user === null || !user.isAdministrator
+          {user === null || (!user.isAdministrator && !user.isTeacher)
             ? null
             : <li className={'nav-item' + (location.pathname === '/Administration' ? ' active' : '')} data-toggle="collapse" data-target="#navbarText">
                 <Link className="nav-link" to="/Administration">
