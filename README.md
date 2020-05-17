@@ -96,7 +96,6 @@ Backend needs:
 
 Frontend:
 * Bug - Why do we subscribe and unsubscribe twice upon receiving help?
-* Bug - Can enter with empty location and comment
 * Feature - A real login
 * Feature - Broadcast faculty
 * Feature - Set MOTD
