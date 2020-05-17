@@ -83,25 +83,25 @@ Install debuggin extensions for React and Redux
 
 # Features and Bugs
 
+
+Backend needs:
+
+Frontend needs:
+* Feature - Admin queue should use the filtered lists of queues
+* Bug - Why do we subscribe and unsubscribe twice upon receiving help?
+* Feature - Rewrite socket handling to follow event driven design
+* Feature - Styling
+* Bug - Event listeners seem to be disappearing when we lock/unlock a queue
+
 Backend wants:
 * routing framework
 * backend websockets leave/errors
 * message history
-
-Backend needs:
-* broadcast and broadcast facultly should behave the same (send to self or not?)
-* Filtered lists of queues based on access
 * always update user data on login
 
-
-Frontend:
-* Bug - Why do we subscribe and unsubscribe twice upon receiving help?
-* Feature - Extract more view-components to make the HTML easier to read
-* Feature - Rewrite socket handling to follow event driven design
-* Feature - Styling
-* Feature - Server message?
-* Feature - Fix About page (half done)
+Frontend wants
 * Feature - Fix Help page (half done)
-* Bug - Event listeners seem to be disappearing when we lock/unlock a queue
+* Feature - Fix About page (half done)
+* Feature - Extract more view-components to make the HTML easier to read
 * Do not collapse nav-bar if not expanded
 * Make queuelist on admin-page scrollable
