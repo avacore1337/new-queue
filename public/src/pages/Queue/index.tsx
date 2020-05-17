@@ -4,6 +4,7 @@ import { GlobalStore } from '../../store';
 import { useParams } from "react-router-dom";
 import { subscribe, unsubscribe } from '../../actions/queueActions';
 import { setTitle } from '../../actions/titleActions';
+import { openShowMotdModal } from '../../actions/modalActions';
 import Queue from '../../models/Queue';
 import User from '../../models/User';
 import EnterQueueViewComponent from './EnterQueue';
@@ -25,6 +26,7 @@ export default (): JSX.Element | null => {
 
   const [filter, setFilter] = useState('');
   const [previousQueueEntryCount, setPreviousQueueEntryCount] = useState(0);
+  const [hasShownMotd, setHasShownMotd] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -48,11 +50,16 @@ export default (): JSX.Element | null => {
     if (queue !== null) {
       dispatch(subscribe(queue.name));
 
+      if (queuesAreLoaded && !hasShownMotd) {
+        dispatch(openShowMotdModal(queue.motd));
+        setHasShownMotd(true);
+      }
+
       return () => {
         dispatch(unsubscribe(queue.name));
       };
     }
-  }, [queuesAreLoaded, queue, dispatch]);
+  }, [queuesAreLoaded, queue]);
 
   useEffect(() => {
     if (!updateTitle) {

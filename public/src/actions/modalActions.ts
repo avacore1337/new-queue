@@ -9,7 +9,8 @@ export const ActionTypes = Object.freeze({
   OpenSetServerMessageModal: 'OPEN_SET_SERVER_MESSAGE_MODAL',
   OpenShowQueueModal: 'OPEN_SHOW_QUEUE_MODAL',
   OpenHideQueueModal: 'OPEN_HIDE_QUEUE_MODAL',
-  OpenDeleteQueueModal: 'OPEN_DELETE_QUEUE_MODAL'
+  OpenDeleteQueueModal: 'OPEN_DELETE_QUEUE_MODAL',
+  OpenShowMotdModal: 'OPEN_SHOW_MOTD_MODAL'
 });
 
 export const closeModal = (): FluxStandardAction => ({
@@ -52,4 +53,9 @@ export const openHideQueueModal = (queueName: string): FluxStandardAction => ({
 export const openDeleteQueueModal = (queueName: string): FluxStandardAction => ({
   type: ActionTypes.OpenDeleteQueueModal,
   payload: { queueName }
+});
+
+export const openShowMotdModal = (message: string): FluxStandardAction => ({
+  type: ActionTypes.OpenShowMotdModal,
+  payload: { message }
 });

@@ -10,6 +10,7 @@ import { ModalType as SetServerMessageModal } from '../viewcomponents/Modals/Ser
 import { ModalType as ShowQueueModal } from '../viewcomponents/Modals/ShowQueueModal';
 import { ModalType as HideQueueModal } from '../viewcomponents/Modals/HideQueueModal';
 import { ModalType as DeleteQueueModal } from '../viewcomponents/Modals/DeleteQueueModal';
+import { ModalType as ShowMotdModal } from '../viewcomponents/Modals/ShowMotdModal';
 
 const initialState = {
   modalList: [] as Modal[],
@@ -69,6 +70,10 @@ export default (state = initialState, action: FluxStandardAction) => {
 
     case ModalActionTypes.OpenDeleteQueueModal: {
       return { ...state, modalList: [...state.modalList, new Modal(DeleteQueueModal, action.payload)] }
+    }
+
+    case ModalActionTypes.OpenShowMotdModal: {
+      return { ...state, modalList: [...state.modalList, new Modal(ShowMotdModal, action.payload)] }
     }
 
   }

@@ -5,6 +5,7 @@ import { closeModal, removeModal } from '../actions/modalActions';
 import ModalInformation from '../models/Modal';
 import SendMessage, { ModalType as SendMessageModal } from './Modals/SendMessageModal';
 import ShowMessage, { ModalType as ShowMessageModal } from './Modals/ShowMessageModal';
+import ShowMotd, { ModalType as ShowMotdModal } from './Modals/ShowMotdModal';
 import Broadcast, { ModalType as BroadcastModal } from './Modals/BroadcastModal';
 import ServerMessage, { ModalType as ServerMessageModal } from './Modals/ServerMessageModal';
 import ShowQueue, { ModalType as ShowQueueModal } from './Modals/ShowQueueModal';
@@ -62,6 +63,10 @@ export default (): JSX.Element => {
 
       case SetMotdModal: {
         return (<SetMotd { ...props } />);
+      }
+
+      case ShowMotdModal: {
+        return (<ShowMotd { ...props } />);
       }
 
     }
