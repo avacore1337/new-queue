@@ -7,6 +7,7 @@ import SendMessage, { ModalType as SendMessageModal } from './Modals/SendMessage
 import ShowMessage, { ModalType as ShowMessageModal } from './Modals/ShowMessageModal';
 import ShowMotd, { ModalType as ShowMotdModal } from './Modals/ShowMotdModal';
 import Broadcast, { ModalType as BroadcastModal } from './Modals/BroadcastModal';
+import BroadcastFaculty, { ModalType as BroadcastFacultyModal } from './Modals/BroadcastFacultyModal';
 import ServerMessage, { ModalType as ServerMessageModal } from './Modals/ServerMessageModal';
 import ShowQueue, { ModalType as ShowQueueModal } from './Modals/ShowQueueModal';
 import HideQueue, { ModalType as HideQueueModal } from './Modals/HideQueueModal';
@@ -44,6 +45,10 @@ export default (): JSX.Element => {
 
       case BroadcastModal: {
         return (<Broadcast { ...props } />);
+      }
+
+      case BroadcastFacultyModal: {
+        return (<BroadcastFaculty { ...props } />);
       }
 
       case ServerMessageModal: {

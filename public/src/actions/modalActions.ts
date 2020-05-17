@@ -5,6 +5,7 @@ export const ActionTypes = Object.freeze({
   RemoveModal: 'REMOVE_MODAL',
   OpenSendMessageModal: 'OPEN_SEND_MESSAGE_MODAL',
   OpenBroadcastModal: 'OPEN_BROADCAST_MODAL',
+  OpenBroadcastFacultyModal: 'OPEN_BROADCAST_FACULTY_MODAL',
   OpenSetMotdModal: 'OPEN_SET_MOTD_MODAL',
   OpenSetQueueInformationModal: 'OPEN_SET_QUEUE_INFORMATION_MODAL',
   OpenSetServerMessageModal: 'OPEN_SET_SERVER_MESSAGE_MODAL',
@@ -29,6 +30,11 @@ export const openSendMessageModal = (queueName: string, ugkthid: string, realnam
 
 export const openBroadcastModal = (queueName: string): FluxStandardAction => ({
   type: ActionTypes.OpenBroadcastModal,
+  payload: { queueName }
+});
+
+export const openBroadcastFacultyModal = (queueName: string): FluxStandardAction => ({
+  type: ActionTypes.OpenBroadcastFacultyModal,
   payload: { queueName }
 });
 

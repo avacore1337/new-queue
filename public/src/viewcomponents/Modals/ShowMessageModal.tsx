@@ -19,9 +19,13 @@ export default (props: any): JSX.Element => {
       <Modal.Body>
         {props.message}
       </Modal.Body>
-      <Modal.Footer>
-        <i className="text-secondary">- {props.sender}</i>
-      </Modal.Footer>
+      {
+        props.sender
+          ? <Modal.Footer>
+              <i className="text-secondary">- {props.sender}</i>
+            </Modal.Footer>
+          : null
+      }
     </Modal>
   );
 };

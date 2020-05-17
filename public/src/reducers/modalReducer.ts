@@ -5,6 +5,7 @@ import Modal from '../models/Modal';
 import { ModalType as ShowMessageModal } from '../viewcomponents/Modals/ShowMessageModal';
 import { ModalType as SendMessageModal } from '../viewcomponents/Modals/SendMessageModal';
 import { ModalType as BroadcastModal } from '../viewcomponents/Modals/BroadcastModal';
+import { ModalType as BroadcastFacultyModal } from '../viewcomponents/Modals/BroadcastFacultyModal';
 import { ModalType as SetMotdModal } from '../viewcomponents/Modals/SetMotdModal';
 import { ModalType as SetQueueInformationModal } from '../viewcomponents/Modals/SetQueueInformationModal';
 import { ModalType as SetServerMessageModal } from '../viewcomponents/Modals/ServerMessageModal';
@@ -22,7 +23,7 @@ export default (state = initialState, action: FluxStandardAction) => {
   switch (action.type) {
 
     case Listeners.OnMessageRecieved: {
-      return { ...state, modalList: [...state.modalList, new Modal(ShowMessageModal, action.payload.data)] }
+      return { ...state, modalList: [...state.modalList, new Modal(ShowMessageModal, action.payload)] }
     }
 
     case ModalActionTypes.CloseModal: {
@@ -51,6 +52,10 @@ export default (state = initialState, action: FluxStandardAction) => {
 
     case ModalActionTypes.OpenBroadcastModal: {
       return { ...state, modalList: [...state.modalList, new Modal(BroadcastModal, action.payload)] }
+    }
+
+    case ModalActionTypes.OpenBroadcastFacultyModal: {
+      return { ...state, modalList: [...state.modalList, new Modal(BroadcastFacultyModal, action.payload)] }
     }
 
     case ModalActionTypes.OpenSetMotdModal: {
