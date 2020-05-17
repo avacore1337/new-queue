@@ -26,15 +26,19 @@ pub fn post_users_login(
     conn: db::DbConn,
     state: State<AppState>,
 ) -> Result<JsonValue, Errors> {
-    let user = user.into_inner().user;
+    if cfg!(debug_assertions) {
+        let user = user.into_inner().user;
 
-    let mut extractor = FieldValidator::default();
-    let username = extractor.extract("username", user.username);
-    extractor.check()?;
+        let mut extractor = FieldValidator::default();
+        let username = extractor.extract("username", user.username);
+        extractor.check()?;
 
-    match db::users::login(&conn, &username) {
-        Some(user) => Ok(json!(user.to_user_auth(&conn, &state.secret))),
-        None => Err(Errors::new(&[("username", "does not exist")])),
+        match db::users::login(&conn, &username) {
+            Some(user) => Ok(json!(user.to_user_auth(&conn, &state.secret))),
+            None => Err(Errors::new(&[("username", "does not exist")])),
+        }
+    } else {
+        Err(Errors::new(&[("auth", "not allowed")]))
     }
 }
 
