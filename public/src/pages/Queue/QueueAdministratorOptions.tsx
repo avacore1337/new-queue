@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../store';
-import { broadcastFaculty, setMotd, setQueueInfo, purgeQueue, lockQueue, unlockQueue } from '../../actions/assistantActions';
-import { openBroadcastModal } from '../../actions/modalActions';
+import { broadcastFaculty, setQueueInfo, purgeQueue, lockQueue, unlockQueue } from '../../actions/assistantActions';
+import { openBroadcastModal, openSetMotdModal } from '../../actions/modalActions';
 import { enableSounds, disableSounds } from '../../actions/soundActions';
 import User from '../../models/User';
 import Queue from '../../models/Queue';
@@ -37,7 +37,7 @@ export default (props: any): JSX.Element | null => {
           <div className="dropdown-menu row" aria-labelledby="dropdownMenuButton">
             <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(openBroadcastModal(queue.name))}>Broadcast</div>
             <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(broadcastFaculty(queue.name, 'broadcastFaculty'))}>Broadcast faculty</div>
-            <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(setMotd(queue.name, 'setMotd'))}>Set MOTD</div>
+            <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(openSetMotdModal(queue.name))}>Set MOTD</div>
             <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(setQueueInfo(queue.name, 'setQueueInfo'))}>Set queue info</div>
             <div className="col red clickable col-10 offset-1 my-1" onClick={() => dispatch(purgeQueue(queue.name))}>Purge queue</div>
             {

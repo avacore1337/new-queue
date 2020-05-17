@@ -73,7 +73,7 @@ export default (state = initialState, action: FluxStandardAction) => {
     }
 
     case Listeners.OnQueueAdded: {
-      const queues = [...state, new Queue({ name: action.payload.data.queueName })];
+      const queues = [...state, new Queue({ name: action.payload.queueName })];
       queues.sort((queue1: Queue, queue2: Queue) => {
         if (queue1.hiding && !queue2.hiding) { return 1; }
         if (!queue1.hiding && queue2.hiding) { return -1; }
@@ -84,10 +84,10 @@ export default (state = initialState, action: FluxStandardAction) => {
 
     case Listeners.OnQueueUpdated: {
       const queues = [...state];
-      const index = queues.findIndex(q => q.name === action.payload.data.queueName);
+      const index = queues.findIndex(q => q.name === action.payload.queueName);
       queues[index] = new Queue({
-        ...action.payload.data,
-        name: action.payload.data.queueName,
+        ...action.payload,
+        name: action.payload.queueName,
         queueEntries: queues[index].queueEntries
       });
 
@@ -96,7 +96,7 @@ export default (state = initialState, action: FluxStandardAction) => {
 
     case Listeners.OnQueueEntryAdded: {
       const queues = state.map(q => q.clone());
-      const queue = queues.filter(q => q.name === action.payload.data.queueName)[0];
+      const queue = queues.filter(q => q.name === action.payload.queueName)[0];
 
       queue.addQueueEntry(new QueueEntry(action.payload.data));
 
@@ -105,38 +105,38 @@ export default (state = initialState, action: FluxStandardAction) => {
 
     case Listeners.OnQueueEntryRemoved: {
       const queues = state.map(q => q.clone());
-      queues.filter(q => q.name === action.payload.data.queueName)[0].removeQueueEntry(new QueueEntry(action.payload.data));
+      queues.filter(q => q.name === action.payload.queueName)[0].removeQueueEntry(new QueueEntry(action.payload));
       return queues;
     }
 
     case Listeners.OnQueueEntryUpdated: {
       const queues = state.map(q => q.clone());
-      const queue = queues.filter(q => q.name === action.payload.data.queueName)[0];
-      queue.updateQueueEntry(new QueueEntry(action.payload.data));
+      const queue = queues.filter(q => q.name === action.payload.queueName)[0];
+      queue.updateQueueEntry(new QueueEntry(action.payload));
       return queues;
     }
 
     case Listeners.OnTeacherAdded: {
       const queues = state.map(q => q.clone());
-      queues.filter(q => q.name === action.payload.data.queueName)[0].addTeacher(new Teacher(action.payload));
+      queues.filter(q => q.name === action.payload.queueName)[0].addTeacher(new Teacher(action.payload));
       return queues;
     }
 
     case Listeners.OnTeacherRemoved: {
       const queues = state.map(q => q.clone());
-      queues.filter(q => q.name === action.payload.data.queueName)[0].removeTeacher(new Teacher(action.payload));
+      queues.filter(q => q.name === action.payload.queueName)[0].removeTeacher(new Teacher(action.payload));
       return queues;
     }
 
     case Listeners.OnAssistantAdded: {
       const queues = state.map(q => q.clone());
-      queues.filter(q => q.name === action.payload.data.queueName)[0].addAssistant(new Assistant(action.payload));
+      queues.filter(q => q.name === action.payload.queueName)[0].addAssistant(new Assistant(action.payload));
       return queues;
     }
 
     case Listeners.OnAssistantRemoved: {
       const queues = state.map(q => q.clone());
-      queues.filter(q => q.name === action.payload.data.queueName)[0].removeAssistant(new Assistant(action.payload));
+      queues.filter(q => q.name === action.payload.queueName)[0].removeAssistant(new Assistant(action.payload));
       return queues;
     }
 

@@ -10,6 +10,7 @@ import ServerMessage, { ModalType as ServerMessageModal } from './Modals/ServerM
 import ShowQueue, { ModalType as ShowQueueModal } from './Modals/ShowQueueModal';
 import HideQueue, { ModalType as HideQueueModal } from './Modals/HideQueueModal';
 import DeleteQueue, { ModalType as DeleteQueueModal } from './Modals/DeleteQueueModal';
+import SetMotd, { ModalType as SetMotdModal } from './Modals/SetMotdModal';
 
 export default (): JSX.Element => {
 
@@ -57,6 +58,10 @@ export default (): JSX.Element => {
 
       case DeleteQueueModal: {
         return (<DeleteQueue { ...props } />);
+      }
+
+      case SetMotdModal: {
+        return (<SetMotd { ...props } />);
       }
 
     }

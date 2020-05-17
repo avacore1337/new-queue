@@ -5,6 +5,7 @@ import Modal from '../models/Modal';
 import { ModalType as ShowMessageModal } from '../viewcomponents/Modals/ShowMessageModal';
 import { ModalType as SendMessageModal } from '../viewcomponents/Modals/SendMessageModal';
 import { ModalType as BroadcastModal } from '../viewcomponents/Modals/BroadcastModal';
+import { ModalType as SetMotdModal } from '../viewcomponents/Modals/SetMotdModal';
 import { ModalType as SetServerMessageModal } from '../viewcomponents/Modals/ServerMessageModal';
 import { ModalType as ShowQueueModal } from '../viewcomponents/Modals/ShowQueueModal';
 import { ModalType as HideQueueModal } from '../viewcomponents/Modals/HideQueueModal';
@@ -48,6 +49,10 @@ export default (state = initialState, action: FluxStandardAction) => {
 
     case ModalActionTypes.OpenBroadcastModal: {
       return { ...state, modalList: [...state.modalList, new Modal(BroadcastModal, action.payload)] }
+    }
+
+    case ModalActionTypes.OpenSetMotdModal: {
+      return { ...state, modalList: [...state.modalList, new Modal(SetMotdModal, action.payload)] }
     }
 
     case ModalActionTypes.OpenSetServerMessageModal: {
