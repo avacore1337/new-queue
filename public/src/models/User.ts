@@ -29,7 +29,7 @@ export default class User {
     this._username = data.username;
     this._isAdministrator = data.isAdministrator;
     this._teacherIn = data.teacherIn;
-    this._assistantIn = data.AssistantIn;
+    this._assistantIn = data.assistantIn;
     this._token = data.token;
     this._location = data.location;
   }
