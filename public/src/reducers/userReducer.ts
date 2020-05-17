@@ -33,6 +33,15 @@ export default (state: User | null = initialState, action: FluxStandardAction) =
       let userData: any = null;
       if (cookieData) {
         userData = decodeURIComponent(cookieData.substr(prefix.length));
+        userData = {
+          ugkthid: userData.ugkthid,
+          name: userData.realname,
+          username: userData.username,
+          token: userData.token,
+          isAdministrator: userData.superadmin,
+          teacherIn: userData.teacher_in,
+          assistantIn: userData.assistant_in
+        };
         localStorage.setItem('User', userData);
         document.cookie = document.cookie.split(';').map(cookie => cookie.trim()).filter(cookie => !cookie.startsWith(prefix)).join('; ');
       }
