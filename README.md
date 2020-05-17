@@ -104,3 +104,4 @@ Frontend:
 * Feature - Fix Help page (half done)
 * Bug - Event listeners seem to be disappearing when we lock/unlock a queue
 * Do not collapse nav-bar if not expanded
+* Make queuelist on admin-page scrollable
