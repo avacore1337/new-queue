@@ -73,7 +73,7 @@ export default (state = initialState, action: FluxStandardAction) => {
     }
 
     case Listeners.OnQueueAdded: {
-      const queues = [...state, new Queue({ name: action.payload.queueName })];
+      const queues = [...state, new Queue({ name: action.payload.data.queueName })];
       queues.sort((queue1: Queue, queue2: Queue) => {
         if (queue1.hiding && !queue2.hiding) { return 1; }
         if (!queue1.hiding && queue2.hiding) { return -1; }
@@ -111,32 +111,32 @@ export default (state = initialState, action: FluxStandardAction) => {
 
     case Listeners.OnQueueEntryUpdated: {
       const queues = state.map(q => q.clone());
-      const queue = queues.filter(q => q.name === action.payload.queueName)[0];
-      queue.updateQueueEntry(new QueueEntry(action.payload));
+      const queue = queues.filter(q => q.name === action.payload.data.queueName)[0];
+      queue.updateQueueEntry(new QueueEntry(action.payload.data));
       return queues;
     }
 
     case Listeners.OnTeacherAdded: {
       const queues = state.map(q => q.clone());
-      queues.filter(q => q.name === action.payload.queueName)[0].addTeacher(new Teacher(action.payload));
+      queues.filter(q => q.name === action.payload.data.queueName)[0].addTeacher(new Teacher(action.payload));
       return queues;
     }
 
     case Listeners.OnTeacherRemoved: {
       const queues = state.map(q => q.clone());
-      queues.filter(q => q.name === action.payload.queueName)[0].removeTeacher(new Teacher(action.payload));
+      queues.filter(q => q.name === action.payload.data.queueName)[0].removeTeacher(new Teacher(action.payload));
       return queues;
     }
 
     case Listeners.OnAssistantAdded: {
       const queues = state.map(q => q.clone());
-      queues.filter(q => q.name === action.payload.queueName)[0].addAssistant(new Assistant(action.payload));
+      queues.filter(q => q.name === action.payload.data.queueName)[0].addAssistant(new Assistant(action.payload));
       return queues;
     }
 
     case Listeners.OnAssistantRemoved: {
       const queues = state.map(q => q.clone());
-      queues.filter(q => q.name === action.payload.queueName)[0].removeAssistant(new Assistant(action.payload));
+      queues.filter(q => q.name === action.payload.data.queueName)[0].removeAssistant(new Assistant(action.payload));
       return queues;
     }
 

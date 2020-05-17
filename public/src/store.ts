@@ -19,7 +19,6 @@ export interface GlobalStore {
   queues: Queue[],
   administration: {
     administrators: Administrator[]
-    selectedQueue: string
   },
   modals: {
     modalList: Modal[],

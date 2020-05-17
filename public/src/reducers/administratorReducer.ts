@@ -4,8 +4,7 @@ import { Listeners } from '../actions/listenerActions';
 import Administrator from '../models/Administrator';
 
 const initialState = {
-  administrators: [] as Administrator[],
-  selectedQueue: ''
+  administrators: [] as Administrator[]
 };
 
 export default (state = initialState, action: FluxStandardAction) => {

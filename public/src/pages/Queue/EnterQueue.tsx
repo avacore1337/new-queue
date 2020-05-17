@@ -60,6 +60,10 @@ export default (props: any): JSX.Element | null => {
   }
 
   function enterQueue(event: any) {
+    if (personalQueueEntry) {
+      return;
+    }
+
     if (event.key === 'Enter' || event.button === 0) {
       dispatch(joinQueue(queueName, comment, location, help));
     }
@@ -68,7 +72,7 @@ export default (props: any): JSX.Element | null => {
   return (
     user
       ? <>
-          <form onSubmit={() => dispatch(joinQueue(queueName, comment, location, help))}>
+          <form onSubmit={enterQueue}>
 
             <label htmlFor="location">Location:</label>
             <br />
