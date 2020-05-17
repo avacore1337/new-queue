@@ -95,7 +95,6 @@ Backend needs:
 Frontend:
 * Title is not always updated
 * Why do we subscribe and unsubscribe twice upon receiving help?
-* Show lock status in queue
 * Delete Completion & Add comment
 * Location is reset if user is in queue and tries to empty their location
 * Can enter with empty location and comment

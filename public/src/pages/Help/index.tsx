@@ -8,7 +8,7 @@ import RemoveTeacher from '../../img/remove-teacher.png';
 import Allmanhand from '../../img/allmanhand.png';
 import Location from '../../img/location.png';
 import FindQueuesBox from '../../img/find-queues-box.png';
-import { Locked, Star } from '../../viewcomponents/FontAwesome';
+import { Lock, Star } from '../../viewcomponents/FontAwesome';
 
 export default (): JSX.Element => {
 
@@ -497,7 +497,7 @@ export default (): JSX.Element => {
           			</tr>
           			<tr>
           				<td className="text-red"><strong>Locked queue</strong></td>
-          				<td><Locked /></td>
+          				<td><Lock /></td>
           				<td>The queue is locked and can't be joined</td>
           			</tr>
           		</tbody></table>

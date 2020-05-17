@@ -11,6 +11,7 @@ import QueueAdministratorOptionsViewComponent from './QueueAdministratorOptions'
 import QueueEntryTableViewComponent from './QueueEntryTable';
 import PageNotFound from '../NoMatch';
 import SearchViewComponent from '../../viewcomponents/Search';
+import { Lock } from '../../viewcomponents/FontAwesome';
 import DingLing from '../../sounds/DingLing.mp3';
 
 export default (): JSX.Element | null => {
@@ -89,7 +90,11 @@ export default (): JSX.Element | null => {
         ? <PageNotFound />
         : <div className="container col-10">
             <div className="row">
-              <h1 className="col-12 col-lg-3">{queue.name}</h1>
+              {
+                queue.locked
+                  ? <h1 className="col-12 col-lg-3 text-danger">{queue.name} <Lock /></h1>
+                  : <h1 className="col-12 col-lg-3">{queue.name}</h1>
+              }
               <p className="col-12 col-lg-6">{queue.info}</p>
               <div className="col-12 col-lg-3">
                 <SearchViewComponent filter={filter} setFilter={setFilter} />

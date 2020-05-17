@@ -5,7 +5,7 @@ export const CheckMark = (props: any): JSX.Element => Markup(props, 'check');
 export const Cross = (props: any): JSX.Element => Markup(props, 'times');
 export const Envelope = (props: any): JSX.Element => Markup(props, 'envelope');
 export const Invisible = (props: any): JSX.Element => Markup(props, 'eye-slash');
-export const Locked = (props: any): JSX.Element => Markup(props, 'lock');
+export const Lock = (props: any): JSX.Element => Markup(props, 'lock');
 export const Plus = (props: any): JSX.Element => Markup(props, 'plus');
 export const QuestionMark = (props: any): JSX.Element => Markup(props, 'question');
 export const Star = (props: any): JSX.Element => Markup(props, 'star');

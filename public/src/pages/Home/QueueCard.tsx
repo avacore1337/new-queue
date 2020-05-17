@@ -1,7 +1,7 @@
 import React from 'react';
 import Queue from '../../models/Queue';
 import User from '../../models/User';
-import { Invisible, Locked, Users } from '../../viewcomponents/FontAwesome';
+import { Invisible, Lock, Users } from '../../viewcomponents/FontAwesome';
 
 export default (props: any): JSX.Element => {
 
@@ -22,7 +22,7 @@ export default (props: any): JSX.Element => {
       <div className="card-body">
         <div className="float-left">
           {queue.hiding ? <span style={{marginRight: '1em'}}><Invisible /></span> : null}
-          {queue.locked ? <span style={{marginRight: '1em'}}><Locked /></span> : null}
+          {queue.locked ? <span style={{marginRight: '1em'}}><Lock /></span> : null}
           {queue.name}
         </div>
         {
