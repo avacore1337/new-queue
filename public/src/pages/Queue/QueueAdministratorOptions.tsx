@@ -14,16 +14,18 @@ export default (props: any): JSX.Element | null => {
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
   const playSounds = useSelector<GlobalStore, boolean>(store => store.playSounds);
-  const [mayAdministerQueue, setMayAdministerQueue] = useState(user !== null && (user.isAssistantIn(queue.name) || user.isTeacherIn(queue.name)));
+  const [isAssistant, setIsAssistant] = useState(user !== null && (user.isAssistantIn(queue.name)));
+  const [isTeacher, setIsTeacher] = useState(user !== null && (user.isTeacherIn(queue.name)));
 
   useEffect(() => {
-    setMayAdministerQueue(user !== null && (user.isAssistantIn(queue.name) || user.isTeacherIn(queue.name)));
+    setIsAssistant(user !== null && user.isAssistantIn(queue.name));
+    setIsTeacher(user !== null && user.isTeacherIn(queue.name));
   }, [user, queue.name]);
 
   const dispatch = useDispatch();
 
   return (
-    !mayAdministerQueue
+    !isTeacher && !isAssistant
       ? null
       : <div className="dropdown col-12 col-lg-3 mt-lg-3">
           <button
@@ -38,8 +40,14 @@ export default (props: any): JSX.Element | null => {
           <div className="dropdown-menu row" aria-labelledby="dropdownMenuButton">
             <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(openBroadcastModal(queue.name))}>Broadcast <Megaphone /></div>
             <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(broadcastFaculty(queue.name, 'broadcastFaculty'))}>Broadcast faculty <Megaphone /></div>
-            <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(openSetMotdModal(queue.name))}>Set MOTD <Sign /></div>
-            <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(setQueueInfo(queue.name, 'setQueueInfo'))}>Set queue info <Information /></div>
+            {
+              isTeacher
+                ? <>
+                    <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(openSetMotdModal(queue.name))}>Set MOTD <Sign /></div>
+                    <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(setQueueInfo(queue.name, 'setQueueInfo'))}>Set queue info <Information /></div>
+                  </>
+                : null
+            }
             <div className="col red clickable col-10 offset-1 my-1" onClick={() => dispatch(purgeQueue(queue.name))}>Purge queue <Trashbin /></div>
             {
               queue.locked
