@@ -1,6 +1,5 @@
 import React from 'react';
 
-export const Bookmark = (props: any): JSX.Element => Markup(props, 'bookmark');
 export const CheckMark = (props: any): JSX.Element => Markup(props, 'check');
 export const Cross = (props: any): JSX.Element => Markup(props, 'times');
 export const Envelope = (props: any): JSX.Element => Markup(props, 'envelope');
@@ -9,7 +8,6 @@ export const Lock = (props: any): JSX.Element => Markup(props, 'lock');
 export const Plus = (props: any): JSX.Element => Markup(props, 'plus');
 export const QuestionMark = (props: any): JSX.Element => Markup(props, 'question');
 export const Star = (props: any): JSX.Element => Markup(props, 'star');
-export const Tag = (props: any): JSX.Element => Markup(props, 'tag');
 export const Users = (props: any): JSX.Element => Markup(props, 'users');
 
 const colorMapping: Record<string, string | null> = {

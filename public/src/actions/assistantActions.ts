@@ -11,9 +11,7 @@ export const ActionTypes = Object.freeze({
   SetQueueInfo: 'SET_QUEUE_INFO',
   PurgeQueue: 'PURGE_QUEUE',
   LockQueue: 'LOCK_QUEUE',
-  UnlockQueue: 'UNLOCK_QUEUE',
-  Completion: 'COMPLETION',
-  AddComment: 'ADD_COMMENT'
+  UnlockQueue: 'UNLOCK_QUEUE'
 });
 
 export const kickUser = (queueName: string, ugkthid: string): FluxStandardAction => ({
@@ -69,14 +67,4 @@ export const lockQueue = (queueName: string): FluxStandardAction => ({
 export const unlockQueue = (queueName: string): FluxStandardAction => ({
   type: ActionTypes.UnlockQueue,
   payload: { queueName }
-});
-
-export const markForCompletion = (queueName: string, ugkthid: string): FluxStandardAction => ({
-  type: ActionTypes.Completion,
-  payload: { queueName, ugkthid }
-});
-
-export const addComment = (queueName: string, ugkthid: string, comment: string): FluxStandardAction => ({
-  type: ActionTypes.AddComment,
-  payload: { queueName, ugkthid, comment }
 });

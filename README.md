@@ -89,13 +89,16 @@ Backend wants:
 * message history
 
 Backend needs:
+* Fix all unwrap problems
+* fix hide/reveal problems
+* double check broadcasting
 * Filtered lists of queues based on access
+* Fix remove queue
 * Implement server wide message
 
 Frontend:
 * Title is not always updated
 * Why do we subscribe and unsubscribe twice upon receiving help?
-* Delete Completion & Add comment
 * Location is reset if user is in queue and tries to empty their location
 * Can enter with empty location and comment
 * A real login

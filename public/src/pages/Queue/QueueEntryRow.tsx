@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../store';
-import { kickUser, toggleHelp, badLocation, markForCompletion, addComment } from '../../actions/assistantActions';
+import { kickUser, toggleHelp, badLocation } from '../../actions/assistantActions';
 import { openSendMessageModal } from '../../actions/modalActions';
 import TimeAgo from 'react-timeago';
 import QueueEntry from '../../models/QueueEntry';
 import User from '../../models/User';
-import { Bookmark, CheckMark, Cross, Envelope, QuestionMark, Star, Tag } from '../../viewcomponents/FontAwesome';
+import { CheckMark, Cross, Envelope, QuestionMark, Star } from '../../viewcomponents/FontAwesome';
 
 export default (props: any): JSX.Element => {
 
@@ -68,46 +68,32 @@ export default (props: any): JSX.Element => {
               <tr>
                 <td colSpan={6}>
                   <div className="row my-1">
-                    <div title="kick user" className="col-12 col-lg-2 px-3 my-1" onClick={() => dispatch(kickUser(queueName, queueEntry.ugkthid))}>
+                    <div title="kick user" className="col-12 col-lg-3 px-3 my-1" onClick={() => dispatch(kickUser(queueName, queueEntry.ugkthid))}>
                       <div
                         className="text-center red clickable"
                         style={{lineHeight: '2em'}}>
                         <Cross />
                       </div>
                     </div>
-                    <div title="send message" className="col-12 col-lg-2 px-3 my-1" onClick={() => dispatch(openSendMessageModal(queueName, queueEntry.ugkthid, queueEntry.realname))}>
+                    <div title="send message" className="col-12 col-lg-3 px-3 my-1" onClick={() => dispatch(openSendMessageModal(queueName, queueEntry.ugkthid, queueEntry.realname))}>
                       <div
                         className="text-center yellow clickable"
                         style={{lineHeight: '2em'}}>
                         <Envelope />
                       </div>
                     </div>
-                    <div title="help" className="col-12 col-lg-2 px-3 my-1" onClick={() => dispatch(toggleHelp(queueName, queueEntry.ugkthid, !queueEntry.help))}>
+                    <div title="help" className="col-12 col-lg-3 px-3 my-1" onClick={() => dispatch(toggleHelp(queueName, queueEntry.ugkthid, !queueEntry.help))}>
                       <div
                         className="text-center blue clickable"
                         style={{lineHeight: '2em'}}>
                         <CheckMark />
                       </div>
                     </div>
-                    <div title="bad location" className="col-12 col-lg-2 px-3 my-1" onClick={() => dispatch(badLocation(queueName, queueEntry.ugkthid))}>
+                    <div title="bad location" className="col-12 col-lg-3 px-3 my-1" onClick={() => dispatch(badLocation(queueName, queueEntry.ugkthid))}>
                       <div
                         className="text-center yellow clickable"
                         style={{lineHeight: '2em'}}>
                         <QuestionMark />
-                      </div>
-                    </div>
-                    <div title="completion" className="col-12 col-lg-2 px-3 my-1" onClick={() => dispatch(markForCompletion(queueName, queueEntry.ugkthid))}>
-                      <div
-                        className="text-center yellow clickable"
-                        style={{lineHeight: '2em'}}>
-                        <Bookmark />
-                      </div>
-                    </div>
-                    <div title="add comment" className="col-12 col-lg-2 px-3 my-1" onClick={() => dispatch(addComment(queueName, queueEntry.ugkthid, 'My new comment'))}>
-                      <div
-                        className="text-center yellow clickable"
-                        style={{lineHeight: '2em'}}>
-                        <Tag />
                       </div>
                     </div>
                   </div>

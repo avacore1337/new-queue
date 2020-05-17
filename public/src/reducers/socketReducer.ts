@@ -195,21 +195,6 @@ export default (_ = socket, action: FluxStandardAction) => {
       break;
     }
 
-    case AssistantActionTypes.Completion: {
-      socket.send(new RequestMessage(`completion/${action.payload.queueName}`, {
-        ugkthid: action.payload.ugkthid
-      }));
-      break;
-    }
-
-    case AssistantActionTypes.AddComment: {
-      socket.send(new RequestMessage(`addComment/${action.payload.queueName}`, {
-        ugkthid: action.payload.ugkthid,
-        comment: action.payload.comment
-      }));
-      break;
-    }
-
     case AssistantActionTypes.Broadcast: {
       socket.send(new RequestMessage(`broadcast/${action.payload.queueName}`, {
         message: action.payload.message
