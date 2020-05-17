@@ -10,6 +10,10 @@ export default (state = initialState, action: FluxStandardAction) => {
       return action.payload.title;
     }
 
+    case TitleTypes.ResetTitle: {
+      return initialState;
+    }
+
   }
 
   return state;

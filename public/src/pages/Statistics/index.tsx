@@ -5,6 +5,7 @@ import moment from 'moment'
 import DateTimePicker from 'react-datetime';
 import { GlobalStore } from '../../store';
 import { loadQueues } from '../../actions/queueActions';
+import { resetTitle } from '../../actions/titleActions';
 import PageNotFound from '../NoMatch';
 import ErrorMessage from '../../viewcomponents/ErrorMessage';
 import LineChart from '../../viewcomponents/LineChart';
@@ -30,8 +31,9 @@ export default (): JSX.Element => {
     if (!dispatch) {
       return;
     }
-    
-    dispatch(loadQueues())
+
+    dispatch(loadQueues());
+    dispatch(resetTitle());
   }, [dispatch]);
 
   function updateFrom(value: moment.Moment | string): void {

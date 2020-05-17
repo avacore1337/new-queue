@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux'
+import { resetTitle } from '../../actions/titleActions';
 import Coffee from '../../img/404/Coffee.png';
 import DarthVader from '../../img/404/DarthVader.png';
 import Inside from '../../img/404/Inside.png';
@@ -16,6 +18,15 @@ export default (): JSX.Element => {
     maxHeight: '60vh',
     maxWidth: '60vw'
   };
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (!dispatch) {
+      return;
+    }
+
+    dispatch(resetTitle());
+  }, [dispatch]);
 
   return (
     <div className="container h-100">

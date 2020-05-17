@@ -6,6 +6,7 @@ import * as Listeners from '../../actions/listenerActions';
 import { listenTo, stopListeningTo } from '../../actions/socketActions';
 import { loadQueues } from '../../actions/queueActions';
 import { loadAdministrators } from '../../actions/administratorActions';
+import { resetTitle } from '../../actions/titleActions';
 import User from '../../models/User';
 import PageNotFound from '../NoMatch';
 import AdministrationInformationViewComponent from './Administrators/AdministrationInformation';
@@ -36,6 +37,8 @@ export default (): JSX.Element => {
 
       dispatch(loadQueues());
       dispatch(loadAdministrators(user?.token));
+
+      dispatch(resetTitle());
     }
 
     return (() => {

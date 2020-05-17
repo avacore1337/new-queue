@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux'
+import { resetTitle } from '../../actions/titleActions';
 import Contributor from '../../models/Contributor';
 import Contributors from '../../data/contributors.json';
 
 export default (): JSX.Element => {
 
   const contributors: Contributor[] = Contributors.Contributors.map(contributor => new Contributor(contributor));
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (!dispatch) {
+      return;
+    }
+
+    dispatch(resetTitle());
+  }, [dispatch]);
 
   return (
     <div className="container">

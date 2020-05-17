@@ -1,7 +1,8 @@
-import React from 'react';
-import { useSelector } from 'react-redux'
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux'
 import { HashLink as Link } from 'react-router-hash-link';
 import { GlobalStore } from '../../store';
+import { resetTitle } from '../../actions/titleActions';
 import User from '../../models/User';
 import EditQueue from '../../img/edit-queue.png';
 import RemoveTeacher from '../../img/remove-teacher.png';
@@ -13,6 +14,15 @@ import { Lock, Star } from '../../viewcomponents/FontAwesome';
 export default (): JSX.Element => {
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (!dispatch) {
+      return;
+    }
+
+    dispatch(resetTitle());
+  }, [dispatch]);
 
   return (
     <div className="container">

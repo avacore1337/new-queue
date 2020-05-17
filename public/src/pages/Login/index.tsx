@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Redirect } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../store';
 import { login } from '../../actions/userActions';
+import { resetTitle } from '../../actions/titleActions';
 import User from "../../models/User";
 
 export default (): JSX.Element => {
@@ -10,6 +11,13 @@ export default (): JSX.Element => {
   const user = useSelector<GlobalStore, User | null>(store => store.user);
 
   const dispatch = useDispatch();
+  useEffect(() => {
+    if (!dispatch) {
+      return;
+    }
+
+    dispatch(resetTitle());
+  }, [dispatch]);
 
   function runCallback(event: any): void {
     const input = document.querySelector('#loginField') as HTMLInputElement;
