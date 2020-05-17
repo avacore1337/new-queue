@@ -95,7 +95,6 @@ Backend needs:
 
 
 Frontend:
-* Don't show "Join" button if not logged in
 * Bug - Why do we subscribe and unsubscribe twice upon receiving help?
 * Bug - Location is reset if user is in queue and tries to empty their location
 * Bug - Can enter with empty location and comment

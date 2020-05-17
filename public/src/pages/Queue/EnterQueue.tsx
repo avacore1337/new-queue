@@ -6,7 +6,7 @@ import { joinQueue, leaveQueue, recievingHelp, updatePersonalEntry } from '../..
 import User from '../../models/User';
 import QueueEntry from '../../models/QueueEntry';
 
-export default (props: any): JSX.Element => {
+export default (props: any): JSX.Element | null => {
 
   const queueName: string = props.queueName;
 
@@ -66,106 +66,108 @@ export default (props: any): JSX.Element => {
   }
 
   return (
-    <>
-      <form onSubmit={() => dispatch(joinQueue(queueName, comment, location, help))}>
+    user
+      ? <>
+          <form onSubmit={() => dispatch(joinQueue(queueName, comment, location, help))}>
 
-        <label htmlFor="location">Location:</label>
-        <br />
-        <div style={{backgroundColor: location === '' ? 'red' : 'inherit'}}>
-          <input
-            name="location"
-            type="text"
-            value={location}
-            onChange={user?.location ? undefined : changeLocation}
-            disabled={user?.location ? true : false}
-            style={{width: '100%', borderRadius: 0}} />
-          {
-            location === ''
-            ? <>
-                <br />
-                <em>Required</em>
-              </>
-            : null
-          }
-        </div>
+            <label htmlFor="location">Location:</label>
+            <br />
+            <div style={{backgroundColor: location === '' ? 'red' : 'inherit'}}>
+              <input
+                name="location"
+                type="text"
+                value={location}
+                onChange={user?.location ? undefined : changeLocation}
+                disabled={user?.location ? true : false}
+                style={{width: '100%', borderRadius: 0}} />
+              {
+                location === ''
+                ? <>
+                    <br />
+                    <em>Required</em>
+                  </>
+                : null
+              }
+            </div>
 
-        <br />
+            <br />
 
-        <label htmlFor="comment">Comment:</label>
-        <br />
-        <div style={{backgroundColor: comment === '' ? 'red' : 'inherit'}}>
-          <input
-            name="comment"
-            type="text"
-            value={comment}
-            onChange={changeComment}
-            onKeyUp={enterQueue}
-            style={{width: '100%', borderRadius: 0}} />
-          {
-            comment === ''
-            ? <>
-                <br />
-                <em>Required</em>
-              </>
-            : null
-          }
-        </div>
+            <label htmlFor="comment">Comment:</label>
+            <br />
+            <div style={{backgroundColor: comment === '' ? 'red' : 'inherit'}}>
+              <input
+                name="comment"
+                type="text"
+                value={comment}
+                onChange={changeComment}
+                onKeyUp={enterQueue}
+                style={{width: '100%', borderRadius: 0}} />
+              {
+                comment === ''
+                ? <>
+                    <br />
+                    <em>Required</em>
+                  </>
+                : null
+              }
+            </div>
 
-        <br />
+            <br />
 
-        {
-          personalQueueEntry !== null
-            ? null
-            : <>
-                <div className="row text-center">
-                  <div className="col-6">
-                    <label htmlFor="help" style={{marginRight: '.5em' }}>Help</label>
-                    <input
-                      type="radio"
-                      name="react-tips"
-                      value="help"
-                      checked={help}
-                      onChange={changeHelp} />
-                  </div>
-                  <div className="col-6">
-                    <label htmlFor="presentation" style={{marginRight: '.5em' }}>Presentation</label>
-                    <input
-                      type="radio"
-                      name="react-tips"
-                      value="presentation"
-                      checked={!help}
-                      onChange={changeHelp} />
+            {
+              personalQueueEntry !== null
+                ? null
+                : <>
+                    <div className="row text-center">
+                      <div className="col-6">
+                        <label htmlFor="help" style={{marginRight: '.5em' }}>Help</label>
+                        <input
+                          type="radio"
+                          name="react-tips"
+                          value="help"
+                          checked={help}
+                          onChange={changeHelp} />
+                      </div>
+                      <div className="col-6">
+                        <label htmlFor="presentation" style={{marginRight: '.5em' }}>Presentation</label>
+                        <input
+                          type="radio"
+                          name="react-tips"
+                          value="presentation"
+                          checked={!help}
+                          onChange={changeHelp} />
+                        </div>
                     </div>
-                </div>
 
-                <br />
-              </>
-        }
+                    <br />
+                  </>
+            }
 
-        {
-          personalQueueEntry !== null
-            ? <>
-                <div
-                  className="col-12 text-center yellow clickable"
-                  style={{lineHeight: '3em'}}
-                  onClick={() => dispatch(recievingHelp(queueName, true))}>
-                  <strong>Recieving help</strong>
-                </div>
-                <div
-                  className="col-12 text-center red clickable"
-                  style={{lineHeight: '3em'}}
-                  onClick={() => dispatch(leaveQueue(queueName))}>
-                  <strong>Leave queue</strong>
-                </div>
-              </>
-            : <div
-                className="col-12 text-center blue clickable"
-                style={{lineHeight: '3em'}}
-                onClick={enterQueue}>
-                <strong>Join queue</strong>
-              </div>
-        }
-      </form>
-    </>
+            {
+              personalQueueEntry !== null
+                ? <>
+                    <div
+                      className="col-12 text-center yellow clickable"
+                      style={{lineHeight: '3em'}}
+                      onClick={() => dispatch(recievingHelp(queueName, true))}>
+                      <strong>Recieving help</strong>
+                    </div>
+                    <div
+                      className="col-12 text-center red clickable"
+                      style={{lineHeight: '3em'}}
+                      onClick={() => dispatch(leaveQueue(queueName))}>
+                      <strong>Leave queue</strong>
+                    </div>
+                  </>
+                : <div
+                    className="col-12 text-center blue clickable"
+                    style={{lineHeight: '3em'}}
+                    onClick={enterQueue}>
+                    <strong>Join queue</strong>
+                  </div>
+            }
+          </form>
+        </>
+      : null
   );
 };

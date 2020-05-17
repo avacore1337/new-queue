@@ -105,7 +105,7 @@ export default (): JSX.Element | null => {
                 <EnterQueueViewComponent queueName={queue.name} />
                 <QueueAdministratorOptionsViewComponent queue={queue} />
               </div>
-              <div className="col-12 col-lg-9">
+              <div className={`col-12${(user ? ' col-lg-9' : '')}`}>
                 <QueueEntryTableViewComponent
                   filter={filter}
                   queueEntries={queue.queueEntries}
