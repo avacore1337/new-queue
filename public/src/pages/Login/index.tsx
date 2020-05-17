@@ -15,7 +15,8 @@ export default (): JSX.Element => {
     const input = document.querySelector('#loginField') as HTMLInputElement;
     const username: string = input?.value || '';
     if (username !== '') {
-      if (event === undefined || event.key === 'Enter') {
+      console.log(event);
+      if (event.key === 'Enter' || event.button === 0) {
         dispatch(login(username));
       }
     }

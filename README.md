@@ -97,7 +97,6 @@ Backend needs:
 * double check broadcasting
 
 Frontend:
-* Touch functionality on login page
 * Title is not always updated
 * Lock queue => Unlock queue
 * Delete Completion & Add comment
