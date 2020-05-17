@@ -32,8 +32,8 @@ export default (state: User | null = initialState, action: FluxStandardAction) =
 
       let userData: any = null;
       if (cookieData) {
-        userData = JSON.parse(decodeURIComponent(cookieData.substr(prefix.length)));
-        localStorage.setItem('User', JSON.stringify(userData));
+        userData = decodeURIComponent(cookieData.substr(prefix.length));
+        localStorage.setItem('User', userData);
         document.cookie = document.cookie.split(';').map(cookie => cookie.trim()).filter(cookie => !cookie.startsWith(prefix)).join('; ');
       }
       else {
