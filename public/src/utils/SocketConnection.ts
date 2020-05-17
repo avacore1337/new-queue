@@ -51,10 +51,12 @@ export default class SocketConnection {
     };
 
     this._socket.onmessage = (event: MessageEvent): void => {
-      console.log('Recieved a message from the server: ' + JSON.stringify(event.data));
-
       const data = JSON.parse(event.data);
       const path: string = data.path;
+
+      console.log(`Recieved a message from the server: <${data.path}> => ${JSON.stringify(event.data)}`);
+
+      console.log(`Active listeners:\n${Object.keys(this._callbacks).join('\n')}`);
 
       let callback = this._callbacks[path];
       if (callback !== undefined) {
@@ -101,6 +103,7 @@ export default class SocketConnection {
 
   public listen(path: string, callback: (data: any) => void): void {
     this._callbacks[path] = callback;
+    console.log('Registered ' + path);
   }
 
   public stopListening(path: string): void {

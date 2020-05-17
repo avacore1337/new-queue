@@ -7,6 +7,8 @@ import store from './store';
 import App from './App';
 import Helmet from './viewcomponents/Helmet';
 import * as serviceWorker from './serviceWorker';
+import * as Listeners from './actions/listenerActions';
+import { listenTo } from './actions/socketActions';
 import { loadUser } from './actions/userActions';
 import { loadQueues } from './actions/queueActions';
 
@@ -20,6 +22,8 @@ function LifeCycle() {
 
     dispatch(loadUser());
     dispatch(loadQueues());
+    dispatch(listenTo('updateQueue/:queueName', Listeners.onQueueUpdated));
+
   }, [dispatch]);
 
   return (

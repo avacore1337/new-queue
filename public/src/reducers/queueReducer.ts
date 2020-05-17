@@ -82,18 +82,30 @@ export default (state = initialState, action: FluxStandardAction) => {
       return queues;
     }
 
+    case Listeners.OnQueueUpdated: {
+      const queues = [...state];
+      const index = queues.findIndex(q => q.name === action.payload.data.queueName);
+      queues[index] = new Queue({
+        ...action.payload.data,
+        name: action.payload.data.queueName,
+        queueEntries: queues[index].queueEntries
+      });
+
+      return queues;
+    }
+
     case Listeners.OnQueueEntryAdded: {
       const queues = state.map(q => q.clone());
-      const queue = queues.filter(q => q.name === action.payload.queueName)[0];
+      const queue = queues.filter(q => q.name === action.payload.data.queueName)[0];
 
-      queue.addQueueEntry(new QueueEntry(action.payload));
+      queue.addQueueEntry(new QueueEntry(action.payload.data));
 
       return queues;
     }
 
     case Listeners.OnQueueEntryRemoved: {
       const queues = state.map(q => q.clone());
-      queues.filter(q => q.name === action.payload.queueName)[0].removeQueueEntry(new QueueEntry(action.payload));
+      queues.filter(q => q.name === action.payload.data.queueName)[0].removeQueueEntry(new QueueEntry(action.payload.data));
       return queues;
     }
 

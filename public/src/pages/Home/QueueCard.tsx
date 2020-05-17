@@ -17,9 +17,6 @@ export default (props: any): JSX.Element => {
     styles.color = 'red';
   }
 
-  console.log(user?.ugkthid);
-  console.log(queue?.queueEntries);
-
   return (
     <div className="card row clickable" style={styles}>
       <div className="card-body">

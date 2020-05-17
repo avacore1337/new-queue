@@ -50,7 +50,7 @@ export const joinQueue = (queueName: string, comment: string, location: string, 
 
 export const leaveQueue = (queueName: string): FluxStandardAction => ({
   type: ActionTypes.LeaveQueue,
-  payload: queueName
+  payload: { queueName }
 });
 
 export const recievingHelp = (queueName: string, status: boolean): FluxStandardAction => ({
@@ -65,10 +65,10 @@ export const updatePersonalEntry = (queueName: string, comment: string, location
 
 export const subscribe = (queueName: string): FluxStandardAction => ({
   type: ActionTypes.SubscribeToQueue,
-  payload: queueName
+  payload: { queueName }
 });
 
 export const unsubscribe = (queueName: string): FluxStandardAction => ({
   type: ActionTypes.UnsubscribeToQueue,
-  payload: queueName
+  payload: { queueName }
 });

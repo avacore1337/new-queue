@@ -12,5 +12,5 @@ export const listenTo = (path: string, callback: (...args: any[]) => FluxStandar
 
 export const stopListeningTo = (path: string): FluxStandardAction => ({
   type: ActionTypes.StopListening,
-  payload: path
+  payload: { path }
 });

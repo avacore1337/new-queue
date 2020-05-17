@@ -19,12 +19,12 @@ export default (_ = socket, action: FluxStandardAction) => {
   switch (action.type) {
 
     case AdministratorActionTypes.AddAdministrator: {
-      socket.send(new RequestMessage('addSuperAdmin', { username: action.payload }));
+      socket.send(new RequestMessage('addSuperAdmin', { username: action.payload.username }));
       break;
     }
 
     case AdministratorActionTypes.RemoveAdministrator: {
-      socket.send(new RequestMessage('removeSuperAdmin', { username: action.payload }));
+      socket.send(new RequestMessage('removeSuperAdmin', { username: action.payload.username }));
       break;
     }
 
@@ -49,24 +49,24 @@ export default (_ = socket, action: FluxStandardAction) => {
     }
 
     case AdministratorActionTypes.AddQueue: {
-      socket.send(new RequestMessage(`addQueue/${action.payload}`));
+      socket.send(new RequestMessage(`addQueue/${action.payload.queueName}`));
       break;
     }
 
     case AdministratorActionTypes.RemoveQueue: {
-      socket.send(new RequestMessage(`removeQueue/${action.payload}`));
+      socket.send(new RequestMessage(`removeQueue/${action.payload.queueName}`));
       break;
     }
 
     case AdministratorActionTypes.HideQueue: {
-      socket.send(new RequestMessage(`setQueueHideStatus/${action.payload}`, {
+      socket.send(new RequestMessage(`setQueueHideStatus/${action.payload.queueName}`, {
         status: true
       }));
       break;
     }
 
     case AdministratorActionTypes.RevealQueue: {
-      socket.send(new RequestMessage(`setQueueHideStatus/${action.payload}`, {
+      socket.send(new RequestMessage(`setQueueHideStatus/${action.payload.queueName}`, {
         status: false
       }));
       break;
@@ -74,7 +74,7 @@ export default (_ = socket, action: FluxStandardAction) => {
 
     case AdministratorActionTypes.SetServerMessage: {
       socket.send(new RequestMessage(`setServerMessage`, {
-        message: action.payload
+        message: action.payload.message
       }));
       break;
     }
@@ -89,7 +89,7 @@ export default (_ = socket, action: FluxStandardAction) => {
     }
 
     case QueueActionTypes.LeaveQueue: {
-      socket.send(new RequestMessage(`leaveQueue/${action.payload}`));
+      socket.send(new RequestMessage(`leaveQueue/${action.payload.queueName}`));
       break;
     }
 
@@ -111,7 +111,7 @@ export default (_ = socket, action: FluxStandardAction) => {
 
     case QueueActionTypes.SubscribeToQueue: {
       socket.enterQueue(
-        action.payload,
+        action.payload.queueName,
         onQueueEntryAdded,
         onQueueEntryRemoved,
         onQueueEntryUpdated);
@@ -119,7 +119,7 @@ export default (_ = socket, action: FluxStandardAction) => {
     }
 
     case QueueActionTypes.UnsubscribeToQueue: {
-      socket.leaveQueue(action.payload);
+      socket.leaveQueue(action.payload.queueName);
       break;
     }
 
@@ -139,7 +139,7 @@ export default (_ = socket, action: FluxStandardAction) => {
     }
 
     case SocketActionTypes.StopListening: {
-      socket.stopListening(action.payload);
+      socket.stopListening(action.payload.path);
       break;
     }
 
@@ -239,13 +239,20 @@ export default (_ = socket, action: FluxStandardAction) => {
     }
 
     case AssistantActionTypes.PurgeQueue: {
-      socket.send(new RequestMessage(`purgeQueue/${action.payload}`));
+      socket.send(new RequestMessage(`purgeQueue/${action.payload.queueName}`));
       break;
     }
 
     case AssistantActionTypes.LockQueue: {
       socket.send(new RequestMessage(`setQueueLockStatus/${action.payload.queueName}`, {
-        status: action.payload.locked
+        status: true
+      }));
+      break;
+    }
+
+    case AssistantActionTypes.UnlockQueue: {
+      socket.send(new RequestMessage(`setQueueLockStatus/${action.payload.queueName}`, {
+        status: false
       }));
       break;
     }

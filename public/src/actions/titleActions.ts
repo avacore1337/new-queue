@@ -6,5 +6,5 @@ export const ActionTypes = Object.freeze({
 
 export const setTitle = (title: string): FluxStandardAction => ({
   type: ActionTypes.SetTitle,
-  payload: title
+  payload: { title }
 });

@@ -29,12 +29,12 @@ export const loadAdministrators = (token: string): AsyncAction => ({
 
 export const addAdministrator = (username: string): FluxStandardAction => ({
   type: ActionTypes.AddAdministrator,
-  payload: username
+  payload: { username }
 });
 
 export const removeAdministrator = (username: string): FluxStandardAction => ({
   type: ActionTypes.RemoveAdministrator,
-  payload: username
+  payload: { username }
 });
 
 export const addTeacher = (queueName: string, username: string): FluxStandardAction => ({
@@ -59,22 +59,22 @@ export const removeAssistant = (queueName: string, username: string): FluxStanda
 
 export const addQueue = (queueName: string): FluxStandardAction => ({
   type: ActionTypes.AddQueue,
-  payload: queueName
+  payload: { queueName }
 });
 
 export const removeQueue = (queueName: string): FluxStandardAction => ({
   type: ActionTypes.RemoveQueue,
-  payload: queueName
+  payload: { queueName }
 });
 
 export const hideQueue = (queueName: string): FluxStandardAction => ({
   type: ActionTypes.HideQueue,
-  payload: queueName
+  payload: { queueName }
 });
 
 export const revealQueue = (queueName: string): FluxStandardAction => ({
   type: ActionTypes.RevealQueue,
-  payload: queueName
+  payload: { queueName }
 });
 
 export const loadAdditionalQueueData = (queueName: string, token: string): AsyncAction => {
@@ -95,5 +95,5 @@ export const loadAdditionalQueueData = (queueName: string, token: string): Async
 
 export const setServerMessage = (message: string): FluxStandardAction => ({
   type: ActionTypes.SetServerMessage,
-  payload: message
+  payload: { message }
 });

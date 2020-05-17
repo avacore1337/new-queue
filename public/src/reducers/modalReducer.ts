@@ -19,7 +19,7 @@ export default (state = initialState, action: FluxStandardAction) => {
   switch (action.type) {
 
     case Listeners.OnMessageRecieved: {
-      return { ...state, modalList: [...state.modalList, new Modal(ShowMessageModal, action.payload)] }
+      return { ...state, modalList: [...state.modalList, new Modal(ShowMessageModal, action.payload.data)] }
     }
 
     case ModalActionTypes.CloseModal: {

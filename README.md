@@ -98,20 +98,19 @@ Backend needs:
 
 Frontend:
 * Title is not always updated
-* Lock queue => Unlock queue
-* Delete Completion & Add comment
 * Why do we subscribe and unsubscribe twice upon receiving help?
+* Show lock status in queue
+* Delete Completion & Add comment
 * Location is reset if user is in queue and tries to empty their location
 * Can enter with empty location and comment
-* An real login
+* A real login
 * Broadcast faculty
 * Set MOTD
 * Set queue info
-* Close title bar on clicked item
+* Close title bar on clicked item in mobile view
 * Extract more view-components to make the HTML easier to read
 * Rewrite socket handling to follow event driven design
 * Styling
-* Show lock status in queue
 * Symbols on assistant buttons
 * Server message?
 * Fix About page (half done)

@@ -9,6 +9,7 @@ export const Listeners = Object.freeze({
   OnAssistantRemoved: 'ON_ASSISTANT_REMOVED',
   OnQueueAdded: 'ON_QUEUE_ADDED',
   OnQueueRemoved: 'ON_QUEUE_REMOVED',
+  OnQueueUpdated: 'ON_QUEUE_UPDATED',
   OnQueueEntryAdded: 'ON_QUEUE_ENTRY_ADDED',
   OnQueueEntryRemoved: 'ON_QUEUE_ENTRY_REMOVED',
   OnQueueEntryUpdated: 'ON_QUEUE_ENTRY_UPDATED',
@@ -17,60 +18,65 @@ export const Listeners = Object.freeze({
 
 export const onAdministratorAdded = (administrator: any): FluxStandardAction => ({
   type: Listeners.OnAdministratorAdded,
-  payload: administrator
+  payload: { administrator }
 });
 
 export const onAdministratorRemoved = (username: string): FluxStandardAction => ({
   type: Listeners.OnAdministratorRemoved,
-  payload: username
+  payload: { username }
 });
 
 export const onTeacherAdded = (teacher: any): FluxStandardAction => ({
   type: Listeners.OnTeacherAdded,
-  payload: teacher
+  payload: { teacher }
 });
 
 export const onTeacherRemoved = (username: string): FluxStandardAction => ({
   type: Listeners.OnTeacherRemoved,
-  payload: username
+  payload: { username }
 });
 
 export const onAssistantAdded = (assistant: any): FluxStandardAction => ({
   type: Listeners.OnAssistantAdded,
-  payload: assistant
+  payload: { assistant }
 });
 
 export const onAssistantRemoved = (username: string): FluxStandardAction => ({
   type: Listeners.OnAssistantRemoved,
-  payload: username
+  payload: { username }
 });
 
-export const onQueueAdded = (queue: any): FluxStandardAction => ({
+export const onQueueAdded = (data: any): FluxStandardAction => ({
   type: Listeners.OnQueueAdded,
-  payload: queue
+  payload: { data }
 });
 
 export const onQueueRemoved = (queueName: string): FluxStandardAction => ({
   type: Listeners.OnQueueRemoved,
-  payload: queueName
+  payload: { queueName }
+});
+
+export const onQueueUpdated = (data: any): FluxStandardAction => ({
+  type: Listeners.OnQueueUpdated,
+  payload: { data }
 });
 
 export const onQueueEntryAdded = (data: any): FluxStandardAction => ({
   type: Listeners.OnQueueEntryAdded,
-  payload: data
+  payload: { data }
 });
 
 export const onQueueEntryRemoved = (data: any): FluxStandardAction => ({
   type: Listeners.OnQueueEntryRemoved,
-  payload: data
+  payload: { data }
 });
 
 export const onQueueEntryUpdated = (data: any): FluxStandardAction => ({
   type: Listeners.OnQueueEntryUpdated,
-  payload: data
+  payload: { data }
 });
 
 export const onMessageRecieved = (data: any): FluxStandardAction => ({
   type: Listeners.OnMessageRecieved,
-  payload: data
+  payload: { data }
 });

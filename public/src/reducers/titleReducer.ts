@@ -7,7 +7,7 @@ export default (state = initialState, action: FluxStandardAction) => {
   switch (action.type) {
 
     case TitleTypes.SetTitle: {
-      return action.payload;
+      return action.payload.title;
     }
 
   }
