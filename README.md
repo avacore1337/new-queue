@@ -89,12 +89,10 @@ Backend wants:
 * message history
 
 Backend needs:
-* Fix all unwrap problems
-* fix hide/reveal problems
-* double check broadcasting
+* login
 * Filtered lists of queues based on access
-* Fix remove queue
-* Implement server wide message
+* always update user data on login
+
 
 Frontend:
 * Bug - Why do we subscribe and unsubscribe twice upon receiving help?

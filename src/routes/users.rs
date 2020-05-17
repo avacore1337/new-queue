@@ -3,6 +3,7 @@ use crate::db::{self};
 use crate::errors::{Errors, FieldValidator};
 use crate::util::{handle_login, Ticket};
 
+use rocket::http::{Cookie, Cookies};
 use rocket::request::Form;
 use rocket::response::Redirect;
 use rocket::State;
@@ -43,8 +44,21 @@ pub fn kth_login() -> Redirect {
 }
 
 #[get("/auth?<params..>")]
-pub fn kth_auth(conn: db::DbConn, params: Form<Ticket>) -> Redirect {
-    let _auth = handle_login(&conn, params);
+pub fn kth_auth(
+    mut cookies: Cookies,
+    conn: db::DbConn,
+    state: State<AppState>,
+    params: Form<Ticket>,
+) -> Redirect {
+    match handle_login(&conn, params) {
+        Some(user) => {
+            cookies.add(Cookie::new(
+                "userdata",
+                json!(user.to_user_auth(&conn, &state.secret)).to_string(),
+            ));
+        }
+        None => println!("Login failed for some reason..."),
+    }
     // TODO redirect to login target (where they came from)
     Redirect::to("/")
 }
