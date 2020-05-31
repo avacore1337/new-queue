@@ -98,7 +98,7 @@ export default (state = initialState, action: FluxStandardAction) => {
       const queues = state.map(q => q.clone());
       const queue = queues.filter(q => q.name === action.payload.queueName)[0];
 
-      queue.addQueueEntry(new QueueEntry(action.payload.data));
+      queue.addQueueEntry(new QueueEntry(action.payload));
 
       return queues;
     }
