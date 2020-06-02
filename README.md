@@ -88,8 +88,6 @@ Backend needs:
 
 Frontend needs:
 * Feature - Admin queue should use the filtered lists of queues
-* Bug - Why do we subscribe and unsubscribe twice upon receiving help?
-* Feature - Rewrite socket handling to follow event driven design
 * Feature - Styling
 * Bug - Event listeners seem to be disappearing when we lock/unlock a queue
 
