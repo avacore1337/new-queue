@@ -85,11 +85,11 @@ Install debuggin extensions for React and Redux
 
 
 Backend needs:
+* setHelpstatus is wrong, a user can't set it to false to prevent abuse.
 
 Frontend needs:
 * Feature - Admin queue should use the filtered lists of queues
 * Feature - Styling
-* Bug - Event listeners seem to be disappearing when we lock/unlock a queue
 
 Backend wants:
 * routing framework

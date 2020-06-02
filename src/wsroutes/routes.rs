@@ -271,6 +271,9 @@ pub fn join_queue_route(
 ) -> Result<()> {
     println!("Joining queue: {}", queue_name);
     let queue = db::queues::find_by_name(conn, queue_name)?;
+    if queue.locked {
+        return Ok(());
+    }
     let queue_entry = db::queue_entries::create(
         &conn,
         auth.id,
