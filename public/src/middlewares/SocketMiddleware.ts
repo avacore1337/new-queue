@@ -7,10 +7,7 @@ import { ActionTypes as LobbyActions } from '../actions/lobbyActions';
 import { ActionTypes as SocketActions } from '../actions/socketActions';
 import { ActionTypes as UserActions } from '../actions/userActions';
 import { ActionTypes as AssistantActions } from '../actions/assistantActions';
-import {
-  onQueueEntryAdded, onQueueEntryRemoved, onQueueEntryUpdated,
-  onMessageRecieved
-} from '../actions/listenerActions';
+import * as Listeners from '../actions/listenerActions';
 
 const middleware = () => {
 
@@ -52,6 +49,9 @@ const middleware = () => {
     while (pendingRequests.length > 0) {
       const request = pendingRequests[0];
       if (request.path.startsWith('subscribe')) {
+        pendingRequests.shift();
+        continue;
+      } else if (request.path.startsWith('unsubscribe')) {
         pendingRequests.shift();
         continue;
       }
@@ -101,6 +101,7 @@ const middleware = () => {
     switch (action.type) {
       case GlobalActions.Initialize: {
         connect(store);
+        callbacks['updateQueue/:queueName'] = Listeners.onQueueUpdated;
         break;
       }
 
@@ -196,9 +197,9 @@ const middleware = () => {
       }
 
       case QueueActions.SubscribeToQueue: {
-        callbacks['joinQueue/:queueName'] = onQueueEntryAdded;
-        callbacks['leaveQueue/:queueName'] = onQueueEntryRemoved;
-        callbacks['updateQueueEntry/:queueName'] = onQueueEntryUpdated;
+        callbacks['joinQueue/:queueName'] = Listeners.onQueueEntryAdded;
+        callbacks['leaveQueue/:queueName'] = Listeners.onQueueEntryRemoved;
+        callbacks['updateQueueEntry/:queueName'] = Listeners.onQueueEntryUpdated;
 
         const message = new RequestMessage(`subscribeQueue/${action.payload.queueName}`);
         lastJoinRequest = message;
@@ -256,8 +257,8 @@ const middleware = () => {
 
       case UserActions.Login.Fulfilled: {
         token = action.payload.data.token;
-        callbacks['message'] = onMessageRecieved;
-        callbacks['message/:queueName'] = onMessageRecieved;
+        callbacks['message'] = Listeners.onMessageRecieved;
+        callbacks['message/:queueName'] = Listeners.onMessageRecieved;
         break;
       }
 
@@ -272,8 +273,8 @@ const middleware = () => {
       case UserActions.LoadUser: {
         const userData = localStorage.getItem('User');
         token = userData ? JSON.parse(userData).token : null;
-        callbacks['message'] = onMessageRecieved;
-        callbacks['message/:queueName'] = onMessageRecieved;
+        callbacks['message'] = Listeners.onMessageRecieved;
+        callbacks['message/:queueName'] = Listeners.onMessageRecieved;
         break;
       }
 

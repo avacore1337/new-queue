@@ -35,7 +35,6 @@ export default (): JSX.Element => {
       dispatch(listenTo('addQueue/:queueName', Listeners.onQueueAdded));
       dispatch(listenTo('removeQueue/:queueName', Listeners.onQueueRemoved));
 
-      dispatch(loadQueues());
       dispatch(loadAdministrators(user?.token));
 
       dispatch(resetTitle());
