@@ -190,6 +190,7 @@ impl RoomHandler {
             )
         }
     }
+
     pub fn broadcast_room(&self, room: &str, path: &str, content: Json) {
         println!("broadcasting in room: {}", room);
         let internal_name = "room_".to_string() + room;

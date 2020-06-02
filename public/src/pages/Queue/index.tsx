@@ -30,7 +30,28 @@ export default (): JSX.Element | null => {
 
   const dispatch = useDispatch();
 
-  function updateTitle() {
+
+  useEffect(() => {
+    if (queue !== null) {
+      if (queuesAreLoaded && !hasShownMotd && queue.motd) {
+        dispatch(openShowMotdModal(queue.motd));
+        setHasShownMotd(true);
+      }
+
+      return () => { };
+    }
+  }, [queuesAreLoaded, queue, dispatch]);
+
+  useEffect(() => {
+    if (queueName !== null && queueName !== undefined) {
+      dispatch(subscribe(queueName));
+      return () => {
+        dispatch(unsubscribe(queueName));
+      };
+    }
+  }, [queueName, queuesAreLoaded, dispatch]);
+
+  useEffect(() => {
     if (queue !== null && user !== null) {
       for (let i = 0; i < queue.queueEntries.length; i++) {
         if (queue.queueEntries[i].ugkthid === user.ugkthid) {
@@ -38,36 +59,9 @@ export default (): JSX.Element | null => {
           return;
         }
       }
+      dispatch(setTitle(`${queue.name} | Stay A While 2`));
     }
-  }
-  updateTitle();
-
-  useEffect(() => {
-    if (!dispatch) {
-      return;
-    }
-
-    if (queue !== null) {
-      dispatch(subscribe(queue.name));
-
-      if (queuesAreLoaded && !hasShownMotd && queue.motd) {
-        dispatch(openShowMotdModal(queue.motd));
-        setHasShownMotd(true);
-      }
-
-      return () => {
-        dispatch(unsubscribe(queue.name));
-      };
-    }
-  }, [queuesAreLoaded, queue]);
-
-  useEffect(() => {
-    if (!updateTitle) {
-      return;
-    }
-
-    updateTitle();
-  }, [queue, updateTitle]);
+  }, [queue, user, dispatch]);
 
   useEffect(() => {
     if (!queue) {
