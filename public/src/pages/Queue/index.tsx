@@ -43,7 +43,7 @@ export default (): JSX.Element | null => {
   }, [queuesAreLoaded, queue, dispatch]);
 
   useEffect(() => {
-    if (queueName !== null && queueName !== undefined) {
+    if (queueName !== null && queueName !== undefined && queuesAreLoaded) {
       dispatch(subscribe(queueName));
       return () => {
         dispatch(unsubscribe(queueName));
