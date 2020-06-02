@@ -96,6 +96,7 @@ Backend wants:
 * backend websockets leave/errors
 * message history
 * always update user data on login
+* can we please rename "help" to something else? Or make it an enum perhaps
 
 Frontend wants
 * Feature - Fix Help page (half done)
