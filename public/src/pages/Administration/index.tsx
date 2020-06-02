@@ -2,10 +2,8 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../store';
-import * as Listeners from '../../actions/listenerActions';
-import { listenTo, stopListeningTo } from '../../actions/socketActions';
-import { loadQueues } from '../../actions/queueActions';
 import { loadAdministrators } from '../../actions/administratorActions';
+import { enterAdminPage, leaveAdminPage } from '../../actions/pageActions';
 import { resetTitle } from '../../actions/titleActions';
 import User from '../../models/User';
 import PageNotFound from '../NoMatch';
@@ -26,29 +24,13 @@ export default (): JSX.Element => {
     }
 
     if (user && (user.isAdministrator || user.isTeacher)) {
-      dispatch(listenTo('addSuperAdmin', Listeners.onAdministratorAdded));
-      dispatch(listenTo('removeSuperAdmin', Listeners.onAdministratorRemoved));
-      dispatch(listenTo('addTeacher/:queueName', Listeners.onTeacherAdded));
-      dispatch(listenTo('removeTeacher/:queueName', Listeners.onTeacherRemoved));
-      dispatch(listenTo('addAssistant/:queueName', Listeners.onAssistantAdded));
-      dispatch(listenTo('removeAssistant/:queueName', Listeners.onAssistantRemoved));
-      dispatch(listenTo('addQueue/:queueName', Listeners.onQueueAdded));
-      dispatch(listenTo('removeQueue/:queueName', Listeners.onQueueRemoved));
-
+      dispatch(enterAdminPage());
       dispatch(loadAdministrators(user?.token));
-
       dispatch(resetTitle());
     }
 
     return (() => {
-      dispatch(stopListeningTo('addQueue/:queueName'));
-      dispatch(stopListeningTo('removeQueue/:queueName'));
-      dispatch(stopListeningTo('addSuperAdmin'));
-      dispatch(stopListeningTo('removeSuperAdmin'));
-      dispatch(stopListeningTo('addTeacher/:queueName'));
-      dispatch(stopListeningTo('removeTeacher/:queueName'));
-      dispatch(stopListeningTo('addAssistant/:queueName'));
-      dispatch(stopListeningTo('removeAssistant/:queueName'));
+      dispatch(leaveAdminPage());
     });
   }, [user, dispatch]);
 

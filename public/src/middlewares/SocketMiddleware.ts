@@ -4,9 +4,9 @@ import { ActionTypes as GlobalActions } from '../actions/globalActions';
 import { ActionTypes as AdministratorActions } from '../actions/administratorActions';
 import { ActionTypes as QueueActions } from '../actions/queueActions';
 import { ActionTypes as LobbyActions } from '../actions/lobbyActions';
-import { ActionTypes as SocketActions } from '../actions/socketActions';
 import { ActionTypes as UserActions } from '../actions/userActions';
 import { ActionTypes as AssistantActions } from '../actions/assistantActions';
+import { ActionTypes as PageActions } from '../actions/pageActions';
 import * as Listeners from '../actions/listenerActions';
 
 const middleware = () => {
@@ -101,7 +101,14 @@ const middleware = () => {
     switch (action.type) {
       case GlobalActions.Initialize: {
         connect(store);
+
+        const userData = localStorage.getItem('User');
+        token = userData ? JSON.parse(userData).token : null;
+
+        callbacks['message'] = Listeners.onMessageRecieved;
+        callbacks['message/:queueName'] = Listeners.onMessageRecieved;
         callbacks['updateQueue/:queueName'] = Listeners.onQueueUpdated;
+
         break;
       }
 
@@ -243,18 +250,6 @@ const middleware = () => {
         break;
       }
 
-      // TODO: I don't want to allow the developer to use Listen/StopListening
-      // I'd rather move that logic here instead in order to only have one design
-      case SocketActions.Listen: {
-        callbacks[action.payload.path] = action.payload.callback;
-        break;
-      }
-
-      case SocketActions.StopListening: {
-        delete callbacks[action.payload.path];
-        break;
-      }
-
       case UserActions.Login.Fulfilled: {
         token = action.payload.data.token;
         callbacks['message'] = Listeners.onMessageRecieved;
@@ -353,6 +348,30 @@ const middleware = () => {
         sendMessage(new RequestMessage(`setQueueLockStatus/${action.payload.queueName}`, {
           status: false
         }));
+        break;
+      }
+
+      case PageActions.EnterAdminPage: {
+        callbacks['addSuperAdmin'] = Listeners.onAdministratorAdded;
+        callbacks['removeSuperAdmin'] = Listeners.onAdministratorRemoved;
+        callbacks['addTeacher/:queueName'] = Listeners.onTeacherAdded;
+        callbacks['removeTeacher/:queueName'] = Listeners.onTeacherRemoved;
+        callbacks['addAssistant/:queueName'] = Listeners.onAssistantAdded;
+        callbacks['removeAssistant/:queueName'] = Listeners.onAssistantRemoved;
+        callbacks['addQueue/:queueName'] = Listeners.onQueueAdded;
+        callbacks['removeQueue/:queueName'] = Listeners.onQueueRemoved;
+        break;
+      }
+
+      case PageActions.LeaveAdminPage: {
+        delete callbacks['addSuperAdmin'];
+        delete callbacks['removeSuperAdmin'];
+        delete callbacks['addTeacher/:queueName'];
+        delete callbacks['removeTeacher/:queueName'];
+        delete callbacks['addAssistant/:queueName'];
+        delete callbacks['removeAssistant/:queueName'];
+        delete callbacks['addQueue/:queueName'];
+        delete callbacks['removeQueue/:queueName'];
         break;
       }
     }
