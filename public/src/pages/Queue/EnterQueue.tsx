@@ -152,12 +152,16 @@ export default (props: any): JSX.Element | null => {
           {
             personalQueueEntry !== null
               ? <>
-                  <div
-                    className="col-12 text-center yellow clickable"
-                    style={{lineHeight: '3em'}}
-                    onClick={() => dispatch(recievingHelp(queueName, true))}>
-                    <strong>Recieving help</strong>
-                  </div>
+                {
+                  recievingHelp
+                    ? null
+                    : <div
+                        className="col-12 text-center yellow clickable"
+                        style={{lineHeight: '3em'}}
+                        onClick={() => dispatch(recievingHelp(queueName, true))}>
+                        <strong>Recieving help</strong>
+                      </div>
+                }
                   <div
                     className="col-12 text-center red clickable"
                     style={{lineHeight: '3em'}}

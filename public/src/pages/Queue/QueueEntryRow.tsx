@@ -41,12 +41,22 @@ export default (props: any): JSX.Element => {
     setDisplayAdministrationOptions(!displayAdministrationOptions);
   }
 
+  function getRowColor() {
+    if (queueEntry.badlocation) {
+      return 'table-danger';
+    }
+
+    if (queueEntry.gettinghelp) {
+      return 'table-success';
+    }
+  }
+
   return (
     <>
       <tr
         onClick={mayAdministerQueue ? () => clickRow() : undefined}
         onTouchEnd={mayAdministerQueue ? () => touchRow() : undefined}
-        className={queueEntry.badlocation ? 'table-danger' : undefined}>
+        className={getRowColor()}>
         <th scope="row">{index + 1}</th>
         <td>
           {
@@ -82,13 +92,23 @@ export default (props: any): JSX.Element => {
                         <Envelope />
                       </div>
                     </div>
-                    <div title="help" className="col-12 col-lg-3 px-3 my-1" onClick={() => dispatch(toggleHelp(queueName, queueEntry.ugkthid, !queueEntry.help))}>
-                      <div
-                        className="text-center blue clickable"
-                        style={{lineHeight: '2em'}}>
-                        <CheckMark />
-                      </div>
-                    </div>
+                    {
+                      queueEntry.gettinghelp
+                        ? <div title="stop helping" className="col-12 col-lg-3 px-3 my-1" onClick={() => dispatch(toggleHelp(queueName, queueEntry.ugkthid, !queueEntry.help))}>
+                            <div
+                              className="text-center yellow clickable"
+                              style={{lineHeight: '2em'}}>
+                              <CheckMark />
+                            </div>
+                          </div>
+                        : <div title="help" className="col-12 col-lg-3 px-3 my-1" onClick={() => dispatch(toggleHelp(queueName, queueEntry.ugkthid, !queueEntry.help))}>
+                            <div
+                              className="text-center blue clickable"
+                              style={{lineHeight: '2em'}}>
+                              <CheckMark />
+                            </div>
+                          </div>
+                    }
                     <div title="bad location" className="col-12 col-lg-3 px-3 my-1" onClick={() => dispatch(badLocation(queueName, queueEntry.ugkthid))}>
                       <div
                         className="text-center yellow clickable"
