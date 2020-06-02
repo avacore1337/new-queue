@@ -153,7 +153,7 @@ export default (props: any): JSX.Element | null => {
             personalQueueEntry !== null
               ? <>
                 {
-                  recievingHelp
+                  personalQueueEntry.gettinghelp
                     ? null
                     : <div
                         className="col-12 text-center yellow clickable"
