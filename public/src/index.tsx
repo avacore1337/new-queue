@@ -11,6 +11,7 @@ import * as Listeners from './actions/listenerActions';
 import { listenTo } from './actions/socketActions';
 import { loadUser } from './actions/userActions';
 import { loadQueues } from './actions/queueActions';
+import { initialize } from './actions/globalActions';
 
 function LifeCycle() {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ function LifeCycle() {
     dispatch(loadUser());
     dispatch(loadQueues());
     dispatch(listenTo('updateQueue/:queueName', Listeners.onQueueUpdated));
+    dispatch(initialize());
   }, [dispatch]);
 
   return (
