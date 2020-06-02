@@ -78,6 +78,8 @@ const middleware = () => {
       let backUp = JSON.stringify(data.content);
 
       for (let property in callbacks) {
+        console.log(`Checking lister: ${property}`);
+
         let regex = new RegExp(`^${property.split(new RegExp(':[^/]+')).join('[^/]+')}$`);
         if (path.match(regex) !== null) {
           data.content = JSON.parse(backUp);
@@ -91,6 +93,7 @@ const middleware = () => {
             }
           }
 
+          console.log(`Dispatching event to the listen of '${property}'`);
           store.dispatch(callbacks[property](data.content));
         }
       }
@@ -108,6 +111,8 @@ const middleware = () => {
         callbacks['message'] = Listeners.onMessageRecieved;
         callbacks['message/:queueName'] = Listeners.onMessageRecieved;
         callbacks['updateQueue/:queueName'] = Listeners.onQueueUpdated;
+
+        console.log(Object.keys(callbacks));
 
         break;
       }
@@ -218,7 +223,6 @@ const middleware = () => {
       case QueueActions.UnsubscribeToQueue: {
         delete callbacks['joinQueue/:queueName'];
         delete callbacks['leaveQueue/:queueName'];
-        delete callbacks['updateQueue/:queueName'];
 
         if (lastJoinRequest?.path === `subscribeQueue/${action.payload.queueName}`) {
           lastJoinRequest = null;
