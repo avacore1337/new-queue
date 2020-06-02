@@ -162,6 +162,7 @@ export default (_ = socket, action: FluxStandardAction) => {
       const userData = localStorage.getItem('User');
       socket.setToken(userData ? JSON.parse(userData).token : null);
       socket.listen('message', onMessageRecieved);
+      socket.listen('message/:queueName', onMessageRecieved);
       break;
     }
 
