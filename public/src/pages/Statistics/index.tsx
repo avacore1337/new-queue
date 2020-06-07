@@ -103,6 +103,34 @@ export default (): JSX.Element => {
     .catch(response => setStatistics(response.toString()));
   }
 
+  function getHelpAmount() {
+    const statisticsList = JSON.parse(statistics);
+    let peopleHelped = statisticsList[0].help_amount;
+
+    for (let entry of statisticsList.filter((entry: any) => entry.left_queue === false)) {
+      peopleHelped = entry.help === true ? peopleHelped + 1 : peopleHelped;
+    }
+
+    return peopleHelped;
+  }
+
+  function getPresentationAmount() {
+    const statisticsList = JSON.parse(statistics);
+    let peopleHelped = statisticsList[0].present_amount;
+
+    for (let entry of statisticsList.filter((entry: any) => entry.left_queue === false)) {
+      peopleHelped = entry.help === false ? peopleHelped + 1 : peopleHelped;
+    }
+
+    return peopleHelped;
+  }
+
+  function getRemainingQueueLength() {
+    const statisticsList = JSON.parse(statistics);
+
+    return statisticsList[statisticsList.length - 1].queue_length;
+  }
+
   return (
     user === null
       ? <PageNotFound />
@@ -165,19 +193,47 @@ export default (): JSX.Element => {
             <div className={`text-white px-5 py-2 ${errorMessage || selectedQueue === null ? 'gray' : 'blue clickable'}`} onClick={getStatistics}>Get statistics</div>
           </div>
 
-          <div className="row mb-5" style={{overflow: 'hidden'}}>
-            <pre style={{overflowY: 'scroll', maxHeight: '27vh', width: '100%'}}>
-              <code>
-                {statistics}
-              </code>
-            </pre>
-          </div>
-
           {
             statistics
-              ? <div className="row mb-5">
-                  <LineChart data={JSON.parse(statistics)} />
-                </div>
+              ? <>
+                  <div className="row mb-5">
+                    <LineChart data={JSON.parse(statistics)} />
+                  </div>
+                  <div className="row mb-5">
+                    <div className="col-lg-6" style={{overflow: 'hidden'}}>
+                      <pre style={{overflowY: 'scroll', overflowX: 'scroll', maxHeight: '27vh', width: '100%'}}>
+                        <code>
+                          {statistics}
+                        </code>
+                      </pre>
+                    </div>
+                    <div className="col-lg-6">
+                    <table className="table table-striped scrollable">
+                      <thead>
+                        <tr>
+                          <th>Description</th>
+                          <th>Statistics</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Amount of people helped</td>
+                          <td>{getHelpAmount()}</td>
+                        </tr>
+                        <tr>
+                          <td>Amount of presentations</td>
+                          <td>{getPresentationAmount()}</td>
+                        </tr>
+                        <tr>
+                          <td>Amount of people left in the queue</td>
+                          <td>{getRemainingQueueLength()}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    </div>
+                  </div>
+
+                </>
               : null
           }
         </div>
