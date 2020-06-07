@@ -242,6 +242,10 @@ const middleware = () => {
         const message = new RequestMessage('subscribeLobby');
         lastJoinRequest = message;
 
+        callbacks['joinQueue/:queueName'] = Listeners.onQueueEntryAdded;
+        callbacks['leaveQueue/:queueName'] = Listeners.onQueueEntryRemoved;
+        callbacks['updateQueueEntry/:queueName'] = Listeners.onQueueEntryUpdated;
+
         sendMessage(message);
         break;
       }

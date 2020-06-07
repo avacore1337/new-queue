@@ -91,7 +91,6 @@ Backend needs:
 Frontend needs:
 * Hiding/revealing queues does not automatically update GUI on admin page
 * Feature - Styling (Mattias, you've got this)
-* Position is not updated live when in lobby
 
 Backend wants:
 * routing framework
