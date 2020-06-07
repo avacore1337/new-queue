@@ -36,7 +36,7 @@ export default (props: any): JSX.Element => {
         onChange={changeContent}
         onKeyUp={runCallback}
         onFocus={() => {setPlaceholder('')}}
-        onBlur={() => {if (content !== '') setPlaceholder(props.placeholder)}}
+        onBlur={() => {if (content === '') setPlaceholder(props.placeholder)}}
         disabled={isDisabled} />
 
       <div className="input-group-append">
