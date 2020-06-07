@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 import { resetTitle } from '../../actions/titleActions';
 import Contributor from '../../models/Contributor';
 import Contributors from '../../data/contributors.json';
+import ContributorElement from './Contributor';
 
 export default (): JSX.Element => {
 
@@ -53,32 +54,7 @@ export default (): JSX.Element => {
         <h2>Contributors</h2>
         <div className="row">
         {
-          contributors.map(contributor =>
-            <div className="col-12 col-lg-6 row my-3 px-3" style={{marginBottom: '2%'}} key={contributor.name}>
-              <div className="col-3">
-                <img className="frame" src={'http://gravatar.com/avatar/' + (contributor.gravatar || '00000000000000000000000000000000') + '.png'} alt={contributor.name} />
-              </div>
-              <div className="col-9">
-                <h4>{contributor.name}</h4>
-                {
-                  contributor.github
-                    ? <a href={'https://github.com/' + contributor.github}>
-                        <i className="fab fa-github" style={{color: '#000000'}}></i> {contributor.github}
-                        <br />
-                      </a>
-                    : null
-                }
-                {
-                  contributor.linkedIn
-                    ? <a href={'https://www.linkedin.com/in/' + contributor.linkedIn}>
-                        <i className="fab fa-linkedin" style={{color: '#0077B5'}}></i> {contributor.name}
-                        <br />
-                      </a>
-                    : null
-                }
-              </div>
-            </div>
-          )
+          contributors.map(contributor => <ContributorElement contributor={contributor} key={contributor.name} />)
         }
         </div>
       </div>

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import debounce from 'lodash.debounce';
-import { GlobalStore } from '../../store';
-import { joinQueue, leaveQueue, recievingHelp, updatePersonalEntry } from '../../actions/queueActions';
-import User from '../../models/User';
-import QueueEntry from '../../models/QueueEntry';
-import { Lock } from '../../viewcomponents/FontAwesome';
+import { GlobalStore } from '../../../store';
+import { joinQueue, leaveQueue, recievingHelp, updatePersonalEntry } from '../../../actions/queueActions';
+import User from '../../../models/User';
+import QueueEntry from '../../../models/QueueEntry';
+import { Lock } from '../../../viewcomponents/FontAwesome';
 
 export default (props: any): JSX.Element | null => {
 
