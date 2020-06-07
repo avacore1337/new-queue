@@ -5,7 +5,6 @@ import { HTTP_SERVER_URL } from '../configuration';
 
 export const ActionTypes = Object.freeze({
   GetQueues: new AsyncFunction('GET_QUEUES'),
-  LoadQueueData: new AsyncFunction('LOAD_QUEUE_DATA'),
   JoinQueue: 'JOIN_QUEUE',
   LeaveQueue: 'LEAVE_QUEUE',
   RecievingHelp: 'RECIEVING_HELP',
@@ -26,20 +25,6 @@ export const loadQueues = (): AsyncAction => {
   return {
     type: ActionTypes.GetQueues,
     payload:  Promise.all([getQueuesRequest, getQueueEntriesRequest])
-  };
-};
-
-export const loadQueueData = (queueName: string): AsyncAction => {
-  const queueEntriesRequest = fetch(`${HTTP_SERVER_URL}/api/queues/${queueName}/queue_entries`)
-                              .then(response => response.json());
-
-  const queueInfoRequest = fetch(`${HTTP_SERVER_URL}/api/queues/${queueName}`)
-                           .then(response => response.json());
-
-  return {
-    type: ActionTypes.LoadQueueData,
-    payload: Promise.all([queueEntriesRequest, queueInfoRequest]),
-    meta: { queueName }
   };
 };
 

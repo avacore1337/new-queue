@@ -88,7 +88,7 @@ Backend needs:
 * setHelpstatus is wrong, a user can't set it to false to prevent abuse.
 
 Frontend needs:
-* Use modal instead of alert in queueReducer on MOTD
+* Upon getting a socket connection, call "Get queues" again if it failed on initial connection (check pending/failed calls)
 * Hiding/revealing queues does not automatically update GUI on admin page
 * Feature - Styling (Mattias, you've got this)
 

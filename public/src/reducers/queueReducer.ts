@@ -26,24 +26,6 @@ export default (state = initialState, action: FluxStandardAction) => {
       return queues;
     }
 
-    case ActionTypes.LoadQueueData.Fulfilled: {
-      const queueEntries: QueueEntry[] = action.payload[0].map((entryInformation: any) => new QueueEntry(entryInformation));
-      const metadata: any = action.payload[1];
-
-      const queueToUpdate = state.filter(queue => queue.name === action.meta.queueName)[0].clone();
-      queueToUpdate.setInformationText(metadata.info);
-      queueToUpdate.setQueueEntries(queueEntries);
-
-      const queues = [...state.filter(queue => queue.name !== action.meta.queueName), queueToUpdate];
-
-      // TODO: Use modal instead
-      if (metadata.motd) {
-        alert(metadata.motd);
-      }
-
-      return queues;
-    }
-
     case AdministratorActionTypes.LoadAdditionalQueueData.Fulfilled: {
       const teachers: Teacher[] = action.payload[0].data.map((t: any) => new Teacher(t));
       const assistants: Assistant[] = action.payload[1].data.map((a: any) => new Assistant(a));
