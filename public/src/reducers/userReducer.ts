@@ -1,7 +1,11 @@
+import axios from 'axios';
 import { FluxStandardAction } from 'redux-promise-middleware';
-import { ActionTypes as UserActions } from '../actions/userActions';
+import { ActionTypes as UserActions, UserDataLocation } from '../actions/userActions';
 import { ActionTypes as GlobalActions } from '../actions/globalActions';
+import { HTTP_SERVER_URL } from '../configuration';
 import User from '../models/User';
+
+const LifeTime = 4 * 3600 * 1000;
 
 const initialState: User | null = null;
 
@@ -16,75 +20,64 @@ export default (state: User | null = initialState, action: FluxStandardAction) =
         token: action.payload.data.token,
         isAdministrator: action.payload.data.superadmin,
         teacherIn: action.payload.data.teacher_in,
-        assistantIn: action.payload.data.assistant_in
+        assistantIn: action.payload.data.assistant_in,
+        location: action.payload.data.location
       };
-      localStorage.setItem('User', JSON.stringify(userData));
+      localStorage.setItem('Token', JSON.stringify({ token: action.payload.data.token, validUntil: new Date().getTime() + LifeTime }));
       return new User(userData);
     }
 
     case UserActions.Logout: {
-      localStorage.removeItem('User');
+      localStorage.removeItem('Token');
       return null;
     }
 
-    case UserActions.LoadUser: {
-      const prefix = 'userdata=';
-      const cookieData = document.cookie.split(';').map(cookie => cookie.trim()).filter(cookie => cookie.startsWith(prefix))[0];
+    case UserActions.LoadUser.Fulfilled: {
+      switch (action.meta.UserDataLocation) {
+        case UserDataLocation.Cookie: {
+          const prefix = 'userdata=';
+          const cookieData = document.cookie.split(';').map(cookie => cookie.trim()).filter(cookie => cookie.startsWith(prefix))[0];
 
-      if (cookieData) {
-        const decodedData = JSON.parse(decodeURIComponent(cookieData.substr(prefix.length)));
-        const mappedData = {
-          ugkthid: decodedData.ugkthid,
-          name: decodedData.realname,
-          username: decodedData.username,
-          token: decodedData.token,
-          isAdministrator: decodedData.superadmin,
-          teacherIn: decodedData.teacher_in,
-          assistantIn: decodedData.assistant_in,
-          recieved: new Date().getTime()
-        };
-        localStorage.setItem('User', JSON.stringify(mappedData));
+          if (cookieData) {
+            const decodedData = JSON.parse(decodeURIComponent(cookieData.substr(prefix.length)));
+            localStorage.setItem('Token', JSON.stringify({ token: decodedData.token, validUntil: new Date().getTime() + LifeTime }));
 
-        document.cookie = document.cookie.split(';').map(cookie => cookie.trim()).filter(cookie => !cookie.startsWith(prefix)).join('; ');
+            document.cookie = document.cookie.split(';').map(cookie => cookie.trim()).filter(cookie => !cookie.startsWith(prefix)).join('; ');
+
+            return new User({
+              ugkthid: decodedData.ugkthid,
+              name: decodedData.realname,
+              username: decodedData.username,
+              location: decodedData.location,
+              token: decodedData.token,
+              isAdministrator: decodedData.superadmin,
+              teacherIn: decodedData.teacher_in,
+              assistantIn: decodedData.assistant_in
+            });
+          }
+        }
+
+        case UserDataLocation.Response: {
+
+          return new User({
+            ugkthid: action.payload.data.ugkthid,
+            name: action.payload.data.realname,
+            username: action.payload.data.username,
+            location: action.payload.data.location,
+            token: action.payload.data.token,
+            isAdministrator: action.payload.data.superadmin,
+            teacherIn: action.payload.data.teacher_in,
+            assistantIn: action.payload.data.assistant_in
+          });
+        }
       }
 
-      let userData = localStorage.getItem('User');
-      if (userData && JSON.parse(userData).recieved < new Date().getTime() - 86400000) {
-        localStorage.removeItem('User');
-        userData = null;
-      }
-
-      return userData ? new User(JSON.parse(userData)) : state;
+      return state;
     }
 
-    case GlobalActions.Initialize: {
-      const prefix = 'userdata=';
-      const cookieData = document.cookie.split(';').map(cookie => cookie.trim()).filter(cookie => cookie.startsWith(prefix))[0];
-
-      if (cookieData) {
-        const decodedData = JSON.parse(decodeURIComponent(cookieData.substr(prefix.length)));
-        const mappedData = {
-          ugkthid: decodedData.ugkthid,
-          name: decodedData.realname,
-          username: decodedData.username,
-          token: decodedData.token,
-          isAdministrator: decodedData.superadmin,
-          teacherIn: decodedData.teacher_in,
-          assistantIn: decodedData.assistant_in,
-          recieved: new Date().getTime()
-        };
-        localStorage.setItem('User', JSON.stringify(mappedData));
-
-        document.cookie = document.cookie.split(';').map(cookie => cookie.trim()).filter(cookie => !cookie.startsWith(prefix)).join('; ');
-      }
-
-      let userData = localStorage.getItem('User');
-      if (userData && JSON.parse(userData).recieved < new Date().getTime() - 86400000) {
-        localStorage.removeItem('User');
-        userData = null;
-      }
-
-      return userData ? new User(JSON.parse(userData)) : state;
+    case UserActions.LoadUser.Rejected: {
+      localStorage.removeItem('Token');
+      return state;
     }
 
   }

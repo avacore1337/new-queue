@@ -9,6 +9,7 @@ import Helmet from './viewcomponents/Helmet';
 import * as serviceWorker from './serviceWorker';
 import { loadQueues } from './actions/queueActions';
 import { initialize } from './actions/globalActions';
+import { loadUser } from './actions/userActions';
 
 function LifeCycle() {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ function LifeCycle() {
       return;
     }
 
+    dispatch(loadUser());
     dispatch(loadQueues());
     dispatch(initialize());
   }, [dispatch]);
