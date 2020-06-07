@@ -88,10 +88,9 @@ Backend needs:
 * setHelpstatus is wrong, a user can't set it to false to prevent abuse.
 
 Frontend needs:
-* Feature - Admin queue should use the filtered lists of queues
-* Feature - Styling
 * Use modal instead of alert in queueReducer on MOTD
 * Hiding/revealing queues does not automatically update GUI on admin page
+* Feature - Styling (Mattias, you've got this)
 
 Backend wants:
 * routing framework
@@ -101,8 +100,7 @@ Backend wants:
 * can we please rename "help" to something else? Or make it an enum perhaps
 
 Frontend wants
-* Feature - Fix Help page (half done)
-* Feature - Fix About page (half done)
-* Feature - Extract more view-components to make the HTML easier to read
-* Do not collapse nav-bar if not expanded
-* Make queuelist on admin-page scrollable
+* Feature - Fix About page (half done, remove or replace "bla bla bla...")
+* Do not collapse nav-bar if not expanded (visual bug/feature?)
+* Feature - Extract more view-components to make the HTML easier to read (nice to have)
+* Feature - Fix Help page (requires styling to be done)

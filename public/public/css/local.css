@@ -57,22 +57,30 @@ img.frame {
     overflow-y:auto;
 }
 
-table.scrollable tbody {
-    max-height:400px;
-    overflow-y:auto;
+table.scrollable {
+    display: flex;
+    flex-flow: column;
     width: 100%;
-}
-table.scrollable thead,tbody,tr,td,th {
-  display:block;
+    max-height: 400px;
 }
 
-table.scrollable tbody td {
-  display:block;
+table.scrollable thead {
+    flex: 0 0 auto;
 }
 
-table.scrollable thead th {
-  display:block;
+table.scrollable tbody {
+    flex: 1 1 auto;
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
+
+table.scrollable tr {
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+}
+
 
 /* DateTimePicker */
 /*!
