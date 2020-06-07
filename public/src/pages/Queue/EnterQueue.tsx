@@ -5,6 +5,7 @@ import { GlobalStore } from '../../store';
 import { joinQueue, leaveQueue, recievingHelp, updatePersonalEntry } from '../../actions/queueActions';
 import User from '../../models/User';
 import QueueEntry from '../../models/QueueEntry';
+import { Lock } from '../../viewcomponents/FontAwesome';
 
 export default (props: any): JSX.Element | null => {
 
@@ -175,13 +176,18 @@ export default (props: any): JSX.Element | null => {
                     <strong>Leave queue</strong>
                   </div>
                 </>
-              : isLocked
-                  ? null
-                  : <div
+              : !isLocked
+                  ? <div
                       className="col-12 text-center blue clickable"
                       style={{lineHeight: '3em'}}
                       onClick={enterQueue}>
                       <strong>Join queue</strong>
+                    </div>
+                  : <div
+                      className="col-12 text-center gray"
+                      style={{lineHeight: '3em'}}
+                      onClick={enterQueue}>
+                      <strong><Lock /> Queue is locked</strong>
                     </div>
           }
         </>

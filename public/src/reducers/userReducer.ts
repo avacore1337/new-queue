@@ -40,14 +40,20 @@ export default (state: User | null = initialState, action: FluxStandardAction) =
           token: decodedData.token,
           isAdministrator: decodedData.superadmin,
           teacherIn: decodedData.teacher_in,
-          assistantIn: decodedData.assistant_in
+          assistantIn: decodedData.assistant_in,
+          recieved: new Date().getTime()
         };
         localStorage.setItem('User', JSON.stringify(mappedData));
 
         document.cookie = document.cookie.split(';').map(cookie => cookie.trim()).filter(cookie => !cookie.startsWith(prefix)).join('; ');
       }
 
-      const userData = localStorage.getItem('User');
+      let userData = localStorage.getItem('User');
+      if (userData && JSON.parse(userData).recieved < new Date().getTime() - 86400000) {
+        localStorage.removeItem('User');
+        userData = null;
+      }
+
       return userData ? new User(JSON.parse(userData)) : state;
     }
 
@@ -64,14 +70,20 @@ export default (state: User | null = initialState, action: FluxStandardAction) =
           token: decodedData.token,
           isAdministrator: decodedData.superadmin,
           teacherIn: decodedData.teacher_in,
-          assistantIn: decodedData.assistant_in
+          assistantIn: decodedData.assistant_in,
+          recieved: new Date().getTime()
         };
         localStorage.setItem('User', JSON.stringify(mappedData));
 
         document.cookie = document.cookie.split(';').map(cookie => cookie.trim()).filter(cookie => !cookie.startsWith(prefix)).join('; ');
       }
 
-      const userData = localStorage.getItem('User');
+      let userData = localStorage.getItem('User');
+      if (userData && JSON.parse(userData).recieved < new Date().getTime() - 86400000) {
+        localStorage.removeItem('User');
+        userData = null;
+      }
+
       return userData ? new User(JSON.parse(userData)) : state;
     }
 

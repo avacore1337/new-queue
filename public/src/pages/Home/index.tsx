@@ -53,10 +53,6 @@ export default (): JSX.Element => {
     return !queue.hiding || (user !== null && (user.isAdministrator || user.isTeacherIn(queue.name)));
   }
 
-  function canClick(queue: Queue): boolean {
-    return !queue.locked || (user !== null && (user.isAdministrator || user.isTeacherIn(queue.name) || user.isAssistantIn(queue.name)));
-  }
-
   return (
     lastVisitedUrl
       ? <Redirect to={lastVisitedUrl} />
@@ -70,11 +66,9 @@ export default (): JSX.Element => {
             .filter(queue => filter === '' || queue.name.toLowerCase().includes(filter.toLowerCase()))
             .map(queue =>
               canSee(queue)
-              ? canClick(queue)
-                ? <Link to={`/Queue/${queue.name}`} key={`HomeLink_${queue.name}`}>
-                    <QueueCardViewComponent user={user} queue={queue} />
-                  </Link>
-                : <QueueCardViewComponent user={user} queue={queue} key={`HomeCard_${queue.name}`} />
+              ? <Link to={`/Queue/${queue.name}`} key={`HomeLink_${queue.name}`}>
+                  <QueueCardViewComponent user={user} queue={queue} />
+                </Link>
               : null
           )}
         </div>

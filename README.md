@@ -99,8 +99,6 @@ Styling:
 * Do more if you like ^.^
 
 Frontend needs:
-* Allow everyone to enter a locked queue
-* Assistant options are show to administrators
 * [Feature] Fix About page (half done, remove or replace "bla bla bla...")
 * [Feature] Fix Help page (requires styling to be done)
 
