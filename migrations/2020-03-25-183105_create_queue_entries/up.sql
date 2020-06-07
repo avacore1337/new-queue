@@ -1,8 +1,8 @@
 -- Your SQL goes here
 CREATE TABLE queue_entries (
   id SERIAL PRIMARY KEY,
-  user_id integer REFERENCES users(id) NOT NULL,
-  queue_id integer REFERENCES queues(id) NOT NULL,
+  user_id integer REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+  queue_id integer REFERENCES queues(id) ON DELETE CASCADE NOT NULL,
   location VARCHAR NOT NULL,
   usercomment VARCHAR NOT NULL,
   starttime TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),

@@ -233,6 +233,8 @@ pub fn set_help_status_route(
     status: Status,
     queue_name: &str,
 ) -> Result<()> {
+    // if status.status == false {
+    //     return Err
     let queue = db::queues::find_by_name(conn, queue_name)?;
     let queue_entry =
         db::queue_entries::update_help_status(&conn, queue.id, auth.id, status.status)?;

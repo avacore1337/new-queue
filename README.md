@@ -86,6 +86,7 @@ Install debuggin extensions for React and Redux
 
 Backend needs:
 * setHelpstatus is wrong, a user can't set it to false to prevent abuse.
+* broadcasting hide to admin?
 
 Frontend needs:
 * Upon getting a socket connection, call "Get queues" again if it failed on initial connection (check pending/failed calls)

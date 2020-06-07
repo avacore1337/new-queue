@@ -58,7 +58,16 @@ pub fn validate_auth(
                 _ => Err(Box::new(BadAuth)),
             }
         }
-        AuthLevel::SuperOrTeacher => Ok(auth),
+        AuthLevel::SuperOrTeacher => match db::super_admins::is_super(conn, auth.id) {
+            Some(_) => Ok(auth),
+            None => {
+                let queue_name = queue_name.ok_or_else(|| BadAuth)?;
+                match db::admins::admin_for_queue(conn, &queue_name, &auth) {
+                    Some(AdminEnum::Teacher) => Ok(auth),
+                    _ => Err(Box::new(BadAuth)),
+                }
+            }
+        },
         AuthLevel::Super => match db::super_admins::is_super(conn, auth.id) {
             Some(_) => Ok(auth),
             None => Err(Box::new(BadAuth)),
