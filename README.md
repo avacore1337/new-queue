@@ -99,7 +99,6 @@ Styling:
 Frontend needs:
 * [Feature] Fix About page (half done, remove or replace "bla bla bla...")
 * [Feature] Fix Help page (requires styling to be done)
-* Login button on queue page
 * Aggregation on statistics page and flip order on data/graph
 * Something up with "New administrators will have to log out and in again in order to get all of their new privileges." text on admin page
 

@@ -73,6 +73,11 @@ export default (props: any): JSX.Element | null => {
     }
   }
 
+  function login() {
+    localStorage.setItem('LastVisitedUrl', window.location.pathname);
+    window.location.href = 'https://login.kth.se/login?service=http://queue.csc.kth.se/auth';
+  }
+
   return (
     user
       ? <>
@@ -177,6 +182,11 @@ export default (props: any): JSX.Element | null => {
                 </div>
           }
         </>
-      : null
+      : <div
+          className="col-12 text-center blue clickable"
+          style={{lineHeight: '3em'}}
+          onClick={login}>
+          <strong>Login</strong>
+        </div>
   );
 };
