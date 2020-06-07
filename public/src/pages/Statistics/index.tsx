@@ -107,7 +107,7 @@ export default (): JSX.Element => {
     const statisticsList = JSON.parse(statistics);
     let peopleHelped = statisticsList[0].help_amount;
 
-    for (let entry of statisticsList.filter((entry: any) => entry.left_queue === false)) {
+    for (let entry of statisticsList.filter((entry: any) => entry.left_queue === true)) {
       peopleHelped = entry.help === true ? peopleHelped + 1 : peopleHelped;
     }
 
@@ -118,7 +118,7 @@ export default (): JSX.Element => {
     const statisticsList = JSON.parse(statistics);
     let peopleHelped = statisticsList[0].present_amount;
 
-    for (let entry of statisticsList.filter((entry: any) => entry.left_queue === false)) {
+    for (let entry of statisticsList.filter((entry: any) => entry.left_queue === true)) {
       peopleHelped = entry.help === false ? peopleHelped + 1 : peopleHelped;
     }
 
