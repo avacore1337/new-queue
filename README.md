@@ -85,8 +85,7 @@ Install debuggin extensions for React and Redux
 
 
 Backend needs:
-* setHelpstatus is wrong, a user can't set it to false to prevent abuse.
-* broadcasting hide to admin?
+* always update user data on login
 
 Frontend needs:
 * Hiding/revealing queues does not automatically update GUI on admin page
@@ -94,9 +93,7 @@ Frontend needs:
 
 Backend wants:
 * routing framework
-* backend websockets leave/errors
 * message history
-* always update user data on login
 * can we please rename "help" to something else? Or make it an enum perhaps
 
 Frontend wants
