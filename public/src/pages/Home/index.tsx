@@ -14,7 +14,12 @@ export default (): JSX.Element => {
   const [lastVisitedUrl, setLastVisitedUrl] = useState(null as string | null);
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
-  const queues = useSelector<GlobalStore, Queue[]>(store => store.queues);
+  const queues = useSelector<GlobalStore, Queue[]>(store => store.queues)
+  .sort((queue1: Queue, queue2: Queue) => {
+    if (queue1.hiding && !queue2.hiding) { return 1; }
+    if (!queue1.hiding && queue2.hiding) { return -1; }
+    return queue1.name < queue2.name ? -1 : 1;
+  });;
 
   const [filter, setFilter] = useState('');
 
@@ -33,7 +38,6 @@ export default (): JSX.Element => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log('Test');
     const urlBeforeLoginRedirect = localStorage.getItem('LastVisitedUrl');
 
     if (urlBeforeLoginRedirect) {

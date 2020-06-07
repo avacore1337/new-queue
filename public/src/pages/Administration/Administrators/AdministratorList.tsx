@@ -14,7 +14,7 @@ export default (): JSX.Element => {
   return (
     administrators.length
       ? <div>
-          <table className="table table-striped">
+          <table className="table table-striped scrollable">
             <thead>
               <tr>
                 <th>Name</th>

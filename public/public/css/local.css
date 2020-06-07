@@ -52,6 +52,28 @@ img.frame {
     border: 1px solid #DDDDDD;
 }
 
+.dropdown-menu {
+    max-height:400px;
+    overflow-y:auto;
+}
+
+table.scrollable tbody {
+    max-height:400px;
+    overflow-y:auto;
+    width: 100%;
+}
+table.scrollable thead,tbody,tr,td,th {
+  display:block;
+}
+
+table.scrollable tbody td {
+  display:block;
+}
+
+table.scrollable thead th {
+  display:block;
+}
+
 /* DateTimePicker */
 /*!
  * https://github.com/YouCanBookMe/react-datetime

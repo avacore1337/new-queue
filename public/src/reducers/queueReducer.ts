@@ -13,11 +13,7 @@ export default (state = initialState, action: FluxStandardAction) => {
   switch (action.type) {
 
     case ActionTypes.GetQueues.Fulfilled: {
-      const queues: Queue[] = action.payload[0].sort((queue1: Queue, queue2: Queue) => {
-        if (queue1.hiding && !queue2.hiding) { return 1; }
-        if (!queue1.hiding && queue2.hiding) { return -1; }
-        return queue1.name < queue2.name ? -1 : 1;
-      });
+      const queues: Queue[] = action.payload[0];
 
       for (let queueName in action.payload[1]) {
         const queue = queues.find(q => q.name === queueName);
@@ -40,12 +36,7 @@ export default (state = initialState, action: FluxStandardAction) => {
 
       const queues = [...state.filter(queue => queue.name !== action.meta.queueName), queueToUpdate];
 
-      queues.sort((queue1: Queue, queue2: Queue) => {
-        if (queue1.hiding && !queue2.hiding) { return 1; }
-        if (!queue1.hiding && queue2.hiding) { return -1; }
-        return queue1.name < queue2.name ? -1 : 1;
-      });
-
+      // TODO: Use modal instead
       if (metadata.motd) {
         alert(metadata.motd);
       }
@@ -63,23 +54,11 @@ export default (state = initialState, action: FluxStandardAction) => {
 
       const queues = [...state.filter(queue => queue.name !== action.meta.queueName), queueToUpdate];
 
-      queues.sort((queue1: Queue, queue2: Queue) => {
-        if (queue1.hiding && !queue2.hiding) { return 1; }
-        if (!queue1.hiding && queue2.hiding) { return -1; }
-        return queue1.name < queue2.name ? -1 : 1;
-      });
-
       return queues;
     }
 
     case Listeners.OnQueueAdded: {
-      const queues = [...state, new Queue({ name: action.payload.queueName })];
-      queues.sort((queue1: Queue, queue2: Queue) => {
-        if (queue1.hiding && !queue2.hiding) { return 1; }
-        if (!queue1.hiding && queue2.hiding) { return -1; }
-        return queue1.name < queue2.name ? -1 : 1;
-      });
-      return queues;
+      return [...state, new Queue({ name: action.payload.queueName })];
     }
 
     case Listeners.OnQueueUpdated: {

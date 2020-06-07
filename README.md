@@ -90,6 +90,8 @@ Backend needs:
 Frontend needs:
 * Feature - Admin queue should use the filtered lists of queues
 * Feature - Styling
+* Use modal instead of alert in queueReducer on MOTD
+* Hiding/revealing queues does not automatically update GUI on admin page
 
 Backend wants:
 * routing framework

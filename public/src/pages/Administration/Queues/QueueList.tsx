@@ -5,13 +5,13 @@ import Queue from '../../../models/Queue';
 
 export default (): JSX.Element => {
 
-  const queues = useSelector<GlobalStore, Queue[]>(store => store.queues);
-  queues.sort((queue1: Queue, queue2: Queue) => queue1.name < queue2.name ? -1 : 1);
+  const queues = useSelector<GlobalStore, Queue[]>(store => store.queues)
+  .sort((queue1: Queue, queue2: Queue) => queue1.name < queue2.name ? -1 : 1);
 
   return (
     queues.length
       ? <div>
-          <table className="table table-striped">
+          <table className="table table-striped scrollable">
             <thead>
               <tr>
                 <th>Name</th>

@@ -14,7 +14,7 @@ export default (props: any): JSX.Element => {
   return (
     queue.teachers.length
       ? <>
-          <table className="table table-striped">
+          <table className="table table-striped scrollable">
             <thead>
               <tr>
                 <th>Name</th>
