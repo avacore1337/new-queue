@@ -106,20 +106,14 @@ fn validate_ticket(ticket: &str) -> Option<String> {
 
 pub fn handle_login(conn: &db::DbConn, params: Form<Ticket>) -> Option<User> {
     let ugkthid = validate_ticket(params.ticket.as_ref()?)?;
-    match db::users::find_by_ugkthid(conn, &ugkthid) {
-        Ok(user) => Some(user),
-        Err(_) => match fetch_ldap_data_by_ugkthid(&ugkthid) {
-            Ok(ldap_user) => db::users::create(
-                conn,
-                &ldap_user.username,
-                &ldap_user.ugkthid,
-                &ldap_user.realname,
-            )
-            .ok(),
-            Err(e) => {
-                println!("Encountered error {}", e);
-                None
-            }
-        },
+    match fetch_ldap_data_by_ugkthid(&ugkthid) {
+        Ok(ldap_user) => db::users::upsert_ugkthid(
+            conn,
+            &ldap_user.username,
+            &ldap_user.ugkthid,
+            &ldap_user.realname,
+        )
+        .ok(),
+        Err(_) => None,
     }
 }
