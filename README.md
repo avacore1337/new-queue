@@ -89,9 +89,9 @@ Backend needs:
 * broadcasting hide to admin?
 
 Frontend needs:
-* Upon getting a socket connection, call "Get queues" again if it failed on initial connection (check pending/failed calls)
 * Hiding/revealing queues does not automatically update GUI on admin page
 * Feature - Styling (Mattias, you've got this)
+* Position is not updated live when in lobby
 
 Backend wants:
 * routing framework

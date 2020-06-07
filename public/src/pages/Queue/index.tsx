@@ -7,6 +7,7 @@ import { setTitle } from '../../actions/titleActions';
 import { openShowMotdModal } from '../../actions/modalActions';
 import Queue from '../../models/Queue';
 import User from '../../models/User';
+import RequestStatus from '../../enums/RequestStatus';
 import EnterQueueViewComponent from './EnterQueue';
 import QueueAdministratorOptionsViewComponent from './QueueAdministratorOptions';
 import QueueEntryTableViewComponent from './QueueEntryTable';
@@ -20,8 +21,8 @@ export default (): JSX.Element | null => {
   const { queueName } = useParams();
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
-  const queue = useSelector<GlobalStore, Queue | null>(store => store.queues.filter(q => q.name === queueName)[0] || null);
-  const queuesAreLoaded = useSelector<GlobalStore, boolean>(store => store.queues.length > 0);
+  const queue = useSelector<GlobalStore, Queue | null>(store => store.queues.queueList.filter(q => q.name === queueName)[0] || null);
+  const queuesAreLoaded = useSelector<GlobalStore, boolean>(store => store.queues.requestStatus === RequestStatus.Success);
   const playSounds = useSelector<GlobalStore, boolean>(store => store.playSounds);
 
   const [filter, setFilter] = useState('');

@@ -2,12 +2,13 @@ import RequestMessage from '../utils/RequestMessage';
 import { WEB_SOCKET_SERVER_URL } from '../configuration';
 import { ActionTypes as GlobalActions } from '../actions/globalActions';
 import { ActionTypes as AdministratorActions } from '../actions/administratorActions';
-import { ActionTypes as QueueActions } from '../actions/queueActions';
+import { ActionTypes as QueueActions, loadQueues } from '../actions/queueActions';
 import { ActionTypes as LobbyActions } from '../actions/lobbyActions';
 import { ActionTypes as UserActions } from '../actions/userActions';
 import { ActionTypes as AssistantActions } from '../actions/assistantActions';
 import { ActionTypes as PageActions } from '../actions/pageActions';
 import * as Listeners from '../actions/listenerActions';
+import RequestStatus from '../enums/RequestStatus';
 
 const middleware = () => {
 
@@ -41,6 +42,10 @@ const middleware = () => {
 
   const onOpen = (store: any) => (event: any) => {
     connectionEstablished = true;
+
+    if (store.getState().queues.requestStatus === RequestStatus.Failed) {
+      store.dispatch(loadQueues());
+    }
 
     if (lastJoinRequest !== null) {
       sendMessage(lastJoinRequest);

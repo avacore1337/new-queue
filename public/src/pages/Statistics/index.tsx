@@ -15,7 +15,7 @@ import { HTTP_SERVER_URL } from '../../configuration';
 export default (): JSX.Element => {
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
-  const queues = useSelector<GlobalStore, string[]>(store => store.queues.map(q => q.name));
+  const queues = useSelector<GlobalStore, string[]>(store => store.queues.queueList.map(q => q.name));
 
   const [statistics, setStatistics] = useState('');
   const [errorMessage, setErrorMessage] = useState('');

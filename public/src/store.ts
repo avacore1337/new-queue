@@ -13,10 +13,14 @@ import User from './models/User';
 import Queue from './models/Queue';
 import Administrator from './models/Administrator';
 import Modal from './models/Modal';
+import RequestStatus from './enums/RequestStatus';
 
 export interface GlobalStore {
   user: User | null,
-  queues: Queue[],
+  queues: {
+    queueList: Queue[],
+    requestStatus: RequestStatus
+  },
   administration: {
     administrators: Administrator[]
   },

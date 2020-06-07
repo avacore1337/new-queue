@@ -14,7 +14,7 @@ export default (): JSX.Element => {
   const [lastVisitedUrl, setLastVisitedUrl] = useState(null as string | null);
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
-  const queues = useSelector<GlobalStore, Queue[]>(store => store.queues)
+  const queues = useSelector<GlobalStore, Queue[]>(store => store.queues.queueList)
   .sort((queue1: Queue, queue2: Queue) => {
     if (queue1.hiding && !queue2.hiding) { return 1; }
     if (!queue1.hiding && queue2.hiding) { return -1; }

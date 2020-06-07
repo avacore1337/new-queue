@@ -11,7 +11,7 @@ import AssistantsViewComponent from './Assistants/Assistants';
 export default (): JSX.Element | null => {
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
-  const queues = useSelector<GlobalStore, Queue[]>(store => store.queues)
+  const queues = useSelector<GlobalStore, Queue[]>(store => store.queues.queueList)
   .sort((queue1: Queue, queue2: Queue) => queue1.name < queue2.name ? -1 : 1);
 
   const [selectedQueue, setSelectedQueue] = useState(null as Queue | null);
