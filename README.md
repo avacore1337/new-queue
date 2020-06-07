@@ -94,8 +94,8 @@ Styling:
 * Can we improve layout on /Statistics ?
 * Make /Help page more beautiful in general (images are updated once all styling is done)
 * Can we improve search bar looks? Maybe make them smaller or add a magnifying glass or something ?
-* Do more if you like ^.^
 * Add administrator and add queue inputs are grouped weirdly on mobile devices
+* Do more if you like ^.^
 
 Frontend needs:
 * [Feature] Fix About page (half done, remove or replace "bla bla bla...")
