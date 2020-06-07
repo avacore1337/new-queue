@@ -104,25 +104,15 @@ export default (): JSX.Element => {
   }
 
   function getHelpAmount() {
-    const statisticsList = JSON.parse(statistics);
-    let peopleHelped = statisticsList[0].help_amount;
-
-    for (let entry of statisticsList.filter((entry: any) => entry.left_queue === true)) {
-      peopleHelped = entry.help === true ? peopleHelped + 1 : peopleHelped;
-    }
-
-    return peopleHelped;
+    return JSON.parse(statistics)
+            .filter((entry: any) => entry.left_queue === true)
+            .reduce((peopleHelped: number, entry: any) => entry.help === true ? peopleHelped + 1 : peopleHelped, 0) || 0;
   }
 
   function getPresentationAmount() {
-    const statisticsList = JSON.parse(statistics);
-    let peopleHelped = statisticsList[0].present_amount;
-
-    for (let entry of statisticsList.filter((entry: any) => entry.left_queue === true)) {
-      peopleHelped = entry.help === false ? peopleHelped + 1 : peopleHelped;
-    }
-
-    return peopleHelped;
+    return JSON.parse(statistics)
+            .filter((entry: any) => entry.left_queue === true)
+            .reduce((peopleHelped: number, entry: any) => entry.help === false ? peopleHelped + 1 : peopleHelped, 0) || 0;
   }
 
   function getRemainingQueueLength() {
