@@ -85,6 +85,8 @@ Install debuggin extensions for React and Redux
 
 
 Backend needs:
+* setHelpstatus is wrong, a user can't set it to false to prevent abuse.
+* broadcasting hide to admin?
 
 Styling:
 * Location/Comment/Help section on /Queue/:queueName
@@ -104,8 +106,8 @@ Backend wants:
 * routing framework
 * backend websockets leave/errors
 * message history
+* always update user data on login
 * can we please rename "help" to something else? Or make it an enum perhaps
 
 Frontend wants
 * [Refactoring] Extract more view-components to make the HTML easier to read
-* Lock symbol ?
