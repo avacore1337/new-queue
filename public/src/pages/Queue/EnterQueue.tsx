@@ -12,6 +12,7 @@ export default (props: any): JSX.Element | null => {
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
   const personalQueueEntry = useSelector<GlobalStore, QueueEntry | null>(store => store.queues.queueList.filter(q => q.name === queueName)[0].queueEntries.filter(e => e.ugkthid === user?.ugkthid)[0] || null);
+  const isLocked = useSelector<GlobalStore, boolean>(store => store.queues.queueList.filter(queue => queue.name === queueName)[0].locked);
 
   const dispatch = useDispatch();
 
@@ -174,12 +175,14 @@ export default (props: any): JSX.Element | null => {
                     <strong>Leave queue</strong>
                   </div>
                 </>
-              : <div
-                  className="col-12 text-center blue clickable"
-                  style={{lineHeight: '3em'}}
-                  onClick={enterQueue}>
-                  <strong>Join queue</strong>
-                </div>
+              : isLocked
+                  ? null
+                  : <div
+                      className="col-12 text-center blue clickable"
+                      style={{lineHeight: '3em'}}
+                      onClick={enterQueue}>
+                      <strong>Join queue</strong>
+                    </div>
           }
         </>
       : <div

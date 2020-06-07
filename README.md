@@ -99,7 +99,6 @@ Styling:
 * Do more if you like ^.^
 
 Frontend needs:
-* Remove join button if queue is locked
 * Allow everyone to enter a locked queue
 * Assistant options are show to administrators
 * [Feature] Fix About page (half done, remove or replace "bla bla bla...")
