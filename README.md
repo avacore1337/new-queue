@@ -90,6 +90,7 @@ Backend needs:
 Frontend needs:
 * Hiding/revealing queues does not automatically update GUI on admin page
 * Feature - Styling (Mattias, you've got this)
+* OnBlur in "Add inputs" does not restore placeholder text
 
 Backend wants:
 * routing framework
