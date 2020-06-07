@@ -66,7 +66,7 @@ export default (props: any): JSX.Element => {
           }
         </td>
         <td>{queueEntry.location}</td>
-        <td>{queueEntry.help ? 'help' : 'presentation'}</td>
+        <td>{queueEntry.help ? 'help' : 'present'}</td>
         <td>{queueEntry.comment}</td>
         <td><TimeAgo date={queueEntry.starttime} /></td>
       </tr>

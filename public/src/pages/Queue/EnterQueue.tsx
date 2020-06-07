@@ -140,11 +140,11 @@ export default (props: any): JSX.Element | null => {
                         onChange={changeHelp} />
                     </div>
                     <div className="col-6">
-                      <label htmlFor="presentation" style={{marginRight: '.5em' }}>Presentation</label>
+                      <label htmlFor="present" style={{marginRight: '.5em' }}>Present</label>
                       <input
                         type="radio"
                         name="react-tips"
-                        value="presentation"
+                        value="present"
                         checked={!help}
                         onChange={changeHelp} />
                       </div>
