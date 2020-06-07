@@ -88,9 +88,20 @@ Backend needs:
 * setHelpstatus is wrong, a user can't set it to false to prevent abuse.
 * broadcasting hide to admin?
 
+Styling:
+* Location/Comment/Help section on /Queue/:queueName
+* Assistant/Teacher options drop-down on /Queue/:queueName
+* Can we improve layout on /Statistics ?
+* Make /Help page more beautiful in general (images are updated once all styling is done)
+* Can we improve search bar looks? Maybe make them smaller or add a magnifying glass or something ?
+* Do more if you like ^.^
+
 Frontend needs:
-* Hiding/revealing queues does not automatically update GUI on admin page
-* Feature - Styling (Mattias, you've got this)
+* [Feature] Fix About page (half done, remove or replace "bla bla bla...")
+* [Feature] Fix Help page (requires styling to be done)
+* Login button on queue page
+* Aggregation on statistics page and flip order on data/graph
+* Something up with "New administrators will have to log out and in again in order to get all of their new privileges." text on admin page
 
 Backend wants:
 * routing framework
@@ -100,7 +111,5 @@ Backend wants:
 * can we please rename "help" to something else? Or make it an enum perhaps
 
 Frontend wants
-* Feature - Fix About page (half done, remove or replace "bla bla bla...")
-* Do not collapse nav-bar if not expanded (visual bug/feature?)
-* Feature - Extract more view-components to make the HTML easier to read (nice to have)
-* Feature - Fix Help page (requires styling to be done)
+* [Styling] Do not collapse nav-bar upon clicking it if it is not expanded (visual bug/feature?) (Mattias, have you got this too?)
+* [Refactoring] Extract more view-components to make the HTML easier to read
