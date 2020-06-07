@@ -10,6 +10,11 @@ import { ActionTypes as PageActions } from '../actions/pageActions';
 import * as Listeners from '../actions/listenerActions';
 import RequestStatus from '../enums/RequestStatus';
 
+interface PendingRequest {
+  request: RequestMessage,
+  sentAt: number
+}
+
 const middleware = () => {
 
   let socket: WebSocket | null = null;
@@ -17,7 +22,10 @@ const middleware = () => {
   let lastJoinRequest: any = null;
   let callbacks: any = {};
   let token: string | null = null;
-  let pendingRequests: RequestMessage[] = [];
+  let pendingRequests: PendingRequest[] = [];
+  let disconnectedAt: number = -1;
+
+  const forcedReloadAfterInterval = 5 * 60 * 1000;
 
   const connect = (store: any): void => {
     socket = new WebSocket(WEB_SOCKET_SERVER_URL);
@@ -36,7 +44,11 @@ const middleware = () => {
       socket.send(message.stringify());
     }
     else {
-      pendingRequests.push(message);
+      var matchingRequestExists = pendingRequests.some(item => item.request.stringify() === message.stringify());
+
+      if (!matchingRequestExists) {
+        pendingRequests.push({ request: message, sentAt: new Date().getTime()});
+      }
     }
   };
 
@@ -46,13 +58,18 @@ const middleware = () => {
     if (store.getState().queues.requestStatus === RequestStatus.Failed) {
       store.dispatch(loadQueues());
     }
+    else if (disconnectedAt !== -1 && new Date().getTime() - disconnectedAt > forcedReloadAfterInterval) {
+      setTimeout(() => store.dispatch(loadQueues()),  Math.floor(Math.random() * 30000));
+    }
+    disconnectedAt = -1;
 
     if (lastJoinRequest !== null) {
       sendMessage(lastJoinRequest);
     }
 
+    pendingRequests = pendingRequests.filter(item => item.sentAt >= new Date().getTime() - forcedReloadAfterInterval);
     while (pendingRequests.length > 0) {
-      const request = pendingRequests[0];
+      const request = pendingRequests[0].request;
       if (request.path.startsWith('subscribe')) {
         pendingRequests.shift();
         continue;
@@ -68,7 +85,8 @@ const middleware = () => {
   const onClose = (store: any) => () => {
     connectionEstablished = false;
     socket = null;
-    setTimeout(() => connect(store), 1000);
+    disconnectedAt = disconnectedAt === -1 ? new Date().getTime() : disconnectedAt;
+    setTimeout(() => connect(store), Math.floor(1000 + Math.random() * 2000));
   };
 
   const onMessage = (store: any) => (event: any) => {
@@ -83,7 +101,6 @@ const middleware = () => {
       let backUp = JSON.stringify(data.content);
 
       for (let property in callbacks) {
-        console.log(`Checking lister: ${property}`);
 
         let regex = new RegExp(`^${property.split(new RegExp(':[^/]+')).join('[^/]+')}$`);
         if (path.match(regex) !== null) {
@@ -98,7 +115,6 @@ const middleware = () => {
             }
           }
 
-          console.log(`Dispatching event to the listen of '${property}'`);
           store.dispatch(callbacks[property](data.content));
         }
       }
@@ -117,7 +133,6 @@ const middleware = () => {
         callbacks['message/:queueName'] = Listeners.onMessageRecieved;
         callbacks['updateQueue/:queueName'] = Listeners.onQueueUpdated;
 
-        console.log(Object.keys(callbacks));
 
         break;
       }
