@@ -95,6 +95,7 @@ Styling:
 * Make /Help page more beautiful in general (images are updated once all styling is done)
 * Can we improve search bar looks? Maybe make them smaller or add a magnifying glass or something ?
 * Add administrator and add queue inputs are grouped weirdly on mobile devices
+* Do not collapse nav-bar upon clicking it if it is not expanded (visual bug)
 * Do more if you like ^.^
 
 Frontend needs:
@@ -109,5 +110,4 @@ Backend wants:
 * can we please rename "help" to something else? Or make it an enum perhaps
 
 Frontend wants
-* [Styling] Do not collapse nav-bar upon clicking it if it is not expanded (visual bug/feature?) (Mattias, have you got this too?)
 * [Refactoring] Extract more view-components to make the HTML easier to read
