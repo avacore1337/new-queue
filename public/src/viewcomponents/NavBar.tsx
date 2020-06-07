@@ -13,7 +13,7 @@ export default (): JSX.Element => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <span data-toggle="collapse" data-target="#navbarText">
-        <Link className="navbar-brand" to="/">Stay A While 2</Link>
+        <Link className="navbar-brand" to="/">Stay A While</Link>
       </span>
       <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
         <span className="navbar-toggler-icon"></span>

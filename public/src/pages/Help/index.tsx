@@ -35,7 +35,7 @@ export default (): JSX.Element => {
           		<h2 id="administrator">Administrators</h2>
 
           		<p>
-          			Administrators are the supreme rulers of Stay A While 2, with privileges to perform just about anything.
+          			Administrators are the supreme rulers of Stay A While, with privileges to perform just about anything.
           			Their primary purpose is adding new queues, and adding teachers for those queues.
           		</p>
 
@@ -44,7 +44,7 @@ export default (): JSX.Element => {
           			To add a server-message, go to the <Link smooth to="/administration">Administration</Link> page.
                 Then click the <em>Set server-message</em> button and enter a message in the window that opens up.
                 Once you have entered your message, click the <em>Set message</em> button to save your message.
-                A server-message will then be shown to every user currently connected to <em>Stay A While 2</em> as
+                A server-message will then be shown to every user currently connected to <em>Stay A While</em> as
                 well as those that connect while the message is active.
                 A server-message may be useful to forewarn users upon updating the service.
           		</p>
@@ -180,7 +180,7 @@ export default (): JSX.Element => {
 
           		<h3 id="statistics">Statistics</h3>
           		<p>
-          			Stay A While 2 allows the teacher to access some information about how a queue has been used.
+          			Stay A While allows the teacher to access some information about how a queue has been used.
           		</p>
           		<p>
           			To access the statistics, first go to the <Link smooth to="/statistics">Statistics</Link> page.
@@ -491,7 +491,7 @@ export default (): JSX.Element => {
 
           		<h3>Queue status</h3>
           		<p>
-          			The queues in Stay A While 2 can have different statuses, which can be good to know.
+          			The queues in Stay A While can have different statuses, which can be good to know.
           			The statuses are indicated by the color and style of the queue name.
           		</p>
           		<table className="table table-striped">

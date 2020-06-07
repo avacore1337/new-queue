@@ -99,6 +99,9 @@ Styling:
 * Do more if you like ^.^
 
 Frontend needs:
+* Remove join button if queue is locked
+* Allow everyone to enter a locked queue
+* Assistant options are show to administrators
 * [Feature] Fix About page (half done, remove or replace "bla bla bla...")
 * [Feature] Fix Help page (requires styling to be done)
 
@@ -111,3 +114,4 @@ Backend wants:
 
 Frontend wants
 * [Refactoring] Extract more view-components to make the HTML easier to read
+* Lock symbol ?

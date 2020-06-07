@@ -20,9 +20,9 @@ export default (): JSX.Element => {
   return (
     <div className="container">
       <div className="card" style={{marginTop: '5%', padding: '2em'}}>
-        <h2>About Stay A While 2</h2>
+        <h2>About Stay A While</h2>
         <p>
-          Welcome to <i>Stay a While 2</i>, the queueing system of KTH
+          Welcome to <i>Stay A While</i>, the queueing system of KTH
         </p>
 
         <p>
@@ -33,7 +33,7 @@ export default (): JSX.Element => {
         </p>
         <p>
           Eventually, the system was adopted by other schools at KTH, at which point it was decided that the system would recieve a rework to improve both performance, visuals, as well as security.
-          Thus, <em>Stay A While 2</em> was developed in 2020 and was a complete rewrite of the original system.
+          Thus, <em>Stay A While</em> was developed in 2020 and was a complete rewrite of the original system.
         </p>
         <p>
           Bla bla bla ...
@@ -44,7 +44,7 @@ export default (): JSX.Element => {
 
         <p>
           <a href="https://github.com/avacore1337/new-queue">
-            <i className="fab fa-github" style={{color: '#000000'}}></i> StayAWhile2@GitHub
+            <i className="fab fa-github" style={{color: '#000000'}}></i> StayAWhile@GitHub
           </a>
           <br />
           Admin: <a href="mailto:robertwb@kth.se?Subject=Stay%20A%20While" target="_top">robertwb@kth.se</a>
@@ -70,7 +70,7 @@ export default (): JSX.Element => {
                 }
                 {
                   contributor.linkedIn
-                    ? <a href={'https://www.linkedin.com/profile/view?id=' + contributor.linkedIn}>
+                    ? <a href={'https://www.linkedin.com/in/' + contributor.linkedIn}>
                         <i className="fab fa-linkedin" style={{color: '#0077B5'}}></i> {contributor.name}
                         <br />
                       </a>
