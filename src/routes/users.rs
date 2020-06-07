@@ -1,3 +1,4 @@
+use crate::auth::Auth;
 use crate::config::AppState;
 use crate::db::{self};
 use crate::errors::{Errors, FieldValidator};
@@ -18,6 +19,14 @@ pub struct LoginUser {
 #[derive(Deserialize)]
 struct LoginUserData {
     username: Option<String>,
+}
+
+#[get("/user")]
+pub fn get_user(auth: Auth, state: State<AppState>, conn: db::DbConn) -> Result<JsonValue, Errors> {
+    match db::users::find(&conn, auth.id) {
+        Some(user) => Ok(json!(user.to_user_auth(&conn, &state.secret))),
+        None => Err(Errors::new(&[("user", "does not exist")])),
+    }
 }
 
 #[post("/users/login", format = "json", data = "<user>")]
