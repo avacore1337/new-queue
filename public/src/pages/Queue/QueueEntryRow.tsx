@@ -6,7 +6,7 @@ import { openSendMessageModal } from '../../actions/modalActions';
 import TimeAgo from 'react-timeago';
 import QueueEntry from '../../models/QueueEntry';
 import User from '../../models/User';
-import { CheckMark, Cross, Envelope, QuestionMark, Star } from '../../viewcomponents/FontAwesome';
+import { CheckMark, Cross, Envelope, QuestionMark, Star, Square } from '../../viewcomponents/FontAwesome';
 
 export default (props: any): JSX.Element => {
 
@@ -41,6 +41,84 @@ export default (props: any): JSX.Element => {
     setDisplayAdministrationOptions(!displayAdministrationOptions);
   }
 
+  function getLocationColor(location: string) {
+    location = location.toLowerCase();
+    const pattern = /^(blue|blå|red|röd|orange|yellow|gul|green|grön|brown|brun|grey|gray|grå|karmosin|white|vit|magenta|violett|turkos|turquoise|game|play|spel|sport|music|musik|art|konst|food|mat)/g;
+
+    let result: string | null = null;
+    const match = location.match(pattern);
+    if (match !== null) {
+      result = match[0];
+    }
+
+    switch (result) {
+      case "blue":
+        return "blue";
+      case "blå":
+        return "blue";
+      case "red":
+        return "red";
+      case "röd":
+        return "red";
+      case "orange":
+        return "#FF7F00";
+      case "yellow":
+        return "yellow";
+      case "gul":
+        return "yellow";
+      case "green":
+        return "green";
+      case "grön":
+        return "green";
+      case "brown":
+        return "brown";
+      case "brun":
+        return "brown";
+      case "grey":
+        return "grey";
+      case "gray":
+        return "grey";
+      case "grå":
+        return "grey";
+      case "karmosin":
+        return "#D91536";
+      case "white":
+        return "white";
+      case "vit":
+        return "white";
+      case "magenta":
+        return "magenta";
+      case "violett":
+        return "#AC00E6";
+      case "turquoise":
+        return "turquoise";
+      case "turkos":
+        return "turquoise";
+      case "game":
+        return "#E6ADAD";
+      case "play":
+        return "#E6ADAD";
+      case "spel":
+        return "#E6ADAD";
+      case "sport":
+        return "#ADADE6";
+      case "music":
+        return "#ADE7AD";
+      case "musik":
+        return "#ADE7AD";
+      case "art":
+        return "#E8E7AF";
+      case "konst":
+        return "#E8E7AF";
+      case "food":
+        return "#E8C9AF";
+      case "mat":
+        return "#E8C9AF";
+      default:
+        return "transparent";
+    }
+  }
+
   function getRowColor() {
     if (queueEntry.badlocation) {
       return 'table-danger';
@@ -59,11 +137,18 @@ export default (props: any): JSX.Element => {
         className={getRowColor()}>
         <th scope="row">{index + 1}</th>
         <td>
-          {
-            user?.ugkthid === queueEntry.ugkthid
-              ? <><Star color="blue" /> {queueEntry.realname}</>
-              : queueEntry.realname
-          }
+          <span className="float-left">
+            {
+              user?.ugkthid === queueEntry.ugkthid
+                ? <><Star color="blue" /> {queueEntry.realname}</>
+                : queueEntry.realname
+            }
+          </span>
+          <span className="float-right">
+            {
+              <Square color={getLocationColor(queueEntry.location)} />
+            }
+          </span>
         </td>
         <td>{queueEntry.location}</td>
         <td>{queueEntry.help ? 'help' : 'present'}</td>
