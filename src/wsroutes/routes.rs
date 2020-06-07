@@ -1,5 +1,6 @@
-use crate::auth::{Auth, BadAuth};
+use crate::auth::Auth;
 use crate::db;
+use crate::errors::ServerError;
 use crate::models::queue_entry::QueueEntry;
 use crate::sql_types::AdminEnum;
 use crate::wsroutes::ws_rs::RoomHandler;
@@ -83,7 +84,7 @@ pub fn add_super_admin_route(
     conn: &PgConnection,
     add_user: Username,
 ) -> Result<()> {
-    let user = db::users::get_or_create(conn, &add_user.username).map_err(|_| BadAuth)?;
+    let user = db::users::get_or_create(conn, &add_user.username).map_err(|_| ServerError)?;
     let admin = db::super_admins::create(conn, user)?;
     handler.send_self("addSuperAdmin", json!(db::users::find(conn, admin.user_id)));
     Ok(())
@@ -104,7 +105,7 @@ pub fn add_queue_route(
     conn: &PgConnection,
     queue_name: &str,
 ) -> Result<()> {
-    let _queue = db::queues::create(conn, queue_name).map_err(|_e| BadAuth)?;
+    let _queue = db::queues::create(conn, queue_name).map_err(|_e| ServerError)?;
     handler.send_self(&("addQueue/".to_string() + queue_name), json!({}));
     Ok(())
 }
@@ -114,7 +115,7 @@ pub fn remove_queue_route(
     conn: &PgConnection,
     queue_name: &str,
 ) -> Result<()> {
-    let _queue = db::queues::remove(conn, queue_name).map_err(|_e| BadAuth)?;
+    let _queue = db::queues::remove(conn, queue_name).map_err(|_e| ServerError)?;
     handler.send_self(&("removeQueue/".to_string() + queue_name), json!({}));
     Ok(())
 }
@@ -167,7 +168,8 @@ pub fn add_teacher_route(
             AdminEnum::Teacher => {}
         },
         Err(_) => {
-            let user = db::users::get_or_create(conn, &add_user.username).map_err(|_| BadAuth)?;
+            let user =
+                db::users::get_or_create(conn, &add_user.username).map_err(|_| ServerError)?;
             let admin = db::admins::create(conn, queue_name, user, AdminEnum::Teacher)?;
             handler.send_self(
                 &("addTeacher/".to_string() + queue_name),
@@ -187,7 +189,8 @@ pub fn add_assistant_route(
     match db::admins::find_by_name(conn, queue_name, &add_user.username) {
         Ok(_) => Ok(()),
         Err(_) => {
-            let user = db::users::get_or_create(conn, &add_user.username).map_err(|_| BadAuth)?;
+            let user =
+                db::users::get_or_create(conn, &add_user.username).map_err(|_| ServerError)?;
             let admin = db::admins::create(conn, queue_name, user, AdminEnum::Assistant)?;
             handler.send_self(
                 &("addAssistant/".to_string() + queue_name),
@@ -233,8 +236,9 @@ pub fn set_help_status_route(
     status: Status,
     queue_name: &str,
 ) -> Result<()> {
-    // if status.status == false {
-    //     return Err
+    if !status.status {
+        return Err(Box::new(ServerError));
+    }
     let queue = db::queues::find_by_name(conn, queue_name)?;
     let queue_entry =
         db::queue_entries::update_help_status(&conn, queue.id, auth.id, status.status)?;

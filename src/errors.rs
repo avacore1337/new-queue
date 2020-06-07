@@ -8,6 +8,26 @@ use std::fmt;
 use validator::{ValidationError, ValidationErrors};
 
 #[derive(Debug, Clone)]
+pub struct ServerError;
+
+impl fmt::Display for ServerError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Experienced internal problems")
+    }
+}
+
+impl error::Error for ServerError {
+    fn description(&self) -> &str {
+        "Experienced internal problems"
+    }
+
+    fn cause(&self) -> Option<&(dyn error::Error)> {
+        // Generic error, underlying cause isn't tracked.
+        None
+    }
+}
+
+#[derive(Debug, Clone)]
 pub struct LdapError;
 
 impl fmt::Display for LdapError {
