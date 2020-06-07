@@ -3,8 +3,10 @@ use crate::db::queue_entries::remove_all;
 use crate::errors::LdapError;
 use crate::models::user::User;
 use crate::reqwest;
+use crate::schema;
 use clokwerk::{Scheduler, TimeUnits};
 use diesel::pg::PgConnection;
+use diesel::prelude::*;
 use ldap3::{LdapConn, ResultEntry, Scope, SearchEntry};
 use regex::Regex;
 use rocket::request::Form;
@@ -104,16 +106,25 @@ fn validate_ticket(ticket: &str) -> Option<String> {
     }
 }
 
-pub fn handle_login(conn: &db::DbConn, params: Form<Ticket>) -> Option<User> {
+pub fn handle_login(conn: &PgConnection, params: Form<Ticket>) -> Option<User> {
     let ugkthid = validate_ticket(params.ticket.as_ref()?)?;
     match fetch_ldap_data_by_ugkthid(&ugkthid) {
-        Ok(ldap_user) => db::users::upsert_ugkthid(
-            conn,
-            &ldap_user.username,
-            &ldap_user.ugkthid,
-            &ldap_user.realname,
-        )
-        .ok(),
+        Ok(ldap_user) => match db::users::find_by_ugkthid(conn, &ugkthid) {
+            Ok(user) => diesel::update(&user)
+                .set((
+                    schema::users::username.eq(&ldap_user.username),
+                    schema::users::realname.eq(&ldap_user.realname),
+                ))
+                .get_result(&*conn)
+                .ok(),
+            Err(_) => db::users::create(
+                conn,
+                &ldap_user.username,
+                &ldap_user.ugkthid,
+                &ldap_user.realname,
+            )
+            .ok(),
+        },
         Err(_) => None,
     }
 }

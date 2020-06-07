@@ -1,6 +1,6 @@
 \c queuesystem
 insert into users (username, ugkthid, realname) VALUES ('antbac', 'ug2hhhh', 'Anton Backstrom');
-insert into users (username, ugkthid, realname) VALUES ('robertwb', 'ug1aaaa', 'Robert Welin-Berger');
+insert into users (username, ugkthid, realname) VALUES ('robertwb', 'u101x961', 'Robert Welin-Berger');
 insert into users (username, ugkthid, realname) VALUES ('tester1', 'ugt1111', 'Testing mcTester');
 insert into users (username, ugkthid, realname) VALUES ('tester2', 'ugt2222', 'Fighter mcFight');
 insert into users (username, ugkthid, realname) VALUES ('tester3', 'ugt3333', 'Jumper mcJump');

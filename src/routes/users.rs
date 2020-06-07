@@ -63,10 +63,5 @@ pub fn kth_auth(
         }
         None => println!("Login failed for some reason..."),
     }
-    // TODO redirect to login target (where they came from)
     Redirect::to("/")
 }
-
-// app.get('/login2', function(req, res) {
-//   res.redirect('https://login.kth.se/login?service=http://queue.csc.kth.se/auth');
-// });

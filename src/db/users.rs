@@ -29,27 +29,6 @@ impl From<Error> for UserCreationError {
     }
 }
 
-pub fn upsert_ugkthid(
-    conn: &PgConnection,
-    username: &str,
-    ugkthid: &str,
-    realname: &str,
-) -> Result<User, UserCreationError> {
-    let new_user = &NewUser {
-        username,
-        ugkthid,
-        realname,
-    };
-
-    diesel::insert_into(users::table)
-        .values(new_user)
-        .on_conflict(users::ugkthid)
-        .do_update()
-        .set(new_user)
-        .get_result::<User>(conn)
-        .map_err(Into::into)
-}
-
 pub fn get_or_create(conn: &PgConnection, username: &str) -> Result<User, UserCreationError> {
     if let Ok(user) = users::table
         .filter(users::username.eq(username))
@@ -73,23 +52,23 @@ pub fn get_or_create(conn: &PgConnection, username: &str) -> Result<User, UserCr
     }
 }
 
-// pub fn create(
-//     conn: &PgConnection,
-//     username: &str,
-//     ugkthid: &str,
-//     realname: &str,
-// ) -> Result<User, UserCreationError> {
-//     let new_user = &NewUser {
-//         username,
-//         ugkthid,
-//         realname,
-//     };
+pub fn create(
+    conn: &PgConnection,
+    username: &str,
+    ugkthid: &str,
+    realname: &str,
+) -> Result<User, UserCreationError> {
+    let new_user = &NewUser {
+        username,
+        ugkthid,
+        realname,
+    };
 
-//     diesel::insert_into(users::table)
-//         .values(new_user)
-//         .get_result::<User>(conn)
-//         .map_err(Into::into)
-// }
+    diesel::insert_into(users::table)
+        .values(new_user)
+        .get_result::<User>(conn)
+        .map_err(Into::into)
+}
 
 pub fn login(conn: &PgConnection, username: &str) -> Option<User> {
     let user = users::table
