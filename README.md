@@ -95,11 +95,11 @@ Styling:
 * Make /Help page more beautiful in general (images are updated once all styling is done)
 * Can we improve search bar looks? Maybe make them smaller or add a magnifying glass or something ?
 * Do more if you like ^.^
+* Add administrator and add queue inputs are grouped weirdly on mobile devices
 
 Frontend needs:
 * [Feature] Fix About page (half done, remove or replace "bla bla bla...")
 * [Feature] Fix Help page (requires styling to be done)
-* Something up with "New administrators will have to log out and in again in order to get all of their new privileges." text on admin page
 
 Backend wants:
 * routing framework
