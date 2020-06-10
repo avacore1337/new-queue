@@ -7,9 +7,11 @@ use crate::schema;
 use clokwerk::{Scheduler, TimeUnits};
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
+use dns_lookup::lookup_addr;
 use ldap3::{LdapConn, ResultEntry, Scope, SearchEntry};
 use regex::Regex;
 use rocket::request::Form;
+use rocket_client_addr::ClientAddr;
 use std::thread;
 use std::time::Duration;
 
@@ -126,5 +128,35 @@ pub fn handle_login(conn: &PgConnection, params: Form<Ticket>) -> Option<User> {
             .ok(),
         },
         Err(_) => None,
+    }
+}
+
+// Test if they are at a recognized school computer
+// Recognized computers are:
+// E-house floor 4 : Blue, Red, Orange, Yellow, Green, Brown
+// E-house floor 5 : Grey, Karmosin, White, Magenta, Violett, Turkos
+// D-house floor 5 : Spel, Sport, Musik, Konst, Mat
+// Kista : ka 650, ka d4
+pub fn get_location(client_addr: &ClientAddr) -> Option<String> {
+    let host = lookup_addr(&client_addr.ip).ok()?;
+    println!("Hostname is {}", host);
+    if !host.ends_with(".kth.se") {
+        None
+    } else {
+        let kth_subname = host
+            .split(".")
+            .next()
+            .unwrap()
+            .replace("-", " ")
+            .to_lowercase();
+        let re = Regex::new(r"(blue|red|orange|yellow|green|brown|grey|karmosin|white|magenta|violett|turkos|spel|sport|musik|konst|mat|ka\s650|ka\sd4)").unwrap();
+        let fixed_name = match re.captures(&kth_subname)?.get(0)?.as_str() {
+            "ka 650" => kth_subname.replace("ka 650", "Ka-209"),
+            "ka d4" => kth_subname.replace("ka d4", "Ka-309"),
+            "mat" => kth_subname.replace("mat", "mat "),
+            name => name.to_string(),
+        };
+
+        Some(fixed_name)
     }
 }

@@ -1,7 +1,9 @@
 use crate::auth::Auth;
 use crate::db;
 use crate::schema::users;
+use crate::util::get_location;
 use chrono::{Duration, Utc};
+use rocket_client_addr::ClientAddr;
 use serde::Serialize;
 
 #[derive(Identifiable, Queryable, Serialize)]
@@ -17,7 +19,7 @@ pub struct UserAuth<'a> {
     username: &'a str,
     ugkthid: &'a str,
     realname: &'a str,
-    location: &'a str,
+    location: String,
     superadmin: bool,
     assistant_in: Vec<String>,
     teacher_in: Vec<String>,
@@ -32,7 +34,12 @@ pub struct Profile {
 }
 
 impl User {
-    pub fn to_user_auth(&self, conn: &db::DbConn, secret: &[u8]) -> UserAuth {
+    pub fn to_user_auth(
+        &self,
+        conn: &db::DbConn,
+        secret: &[u8],
+        client_addr: &ClientAddr,
+    ) -> UserAuth {
         let exp = Utc::now() + Duration::days(60); // TODO: make sure it works as expected when it expires
         let token = Auth {
             id: self.id,
@@ -48,11 +55,12 @@ impl User {
             .unwrap_or(false);
         let assistant_in = db::admins::assistant_queue_names(conn, self.id);
         let teacher_in = db::admins::teacher_queue_names(conn, self.id);
+        let location = get_location(client_addr).unwrap_or_default();
         UserAuth {
             username: &self.username,
             ugkthid: &self.ugkthid,
             realname: &self.realname,
-            location: "",
+            location: location,
             superadmin,
             assistant_in,
             teacher_in,

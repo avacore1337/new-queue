@@ -85,8 +85,7 @@ Install debuggin extensions for React and Redux
 
 
 Backend needs:
-* setHelpstatus is wrong, a user can't set it to false to prevent abuse.
-* broadcasting hide to admin?
+Fix validate ticket regex index (switch to get)
 
 Styling:
 * Location/Comment/Help section on /Queue/:queueName
