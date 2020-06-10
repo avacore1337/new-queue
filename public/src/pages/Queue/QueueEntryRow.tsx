@@ -129,6 +129,19 @@ export default (props: any): JSX.Element => {
     }
   }
 
+  function checkUrlLocation(locationToCheck: string): [boolean, string | null, string | null] {
+    const zoomRegex = /^(https:\/\/)?kth-se\.zoom\.us\/.+/g;
+    if (locationToCheck.match(zoomRegex) !== null) {
+      return [
+        true,
+        'Zoom',
+        !locationToCheck.startsWith('https://') ? `https://${locationToCheck}` : locationToCheck
+      ];
+    }
+
+    return [false, null, null];
+  }
+
   return (
     <>
       <tr
@@ -150,7 +163,13 @@ export default (props: any): JSX.Element => {
             }
           </span>
         </td>
-        <td>{queueEntry.location}</td>
+        <td>
+        {
+          checkUrlLocation(queueEntry.location)[0]
+            ? <a href={checkUrlLocation(queueEntry.location)[2] || '#'} target="_blank">{checkUrlLocation(queueEntry.location)[1]}</a>
+            : queueEntry.location
+        }
+        </td>
         <td>{queueEntry.help ? 'help' : 'present'}</td>
         <td>{queueEntry.comment}</td>
         <td><TimeAgo date={queueEntry.starttime} /></td>

@@ -17,11 +17,11 @@ export default (state: User | null = initialState, action: FluxStandardAction) =
         ugkthid: action.payload.data.ugkthid,
         name: action.payload.data.realname,
         username: action.payload.data.username,
+        location: action.payload.data.location,
         token: action.payload.data.token,
         isAdministrator: action.payload.data.superadmin,
         teacherIn: action.payload.data.teacher_in,
-        assistantIn: action.payload.data.assistant_in,
-        location: action.payload.data.location
+        assistantIn: action.payload.data.assistant_in
       };
       localStorage.setItem('Token', JSON.stringify({ token: action.payload.data.token, validUntil: new Date().getTime() + LifeTime }));
       return new User(userData);
@@ -48,7 +48,7 @@ export default (state: User | null = initialState, action: FluxStandardAction) =
               ugkthid: decodedData.ugkthid,
               name: decodedData.realname,
               username: decodedData.username,
-              location: decodedData.location,
+              location: action.payload.data.location,
               token: decodedData.token,
               isAdministrator: decodedData.superadmin,
               teacherIn: decodedData.teacher_in,

@@ -102,6 +102,7 @@ Frontend needs:
 * [Feature] Fix About page (half done, remove or replace "bla bla bla...")
 * [Feature] Fix Help page (requires styling to be done)
 * [Feature] Don't allow users to change their location if the backend provides one
+* [Feature] Don't throw away token at timeout on /api/user
 
 Backend wants:
 * routing framework

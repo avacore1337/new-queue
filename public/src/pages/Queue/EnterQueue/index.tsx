@@ -31,6 +31,10 @@ export default (props: any): JSX.Element | null => {
     const newComment = personalQueueEntry?.comment || '';
     const newHelp = personalQueueEntry?.help || true;
 
+    if (user?.location && personalQueueEntry?.location && user?.location !== personalQueueEntry?.location) {
+      dispatch(updatePersonalEntry(queueName, newComment, newLocation, newHelp));
+    }
+
     setLocation(newLocation);
     setComment(newComment);
     setHelp(newHelp);
@@ -38,6 +42,10 @@ export default (props: any): JSX.Element | null => {
   }, [personalQueueEntry, user]);
 
   function changeLocation(event: any): void {
+    if (user?.location) {
+      return;
+    }
+
     setLocation(event.target.value);
     if (personalQueueEntry !== null && event.target.value && comment) {
       sendPersonalEntry(queueName, comment, event.target.value, help);
