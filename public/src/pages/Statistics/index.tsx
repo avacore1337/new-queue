@@ -40,8 +40,6 @@ export default (): JSX.Element => {
     try {
       const unix = (value as moment.Moment).unix();
       setFrom(unix);
-      console.log(unix);
-      console.log(until);
       if (until !== null && unix > until) {
         setErrorMessage('From-date must be before until-date');
       }
@@ -58,7 +56,6 @@ export default (): JSX.Element => {
     try {
       const unix = (value as moment.Moment).unix();
       setUntil(unix);
-      console.log(from !== null && unix < from);
       if (from !== null && unix < from) {
         setErrorMessage('From-date must be before until-date');
       }
