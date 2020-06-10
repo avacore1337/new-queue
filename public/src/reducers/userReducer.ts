@@ -76,7 +76,14 @@ export default (state: User | null = initialState, action: FluxStandardAction) =
     }
 
     case UserActions.LoadUser.Rejected: {
-      localStorage.removeItem('Token');
+      if (action.meta.UserDataLocation !== UserDataLocation.Response) {
+        break;
+      }
+
+      if (action.payload.message === 'Request failed with status code 403') {
+        localStorage.removeItem('Token');
+      }
+
       return state;
     }
 
