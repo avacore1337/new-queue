@@ -17,7 +17,7 @@ export default (props: any): JSX.Element => {
 
   const [location, setLocation] = useState(user?.location || personalQueueEntry?.location || '');
   const [comment, setComment] = useState(personalQueueEntry?.comment || '');
-  const [help, setHelp] = useState(personalQueueEntry?.help || true);
+  const [help, setHelp] = useState(personalQueueEntry !== null ? personalQueueEntry.help : true);
 
   useEffect(() => {
     const newLocation = user?.location || personalQueueEntry?.location || '';
