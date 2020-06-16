@@ -101,10 +101,11 @@ Styling:
 * Location/Comment/Help section on /Queue/:queueName
 * Assistant/Teacher options drop-down on /Queue/:queueName
 * Can we improve layout on /Statistics ?
-* Make /Help page more beautiful in general (images are updated once all styling is done)
 * Can we improve search bar looks? Maybe make them smaller or add a magnifying glass or something ?
-* Add administrator and add queue inputs are grouped weirdly on mobile devices
 * Do not collapse nav-bar upon clicking it if it is not expanded (visual bug)
+* Pointer on queue row
+* Add administrator and add queue inputs are grouped weirdly on mobile devices
+* Make /Help page more beautiful in general (images are updated once all styling is done)
 * Do more if you like ^.^
 
 Frontend needs:
