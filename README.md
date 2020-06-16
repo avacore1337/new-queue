@@ -85,7 +85,8 @@ Install debuggin extensions for React and Redux
 
 
 Backend needs:
-Fix validate ticket regex index (switch to get)
+* Fix validate ticket regex index (switch to get)
+* Handle sender of personal messages
 
 Styling:
 * Location/Comment/Help section on /Queue/:queueName
@@ -100,6 +101,8 @@ Styling:
 Frontend needs:
 * [Feature] Fix About page (half done, remove or replace "bla bla bla...")
 * [Feature] Fix Help page (requires styling to be done)
+* [Feature] Ability to clear the queue info
+* [Feature] Better useability for clearing the MOTD
 
 Backend wants:
 * routing framework
@@ -110,3 +113,9 @@ Backend wants:
 
 Frontend wants
 * [Refactoring] Extract more view-components to make the HTML easier to read
+* Protect against double click on "recieving help" since the "leave queue button" takes its place
+* Sort queues in lobby after:
+  1. Hidden (visible above)
+  2. Own place in queue (lowest number first)
+  3. Length of queue (highest value first)
+  4. Alphabetically (a-z)

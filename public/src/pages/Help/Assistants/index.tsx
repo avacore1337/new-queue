@@ -69,52 +69,6 @@ export default (): JSX.Element | null => {
             The user will then have a red color until they have edited their location.
           </p>
 
-          <h3 id="completion">Completion</h3>
-          <p>
-            If a user presents a solution to an assistant but is failed and made to change some things about their assignment, the
-            assistant can mark the user for completion.
-          </p>
-          <p>
-            Marking a user for completion is done by clicking the yellow button with a bookmark on it.
-            The button is found at the same place as the one used to <Link smooth to="/help#kick">kick</Link> a user.
-            Once the button is clicked, a window will open up allowing the assistant to add an <strong>optional</strong> comment
-            about what the completion contains.
-            When you are happy with the comment you click <em>Submit</em> to save it.
-            Upon marking a user for completion, the user is automatically kicked from the queue.
-            If a task was added by the assistant, it can be found by <Link smooth to="/help#readMessages">reading the messages</Link> about a user.
-          </p>
-          <p>
-            A user marked for completion will have a yellow color the next time they enter the queue with the intention of presenting.
-          </p>
-
-          <h3 id="addMessage">Add message</h3>
-          <p>
-            An assistant can add a comment about a user in case they think that the next assistant to help that user should know
-            something specific.
-            A possible comment may be <em>"I might have given them too much code"</em>.
-          </p>
-          <p>
-            To add a message about a user, click the yellow button with a tag-icon on it.
-            The button is found at the same place as the one used to <Link smooth to="/help#kick">kick</Link> a user.
-          </p>
-          <p>
-            The message may then be read by <Link smooth to="/help#readMessages">reading the messages</Link> about a user as specified below.
-          </p>
-
-          <h3 id="readMessages">Read messages</h3>
-          <p>
-            By double-clicking a user in the queue, the administrative options are shown.
-            If the user has some messages connected to them, the magnifying glass to the right will show up in a blue color.
-            If the magnifying glass is gray, that means that no messages exist about the user.
-            Clicking the blue magnifying glass opens a window showing all the messages about the user.
-          </p>
-          <p>
-            <em>
-              Note: If you are accessing the service through a recognized smartphone device, you will only have to click once to
-              show the option to kick a user.
-            </em>
-          </p>
-
           <h3 id="broadcast">Broadcast</h3>
           <p>
             If you want every user in the queue to know something you can user the ability to broadcast information.
@@ -149,49 +103,6 @@ export default (): JSX.Element | null => {
             <em>
               Note: By using this function, only assistants and teachers can see the message.
               If you want everyone in the queue to see the message, use <Link smooth to="/help#broadcast">Broadcast</Link> as described above.
-            </em>
-          </p>
-
-          <h3 id="setMOTD">Set MOTD</h3>
-          <p>
-            MOTD stands for <em>Message Of The Day</em>.
-            If you want users to know something once they enter the <em>room</em>, you can set a MOTD.
-            The MOTD will be shown to every user once they enter the <em>room</em> and may i.e.
-            be used to let them know that you only accept presentations today.
-          </p>
-          <p>
-            You set the MOTD by clicking the <Link smooth to="/help#assistantOptions">dropdown</Link> with administrative options and clicking
-            <em>Set MOTD</em>, this will open a window prompting the user to enter a message, as well as showing the current MOTD if
-            there is one.
-            Once the message is entered, click the <em>Set MTOD</em> button to save it.
-          </p>
-          <p>
-            In order to remove the MOTD, follow the same procedure, but click <em>Remove MOTD</em> on the window that opens up.
-          </p>
-          <p>
-            <em>
-              Note: If you want the user to see the information for a longer amount of time,
-              use <Link smooth to="/help#setInfo">Set queue info</Link> described below.
-            </em>
-          </p>
-
-          <h3 id="setInfo">Set queue info</h3>
-          <p>
-            Information that you wish to show the user continuously should be entered as <em>queue info</em>.
-            The queue info is shown on the top of the screen if there is one and can only be removed by an assistant or teacher.
-          </p>
-          <p>
-            You set the <em>queue info</em> by clicking the <Link smooth to="/help#assistantOptions">dropdown</Link> with administrative options
-            and clicking <em>Set queue info</em>, this will open a window prompting the user to enter some information.
-            Once the message is entered, click the <em>Set info</em> button to save it.
-          </p>
-          <p>
-            In order to remove the info, follow the same procedure, but click <em>Remove info</em> on the window that opens up.
-          </p>
-          <p>
-            <em>
-              Note: If you only want the user to see the info once, when they enter the <em>room</em>, try using
-              <Link smooth to="/help#setMOTD">MOTD</Link> instead.
             </em>
           </p>
 

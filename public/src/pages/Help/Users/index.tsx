@@ -63,10 +63,9 @@ export default (): JSX.Element | null => {
           <p>
             When a person is standing in the queue, they may have different colored backgrounds, here are their respective description.
           </p>
-          <h4 id="whiteAndGray"><span style={{'backgroundColor': '#E3AF81', 'color': 'white'}}>White</span>
-          and <span style={{'color': 'gray'}}>Gray</span></h4>
+          <h4 id="whiteAndGray"><span style={{'backgroundColor': '#E3AF81', 'color': 'white'}}>White</span> and <span style={{'color': 'gray'}}>Gray</span></h4>
           <p>
-            White and gray backgrounds indicates that the person is merely standing in the queueand the different colors are
+            White and gray backgrounds indicates that the person is merely standing in the queue and the different colors are
             only used to make it easier to distinguish between the different rows.
           </p>
           <h4 id="blueStar" style={{'color': '#90C3D4'}}>Blue <Star color="blue" /></h4>
@@ -79,7 +78,7 @@ export default (): JSX.Element | null => {
           </p>
           <p>
             <em>
-              Note: We do realise that there is no specific color, do not be THAT person ...
+              Note: We do realise that there is no specific color, don't be THAT person ...
             </em>
           </p>
           <h4 id="yellow" style={{'color': '#ECD024'}}>Yellow</h4>
