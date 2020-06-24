@@ -37,7 +37,7 @@ export default (props: any): JSX.Element | null => {
             aria-expanded="false" >
             Options
           </button>
-          <div  className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <div className="dropdown-item clickable" onClick={() => dispatch(openBroadcastModal(queue.name))}><Megaphone /> Broadcast</div>
             <div className="dropdown-item clickable" onClick={() => dispatch(openBroadcastFacultyModal(queue.name))}><Megaphone /> Broadcast faculty</div>
             {

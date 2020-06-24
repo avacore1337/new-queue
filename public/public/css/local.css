@@ -302,6 +302,10 @@ td.rdtYear:hover {
   cursor: default;
 }
 
+.dropdown-menu {
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important
+}
+
 .dropdown-menu i {
   width: 25px;
   text-align: center;
