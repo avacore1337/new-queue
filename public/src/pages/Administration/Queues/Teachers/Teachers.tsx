@@ -12,7 +12,6 @@ export default (props: any): JSX.Element => {
     <>
       <div className="row mb-3">
         <h3>Teachers of Stay A While <Link to="/help#teacher">?</Link></h3>
-        <p>New teachers will have to log out and in again in order to get all of their new privileges.</p>
       </div>
       <div className="row mb-3">
         <AddTeacherViewComponent queue={queue} />

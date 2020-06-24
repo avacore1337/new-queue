@@ -20,7 +20,7 @@ export default function AdministrationInformationViewComponent() {
       : <>
           <div className="row">
             <h1>Administration</h1>
-            </div>
+          </div>
           <div className="row">
             <p>Please be careful on this page. Here, you have the power to change everything.</p>
           </div>

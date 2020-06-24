@@ -11,7 +11,7 @@ cp .env.example .env
 ```
 
 ### Get rust nightly
-Get [rustup](https://rustup.rs/) (nightly version) 
+Get [rustup](https://rustup.rs/) (nightly version)
 
 run script, but pick nightly instead of stable. Can be changed for the project with rustup if you forget.
 ```bash
@@ -35,7 +35,7 @@ In case postgresql doesn't automaticaly start, run:
 sudo service postgreqsl start
 ```
 
-[setup a user with your current username](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-18-04). 
+[setup a user with your current username](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-18-04).
 
 You know it works when you can run `psql` when logged in as your normal user.
 
@@ -123,8 +123,6 @@ Styling:
 * Can we improve layout on /Statistics ?
 * Can we improve search bar looks? Maybe make them smaller or add a magnifying glass or something ?
 * Do not collapse nav-bar upon clicking it if it is not expanded (visual bug)
-* Pointer on queue row
-* Add administrator and add queue inputs are grouped weirdly on mobile devices
 * Make /Help page more beautiful in general (images are updated once all styling is done)
 * Do more if you like ^.^
 
@@ -149,4 +147,3 @@ Frontend wants
   2. Own place in queue (lowest number first)
   3. Length of queue (highest value first)
   4. Alphabetically (a-z)
-

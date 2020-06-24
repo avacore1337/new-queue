@@ -13,7 +13,7 @@ export default (): JSX.Element | null => {
     user === null || (!user.isAdministrator && !user.isTeacher)
       ? null
       : <>
-          <div className="row mb-5">
+          <div className="row mb-lg-5 mb-3">
             <AddQueueViewModel />
           </div>
           <div className="row">

@@ -147,7 +147,7 @@ export default (props: any): JSX.Element => {
       <tr
         onClick={mayAdministerQueue ? () => clickRow() : undefined}
         onTouchEnd={mayAdministerQueue ? () => touchRow() : undefined}
-        className={getRowColor()}>
+        className={`${getRowColor()}${(mayAdministerQueue ? ' clickable' : '')}`}>
         <th scope="row">{index + 1}</th>
         <td>
           <span className="float-left">

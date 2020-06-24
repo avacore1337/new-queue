@@ -42,14 +42,16 @@ export default (): JSX.Element => {
           {
             user.isAdministrator
               ? <>
-            		  <div className="row mb-3">
-                    <h2>Administrators of Stay A While <Link to="/help#administrator">?</Link></h2>
-                    <p>New administrators will have to log out and in again in order to get all of their new privileges.</p>
-                  </div>
           		    <div className="row mb-5">
+                    <div className="col-12 mb-3">
+                      <h2>Administrators of Stay A While <Link to="/help#administrator">?</Link></h2>
+                    </div>
           		      <div className="col-12 col-lg-6">
           		        <AdministratorsViewComponent />
           		      </div>
+                    <div className="col-12 mb-3 d-lg-none d-inline mt-5">
+                      <h2>Queues of Stay A While</h2>
+                    </div>
           		      <div className="col-12 col-lg-6">
           		        <QueuesViewComponent />
           		      </div>

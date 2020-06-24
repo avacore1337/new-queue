@@ -13,7 +13,7 @@ export default (): JSX.Element | null => {
     user === null || !user.isAdministrator
       ? null
       : <>
-          <div className="row mb-5">
+          <div className="row mb-lg-5 mb-3">
             <AddAdminViewModel />
           </div>
           <div className="row">
