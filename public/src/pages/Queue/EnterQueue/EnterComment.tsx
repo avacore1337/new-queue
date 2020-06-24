@@ -49,7 +49,8 @@ export default (props: any): JSX.Element => {
             value={props.comment}
             onChange={changeComment}
             onKeyUp={enterQueue}
-            style={{width: '100%', borderRadius: 0}} />
+            style={{width: '100%', borderRadius: 0}} 
+            className="form-control" />
           {
             props.comment === ''
             ? <>
