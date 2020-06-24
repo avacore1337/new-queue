@@ -27,9 +27,9 @@ export default (props: any): JSX.Element | null => {
   return (
     !isTeacher && !isAssistant
       ? null
-      : <div className="dropdown col-12 col-lg-3 mt-lg-3">
+      : <div className="col-12 col-lg-4 mt-lg-3 my-3 pl-0">
           <button
-            className="btn btn-outline-dark dropdown-toggle"
+            className="btn dropdown-toggle"
             type="button"
             id="dropdownMenuButton"
             data-toggle="dropdown"
@@ -37,27 +37,27 @@ export default (props: any): JSX.Element | null => {
             aria-expanded="false" >
             Options
           </button>
-          <div className="dropdown-menu row" aria-labelledby="dropdownMenuButton">
-            <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(openBroadcastModal(queue.name))}>Broadcast <Megaphone /></div>
-            <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(openBroadcastFacultyModal(queue.name))}>Broadcast faculty <Megaphone /></div>
+          <div  className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <div className="dropdown-item clickable" onClick={() => dispatch(openBroadcastModal(queue.name))}><Megaphone /> Broadcast</div>
+            <div className="dropdown-item clickable" onClick={() => dispatch(openBroadcastFacultyModal(queue.name))}><Megaphone /> Broadcast faculty</div>
             {
               isTeacher
                 ? <>
-                    <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(openSetMotdModal(queue.name))}>Set MOTD <Sign /></div>
-                    <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(openSetQueueInformationModal(queue.name))}>Set queue information <Information /></div>
+                    <div className="dropdown-item clickable" onClick={() => dispatch(openSetMotdModal(queue.name))}><Sign /> Set MOTD</div>
+                    <div className="dropdown-item clickable" onClick={() => dispatch(openSetQueueInformationModal(queue.name))}><Information /> Set queue information</div>
                   </>
                 : null
             }
-            <div className="col red clickable col-10 offset-1 my-1" onClick={() => dispatch(purgeQueue(queue.name))}>Purge queue <Trashbin /></div>
+            <div className="dropdown-item clickable red" onClick={() => dispatch(purgeQueue(queue.name))}><Trashbin /> Purge queue</div>
             {
               queue.locked
-                ? <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(unlockQueue(queue.name))}>Unlock queue <Unlock /></div>
-                : <div className="col red clickable col-10 offset-1 my-1" onClick={() => dispatch(lockQueue(queue.name))}>Lock queue <Lock /></div>
+                ? <div className="dropdown-item clickable" onClick={() => dispatch(unlockQueue(queue.name))}><Unlock /> Unlock queue</div>
+                : <div className="dropdown-item clickable red" onClick={() => dispatch(lockQueue(queue.name))}><Lock /> Lock queue</div>
             }
             {
               playSounds
-                ? <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(disableSounds())}>Disable sounds <Muted /></div>
-                : <div className="col yellow clickable col-10 offset-1 my-1" onClick={() => dispatch(enableSounds())}>Enable sounds <VolumeUp /></div>
+                ? <div className="dropdown-item clickable" onClick={() => dispatch(disableSounds())}><Muted /> Disable sounds</div>
+                : <div className="dropdown-item clickable" onClick={() => dispatch(enableSounds())}><VolumeUp /> Enable sounds</div>
             }
           </div>
         </div>

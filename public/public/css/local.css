@@ -301,3 +301,8 @@ td.rdtYear:hover {
 .rdtTime td {
   cursor: default;
 }
+
+.dropdown-menu i {
+  width: 25px;
+  text-align: center;
+}
