@@ -13,6 +13,7 @@ import { ModalType as ShowQueueModal } from '../viewcomponents/Modals/ShowQueueM
 import { ModalType as HideQueueModal } from '../viewcomponents/Modals/HideQueueModal';
 import { ModalType as DeleteQueueModal } from '../viewcomponents/Modals/DeleteQueueModal';
 import { ModalType as ShowMotdModal } from '../viewcomponents/Modals/ShowMotdModal';
+import { ModalType as SendBadLocationModal } from '../viewcomponents/Modals/SendBadLocation';
 
 const initialState = {
   modalList: [] as Modal[],
@@ -84,6 +85,10 @@ export default (state = initialState, action: FluxStandardAction) => {
 
     case ModalActionTypes.OpenShowMotdModal: {
       return { ...state, modalList: [...state.modalList, new Modal(ShowMotdModal, action.payload)] }
+    }
+
+    case ModalActionTypes.OpenSendBadLocationModal: {
+      return { ...state, modalList: [...state.modalList, new Modal(SendBadLocationModal, action.payload)] }
     }
 
   }

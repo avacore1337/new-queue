@@ -5,6 +5,7 @@ export const ActionTypes = Object.freeze({
   SendMessage: 'SEND_MESSAGE',
   Help: 'HELP',
   BadLocation: 'BAD_LOCATION',
+  UnknownLocation: 'UNKNOWN_LOCATION',
   Broadcast: 'BROADCAST',
   BroadcastFaculty: 'BROADCAST_FACULTY',
   SetMotd: 'SET_MOTD',
@@ -31,6 +32,11 @@ export const toggleHelp = (queueName: string, ugkthid: string, newStatus: boolea
 
 export const badLocation = (queueName: string, ugkthid: string): FluxStandardAction => ({
   type: ActionTypes.BadLocation,
+  payload: { queueName, ugkthid }
+});
+
+export const unknownLocation = (queueName: string, ugkthid: string): FluxStandardAction => ({
+  type: ActionTypes.UnknownLocation,
   payload: { queueName, ugkthid }
 });
 

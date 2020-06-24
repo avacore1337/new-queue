@@ -327,7 +327,16 @@ const middleware = () => {
 
       case AssistantActions.BadLocation: {
         sendMessage(new RequestMessage(`badLocation/${action.payload.queueName}`, {
-          ugkthid: action.payload.ugkthid
+          ugkthid: action.payload.ugkthid,
+          message: 'bad location'
+        }));
+        break;
+      }
+
+      case AssistantActions.UnknownLocation: {
+        sendMessage(new RequestMessage(`badLocation/${action.payload.queueName}`, {
+          ugkthid: action.payload.ugkthid,
+          message: 'unknown location'
         }));
         break;
       }

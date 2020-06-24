@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../store';
 import { kickUser, toggleHelp, badLocation } from '../../actions/assistantActions';
-import { openSendMessageModal } from '../../actions/modalActions';
+import { openSendMessageModal, openSendBadLocationModal } from '../../actions/modalActions';
 import TimeAgo from 'react-timeago';
 import QueueEntry from '../../models/QueueEntry';
 import User from '../../models/User';
@@ -213,7 +213,7 @@ export default (props: any): JSX.Element => {
                             </div>
                           </div>
                     }
-                    <div title="bad location" className="col-12 col-lg-3 px-3 my-1" onClick={() => dispatch(badLocation(queueName, queueEntry.ugkthid))}>
+                    <div title="bad location" className="col-12 col-lg-3 px-3 my-1" onClick={() => dispatch(openSendBadLocationModal(queueName, queueEntry.ugkthid))}>
                       <div
                         className="text-center yellow clickable"
                         style={{lineHeight: '2em'}}>

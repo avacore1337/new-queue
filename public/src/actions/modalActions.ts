@@ -12,7 +12,8 @@ export const ActionTypes = Object.freeze({
   OpenShowQueueModal: 'OPEN_SHOW_QUEUE_MODAL',
   OpenHideQueueModal: 'OPEN_HIDE_QUEUE_MODAL',
   OpenDeleteQueueModal: 'OPEN_DELETE_QUEUE_MODAL',
-  OpenShowMotdModal: 'OPEN_SHOW_MOTD_MODAL'
+  OpenShowMotdModal: 'OPEN_SHOW_MOTD_MODAL',
+  OpenSendBadLocationModal: 'OPEN_SEND_BAD_LOCATION_MODAL'
 });
 
 export const closeModal = (): FluxStandardAction => ({
@@ -70,4 +71,9 @@ export const openDeleteQueueModal = (queueName: string): FluxStandardAction => (
 export const openShowMotdModal = (message: string): FluxStandardAction => ({
   type: ActionTypes.OpenShowMotdModal,
   payload: { message }
+});
+
+export const openSendBadLocationModal = (queueName: string, ugkthid: string): FluxStandardAction => ({
+  type: ActionTypes.OpenSendBadLocationModal,
+  payload: { queueName, ugkthid }
 });
