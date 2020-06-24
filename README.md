@@ -1,21 +1,28 @@
 # new-queue
 
-This the the new queue system, written in rust.
+This the the new queue system, written in Rust and React.
 
 ## Setup
 ```bash
 sudo apt install libssl-dev -y
 sudo apt install postgresql postgresql-contrib -y
 sudo apt install libpq-dev openssl -y
+cp .env.example .env
 ```
 
 ### Get rust nightly
-Get [rustup](https://rustup.rs/) (nightly version) from
+Get [rustup](https://rustup.rs/) (nightly version) 
 
 run script, but pick nightly instead of stable. Can be changed for the project with rustup if you forget.
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ````
+
+If it doesn't compile you might need to install our currently used nightly version:
+```bash
+rustup toolchain install nightly-2020-03-07
+```
+
 
 Install Diesel CLI
 ```bash
@@ -23,8 +30,16 @@ cargo install diesel_cli --no-default-features --features postgres
 ```
 
 ### Setup postgresql
+In case postgresql doesn't automaticaly start, run:
+```bash
+sudo service postgreqsl start
+```
 
-setup a user (with your current username) with password. You know it works when you can run `psql` Then run:
+[setup a user with your current username](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-18-04). 
+
+You know it works when you can run `psql` when logged in as your normal user.
+
+Then run:
 ```bash
 ./reset_database.sh
 ```
@@ -40,7 +55,10 @@ When setting up for production you need to create a database with password, and 
 
 The .env file also need a new secret so that auth tokens can't be decrypted.
 
-Then simply run ```diesel migration run``` and you should be good to go.
+Then simply run ```diesel migration run``` and then start the server in production mode with:
+```bash
+cargo run --release
+```
 
 ## Building
 Build the project
@@ -53,6 +71,8 @@ Start the project using
 ```bash
 cargo run
 ```
+
+In this mode anyone can log in as anyone by going to /mocklogin
 
 ## Tips and tricks
 Run new migrations with
@@ -129,3 +149,4 @@ Frontend wants
   2. Own place in queue (lowest number first)
   3. Length of queue (highest value first)
   4. Alphabetically (a-z)
+
