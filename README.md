@@ -83,23 +83,36 @@ Install debuggin extensions for React and Redux
 
 # Features and Bugs
 
+Issues on mobile devices:
+* Navbar opens upon clicking it, which is unwanted if it's the "brand-text"
+* Layout of queue cards look weird on mobile devices
+* Broadcasting a message opens the broadcast modal again
+* Broadcasting a message to faculty members opens the broadcast modal again
+* Scrolling the list of users in the queue counts as a touch and opens the assistant options
+* Sending personal messages opens the broadcast modal
+* Clicking a user at the bottom of the list may trigger the assistant options that pop up
+* Images and text does not adapt to mobile devices
 
 Backend needs:
-Fix validate ticket regex index (switch to get)
+* Fix validate ticket regex index (switch to get)
+* Handle sender of personal messages
 
 Styling:
 * Location/Comment/Help section on /Queue/:queueName
 * Assistant/Teacher options drop-down on /Queue/:queueName
 * Can we improve layout on /Statistics ?
-* Make /Help page more beautiful in general (images are updated once all styling is done)
 * Can we improve search bar looks? Maybe make them smaller or add a magnifying glass or something ?
-* Add administrator and add queue inputs are grouped weirdly on mobile devices
 * Do not collapse nav-bar upon clicking it if it is not expanded (visual bug)
+* Pointer on queue row
+* Add administrator and add queue inputs are grouped weirdly on mobile devices
+* Make /Help page more beautiful in general (images are updated once all styling is done)
 * Do more if you like ^.^
 
 Frontend needs:
 * [Feature] Fix About page (half done, remove or replace "bla bla bla...")
 * [Feature] Fix Help page (requires styling to be done)
+* [Feature] Ability to clear the queue info
+* [Feature] Better useability for clearing the MOTD
 
 Backend wants:
 * routing framework
@@ -110,3 +123,9 @@ Backend wants:
 
 Frontend wants
 * [Refactoring] Extract more view-components to make the HTML easier to read
+* Protect against double click on "recieving help" since the "leave queue button" takes its place
+* Sort queues in lobby after:
+  1. Hidden (visible above)
+  2. Own place in queue (lowest number first)
+  3. Length of queue (highest value first)
+  4. Alphabetically (a-z)
