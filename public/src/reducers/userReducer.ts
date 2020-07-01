@@ -45,7 +45,7 @@ export default (state: User | null = initialState, action: FluxStandardAction) =
               ugkthid: decodedData.ugkthid,
               name: decodedData.realname,
               username: decodedData.username,
-              location: action.payload.data.location,
+              location: decodedData.location,
               token: decodedData.token,
               isAdministrator: decodedData.superadmin,
               teacherIn: decodedData.teacher_in,
