@@ -1,8 +1,5 @@
-import axios from 'axios';
 import { FluxStandardAction } from 'redux-promise-middleware';
 import { ActionTypes as UserActions, UserDataLocation } from '../actions/userActions';
-import { ActionTypes as GlobalActions } from '../actions/globalActions';
-import { HTTP_SERVER_URL } from '../configuration';
 import User from '../models/User';
 
 const LifeTime = 4 * 3600 * 1000;
@@ -32,7 +29,7 @@ export default (state: User | null = initialState, action: FluxStandardAction) =
       return null;
     }
 
-    case UserActions.LoadUser.Fulfilled: {
+    case UserActions.LoadUser: {
       switch (action.meta.UserDataLocation) {
         case UserDataLocation.Cookie: {
           const prefix = 'userdata=';
@@ -56,7 +53,13 @@ export default (state: User | null = initialState, action: FluxStandardAction) =
             });
           }
         }
+      }
 
+      return state;
+    }
+
+    case UserActions.LoadUser.Fulfilled: {
+      switch (action.meta.UserDataLocation) {
         case UserDataLocation.Response: {
 
           return new User({
