@@ -39,7 +39,7 @@ export default (state: User | null = initialState, action: FluxStandardAction) =
             const decodedData = JSON.parse(decodeURIComponent(cookieData.substr(prefix.length)));
             localStorage.setItem('Token', JSON.stringify({ token: decodedData.token, validUntil: new Date().getTime() + LifeTime }));
 
-            document.cookie = document.cookie.split(';').map(cookie => cookie.trim()).filter(cookie => !cookie.startsWith(prefix)).join('; ');
+            document.cookie = `${prefix}; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
 
             return new User({
               ugkthid: decodedData.ugkthid,

@@ -294,7 +294,7 @@ const middleware = () => {
       }
 
       case UserActions.LoadUser: {
-        const userData = localStorage.getItem('User');
+        const userData = localStorage.getItem('Token');
         token = userData ? JSON.parse(userData).token : null;
         callbacks['message'] = Listeners.onMessageRecieved;
         callbacks['message/:queueName'] = Listeners.onMessageRecieved;
