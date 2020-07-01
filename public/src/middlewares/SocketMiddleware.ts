@@ -126,7 +126,7 @@ const middleware = () => {
       case GlobalActions.Initialize: {
         connect(store);
 
-        const userData = localStorage.getItem('User');
+        const userData = localStorage.getItem('Token');
         token = userData ? JSON.parse(userData).token : null;
 
         callbacks['message'] = Listeners.onMessageRecieved;
