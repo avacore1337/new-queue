@@ -104,7 +104,6 @@ Install debuggin extensions for React and Redux
 # Features and Bugs
 
 Issues on mobile devices:
-* Navbar opens upon clicking it, which is unwanted if it's the "brand-text"
 * Images and text does not adapt to mobile devices
 
 Backend needs:
