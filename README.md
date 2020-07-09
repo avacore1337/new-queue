@@ -133,8 +133,3 @@ Backend wants:
 
 Frontend wants
 * [Refactoring] Extract more view-components to make the HTML easier to read
-* Sort queues in lobby after:
-  1. Hidden (visible above)
-  2. Own place in queue (lowest number first)
-  3. Length of queue (highest value first)
-  4. Alphabetically (a-z)

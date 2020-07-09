@@ -16,8 +16,27 @@ export default (): JSX.Element => {
   const user = useSelector<GlobalStore, User | null>(store => store.user);
   const queues = useSelector<GlobalStore, Queue[]>(store => store.queues.queueList)
   .sort((queue1: Queue, queue2: Queue) => {
+    // 1. Hidden (visible above)
     if (queue1.hiding && !queue2.hiding) { return 1; }
     if (!queue1.hiding && queue2.hiding) { return -1; }
+
+    // 2. Own place in queue (lowest number first)
+    if (user != null) {
+      const location1 = queue1.queueEntries.findIndex(e => e.ugkthid === user.ugkthid);
+      const location2 = queue2.queueEntries.findIndex(e => e.ugkthid === user.ugkthid);
+      if (location1 === -1 && location2 !== -1) { return 1; }
+      if (location1 !== -1 && location2 === -1) { return -1; }
+      if (location1 !== -1 && location2 !== -1) {
+        if (location1 > location2) { return 1; }
+        if (location1 < location2) { return -1; }
+      }
+    }
+
+    // 3. Length of queue (highest value first)
+    if (queue1.queueEntries.length < queue2.queueEntries.length) { return 1; }
+    if (queue1.queueEntries.length > queue2.queueEntries.length) { return -1; }
+
+    // 4. Alphabetically (a-z)
     return queue1.name < queue2.name ? -1 : 1;
   });;
 
