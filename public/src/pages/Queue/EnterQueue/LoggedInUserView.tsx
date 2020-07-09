@@ -18,6 +18,7 @@ export default (props: any): JSX.Element => {
   const [location, setLocation] = useState(user?.location || personalQueueEntry?.location || '');
   const [comment, setComment] = useState(personalQueueEntry?.comment || '');
   const [help, setHelp] = useState(personalQueueEntry !== null ? personalQueueEntry.help : true);
+  const [doubleClickProtection, setDoubleClickProtection] = useState(0);
 
   useEffect(() => {
     const newLocation = user?.location || personalQueueEntry?.location || '';
@@ -43,8 +44,28 @@ export default (props: any): JSX.Element => {
       return;
     }
 
-    if (event.key === 'Enter' || event.button === 0) {
+    if (event.key === 'Enter') {
       dispatch(joinQueue(props.queueName, comment, location, help));
+    }
+    else if (event.button === 0) {
+      if (new Date().getTime() - doubleClickProtection > 750) {
+        setDoubleClickProtection(new Date().getTime());
+        dispatch(joinQueue(props.queueName, comment, location, help));
+      }
+    }
+  }
+
+  function recieveHelp() {
+    if (new Date().getTime() - doubleClickProtection > 750) {
+      setDoubleClickProtection(new Date().getTime());
+      dispatch(recievingHelp(props.queueName, true));
+    }
+  }
+
+  function leave() {
+    if (new Date().getTime() - doubleClickProtection > 750) {
+      setDoubleClickProtection(new Date().getTime());
+      dispatch(leaveQueue(props.queueName))
     }
   }
 
@@ -68,14 +89,14 @@ export default (props: any): JSX.Element => {
                   : <div
                       className="col-12 text-center yellow clickable"
                       style={{lineHeight: '3em'}}
-                      onClick={() => dispatch(recievingHelp(props.queueName, true))}>
+                      onClick={recieveHelp}>
                       <strong>Recieving help</strong>
                     </div>
               }
                 <div
                   className="col-12 text-center red clickable"
                   style={{lineHeight: '3em'}}
-                  onClick={() => dispatch(leaveQueue(props.queueName))}>
+                  onClick={leave}>
                   <strong>Leave queue</strong>
                 </div>
               </>

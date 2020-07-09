@@ -133,7 +133,6 @@ Backend wants:
 
 Frontend wants
 * [Refactoring] Extract more view-components to make the HTML easier to read
-* Protect against double click on "recieving help" since the "leave queue button" takes its place
 * Sort queues in lobby after:
   1. Hidden (visible above)
   2. Own place in queue (lowest number first)
