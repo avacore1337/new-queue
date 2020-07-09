@@ -8,6 +8,20 @@ export default (): JSX.Element => {
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
 
+  // TODO: Do this to fix the NavBar issue
+  // -------------------------------------
+  // This line toggles the navbar:
+  // $('#navbarText').collapse('toggle')
+
+  // Trigger this using OnClick or something, and hiding/showing
+  // a duplicate item depending on the screen size where one item has an
+  // OnClick event (small screen item), and one doesn't (large screen item)
+
+  // For items that should only get to collapse and not open,
+  // use this line instead:
+  // $('#navbarText').collapse('hide')
+
+
   const location = useLocation();
 
   return (
