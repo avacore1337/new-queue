@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../store';
-import { kickUser, toggleHelp, badLocation } from '../../actions/assistantActions';
+import { kickUser, toggleHelp } from '../../actions/assistantActions';
 import { openSendMessageModal, openSendBadLocationModal } from '../../actions/modalActions';
 import TimeAgo from 'react-timeago';
 import QueueEntry from '../../models/QueueEntry';
@@ -22,22 +22,10 @@ export default (props: any): JSX.Element => {
   }, [user, queueName]);
 
   const [displayAdministrationOptions, setDisplayAdministrationOptions] = useState(false);
-  const [lastClicked, setLastClicked] = useState(null as number | null);
 
   const dispatch = useDispatch();
 
   function clickRow(): void {
-    if (lastClicked !== null) {
-      const intervallMilliseconds: number = 500;
-      if (Date.now() - lastClicked <= intervallMilliseconds) {
-        setDisplayAdministrationOptions(!displayAdministrationOptions);
-      }
-    }
-
-      setLastClicked(Date.now());
-  }
-
-  function touchRow(): void {
     setDisplayAdministrationOptions(!displayAdministrationOptions);
   }
 
@@ -146,7 +134,6 @@ export default (props: any): JSX.Element => {
     <>
       <tr
         onClick={mayAdministerQueue ? () => clickRow() : undefined}
-        onTouchEnd={mayAdministerQueue ? () => touchRow() : undefined}
         className={`${getRowColor()}${(mayAdministerQueue ? ' clickable' : '')}`}>
         <th scope="row">{index + 1}</th>
         <td>
