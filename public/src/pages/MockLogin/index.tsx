@@ -23,7 +23,6 @@ export default (): JSX.Element => {
     const input = document.querySelector('#loginField') as HTMLInputElement;
     const username: string = input?.value || '';
     if (username !== '') {
-      console.log(event);
       if (event.key === 'Enter' || event.button === 0) {
         dispatch(login(username));
       }
