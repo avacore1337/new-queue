@@ -37,50 +37,62 @@ export default (): JSX.Element => {
     switch (modal.modalType) {
 
       case SendMessageModal: {
+        console.log('SendMessageModal: ' + props.show)
         return (<SendMessage { ...props } />);
       }
 
       case ShowMessageModal: {
+        console.log('ShowMessageModal: ' + props.show)
         return (<ShowMessage { ...props } />);
       }
 
       case BroadcastModal: {
+        console.log('BroadcastModal: ' + props.show)
         return (<Broadcast { ...props } />);
       }
 
       case BroadcastFacultyModal: {
+        console.log('BroadcastFacultyModal: ' + props.show)
         return (<BroadcastFaculty { ...props } />);
       }
 
       case ServerMessageModal: {
+        console.log('ServerMessageModal: ' + props.show)
         return (<ServerMessage { ...props } />);
       }
 
       case ShowQueueModal: {
+        console.log('ShowQueueModal: ' + props.show)
         return (<ShowQueue { ...props } />);
       }
 
       case HideQueueModal: {
+        console.log('HideQueueModal: ' + props.show)
         return (<HideQueue { ...props } />);
       }
 
       case DeleteQueueModal: {
+        console.log('DeleteQueueModal: ' + props.show)
         return (<DeleteQueue { ...props } />);
       }
 
       case SendBadLocationModal: {
+        console.log('SendBadLocationModal: ' + props.show)
         return (<SendBadLocation { ...props } />);
       }
 
       case SetMotdModal: {
+        console.log('SetMotdModal: ' + props.show)
         return (<SetMotd { ...props } />);
       }
 
       case ShowMotdModal: {
+        console.log('ShowMotdModal: ' + props.show)
         return (<ShowMotd { ...props } />);
       }
 
       case SetQueueInformationModal: {
+        console.log('SetQueueInformationModal: ' + props.show)
         return (<SetQueueInformation { ...props } />);
       }
 
@@ -89,12 +101,10 @@ export default (): JSX.Element => {
     return null;
   }
 
-  const modalList = modals.modalList.reverse();
-
   return (
     <>
       {
-        modalList.map((modal, index) =>
+        modals.modalList.map((modal, index) =>
           <div key={`modal_${modal.modalType}_${JSON.stringify(modal.modalData)}_${index}`}>
             { toJSX(modal, index === modals.current) }
           </div>
