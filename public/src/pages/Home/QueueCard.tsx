@@ -8,7 +8,7 @@ export default (props: any): JSX.Element => {
   const queue: Queue = props.queue;
   const user: User = props.user;
 
-  const styles = {marginTop: '2em', color: 'inherit', fontSize: '1.3em'};
+  const styles = { color: 'inherit', fontSize: '1.3em' };
 
   if (queue.hiding) {
     styles.color = 'gray';
@@ -18,7 +18,7 @@ export default (props: any): JSX.Element => {
   }
 
   return (
-    <div className="card row clickable" style={styles}>
+    <div className="card row clickable p-lg-2" style={styles}>
       <div className="card-body">
         <div className="float-left">
           {queue.hiding ? <span style={{marginRight: '1em'}}><Invisible /></span> : null}

@@ -105,7 +105,6 @@ Install debuggin extensions for React and Redux
 
 Issues on mobile devices:
 * Navbar opens upon clicking it, which is unwanted if it's the "brand-text"
-* Layout of queue cards look weird on mobile devices
 * Scrolling the list of users in the queue counts as a touch and opens the assistant options
 * Clicking a user at the bottom of the list may trigger the assistant options that pop up
 * Images and text does not adapt to mobile devices

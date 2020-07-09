@@ -57,8 +57,13 @@ export default (): JSX.Element => {
     lastVisitedUrl
       ? <Redirect to={lastVisitedUrl} />
       : <div className="container">
-          <div className="row">
+          <div className="row d-none d-lg-flex">
             <div className="col-lg-4 offset-lg-8 p-0">
+              <SearchViewComponent filter={filter} setFilter={setFilter} />
+            </div>
+          </div>
+          <div className="row d-flex d-lg-none">
+            <div className="col mx-3 p-0">
               <SearchViewComponent filter={filter} setFilter={setFilter} />
             </div>
           </div>
@@ -66,9 +71,11 @@ export default (): JSX.Element => {
             .filter(queue => filter === '' || queue.name.toLowerCase().includes(filter.toLowerCase()))
             .map(queue =>
               canSee(queue)
-              ? <Link to={`/Queue/${queue.name}`} key={`HomeLink_${queue.name}`}>
-                  <QueueCardViewComponent user={user} queue={queue} />
-                </Link>
+              ? <div className="mt-4 mx-3 mx-lg-0">
+                  <Link to={`/Queue/${queue.name}`} key={`HomeLink_${queue.name}`} >
+                    <QueueCardViewComponent user={user} queue={queue} />
+                  </Link>
+                </div>
               : null
           )}
         </div>
