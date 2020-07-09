@@ -20,6 +20,11 @@ export default (props: any): JSX.Element => {
     props.onHide();
   }
 
+  function clearMessage(): void {
+    dispatch(setMotd(props.queueName, ''));
+    props.onHide();
+  }
+
   return (
     <Modal
       {...props}
@@ -35,6 +40,11 @@ export default (props: any): JSX.Element => {
         <textarea className="w-100" onChange={changeMessage}>{message}</textarea>
       </Modal.Body>
       <Modal.Footer>
+        <button
+          className="btn btn-warning"
+          onClick={clearMessage} >
+            Clear MOTD
+        </button>
         <button
           className="btn btn-primary"
           onClick={submitMessage} >

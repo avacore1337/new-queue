@@ -123,8 +123,6 @@ Styling:
 Frontend needs:
 * [Feature] Fix About page (half done, remove or replace "bla bla bla...")
 * [Feature] Fix Help page (requires styling to be done)
-* [Feature] Ability to clear the queue info
-* [Feature] Better useability for clearing the MOTD
 
 Backend wants:
 * routing framework

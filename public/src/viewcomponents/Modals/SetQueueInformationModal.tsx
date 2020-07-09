@@ -15,8 +15,13 @@ export default (props: any): JSX.Element => {
     setMessage(event.target.value);
   }
 
-  function submitQueueInformation(): void {
+  function setNewQueueInformation(): void {
     dispatch(setQueueInformation(props.queueName, message));
+    props.onHide();
+  }
+
+  function clearQueueInformation(): void {
+    dispatch(setQueueInformation(props.queueName, ''));
     props.onHide();
   }
 
@@ -36,8 +41,13 @@ export default (props: any): JSX.Element => {
       </Modal.Body>
       <Modal.Footer>
         <button
+          className="btn btn-warning"
+          onClick={clearQueueInformation} >
+            Clear information
+        </button>
+        <button
           className="btn btn-primary"
-          onClick={submitQueueInformation} >
+          onClick={setNewQueueInformation} >
             Set information
           </button>
       </Modal.Footer>
