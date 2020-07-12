@@ -153,7 +153,12 @@ export default (props: any): JSX.Element => {
         <td>
         {
           checkUrlLocation(queueEntry.location)[0]
-            ? <a href={checkUrlLocation(queueEntry.location)[2] || '#'} target="_blank">{checkUrlLocation(queueEntry.location)[1]}</a>
+            ? <a
+                href={checkUrlLocation(queueEntry.location)[2] || '#'}
+                target="_blank"
+                rel="noopener noreferrer">
+                  {checkUrlLocation(queueEntry.location)[1]}
+              </a>
             : queueEntry.location
         }
         </td>
