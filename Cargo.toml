@@ -12,30 +12,29 @@ readme = "README.md"
 [dependencies]
 regex = "1"
 chrono = { version = "0.4", features = ["serde"] }
-diesel = { version = "1.4.4", features = ["postgres", "chrono", "r2d2"] }
+diesel = { version = "1.4.5", features = ["postgres", "chrono", "r2d2"] }
 diesel-derive-enum = { version = "0.4", features = ["postgres"] }
 dotenv = "0.9.0"
 jsonwebtoken = "6.0.1"
 ldap3 = "0.6"
 rand = "0.7.2"
-rocket = { version = "0.4.3", default-features = false }
-rocket_codegen = "0.4.3"
-rocket_cors = { version = "0.5.1", default-features = false }
+rocket = { version = "0.4.5", default-features = false }
+rocket_cors = { version = "0.5.2", default-features = false }
 rust-crypto = "0.2.36"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 validator = "0.10.0"
 validator_derive = "0.10.0"
-ws = "0.8.1"
+ws = "0.9.1"
 clokwerk = "0.3.0"
-reqwest = { version = "0.10.4", features = ["blocking"] }
+reqwest = { version = "0.10.6", features = ["blocking"] }
 unicode-truncate = "0.1.1"
 dns-lookup = "1.0.3"
-rocket-client-addr = "0.4.3"
+rocket-client-addr = "0.4.4"
 
 
 [dependencies.rocket_contrib]
-version = "0.4.3"
+version = "0.4.5"
 default-features = false
 features = ["json", "serve", "diesel_postgres_pool"]
 
