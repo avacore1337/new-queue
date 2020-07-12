@@ -20,7 +20,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 If it doesn't compile you might need to install our currently used nightly version:
 ```bash
-rustup toolchain install nightly-2020-03-07
+rustup toolchain install nightly-2020-07-08
 ```
 
 
@@ -109,6 +109,9 @@ Issues on mobile devices:
 Backend needs:
 * Fix validate ticket regex index (switch to get)
 * Handle sender of personal messages
+* refactor bad location
+* fix nginx for static serve?
+* dry run with database migration script
 
 Styling:
 * Location/Comment/Help section on /Queue/:queueName
@@ -122,8 +125,6 @@ Styling:
 Backend wants:
 * routing framework
 * backend websockets leave/errors
-* message history
-* always update user data on login
 * can we please rename "help" to something else? Or make it an enum perhaps
 
 Frontend wants
