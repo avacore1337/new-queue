@@ -27,7 +27,9 @@ export default (): JSX.Element | null => {
             To add a teacher or assistant for a queue, go to the <Link smooth to="/administration">Administration</Link> page.
             Then choose the queue you wish to add a teacher or assistant for in the dropdown as below:
           </p>
-          <img src={EditQueue} alt="Edit queue" />
+          <div>
+            <img src={EditQueue} alt="Edit queue" />
+          </div>
           <p>
             Once you have selected a queue, enter the name of the user you wish to add either in the
             <em>Add teacher</em> or the <em>Add assistant</em> input fields, and click the <em>Add</em> button.
@@ -42,7 +44,9 @@ export default (): JSX.Element | null => {
             Click the red cross beside the user you
             want to remove, as in the picture below.
           </p>
-          <img src={RemoveTeacher} alt="Remove teacher" />
+          <div>
+            <img src={RemoveTeacher} alt="Remove teacher" />
+          </div>
           <p>
             Once the name in the list is gone, so are their privileges.
           </p>

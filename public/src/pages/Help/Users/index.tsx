@@ -4,8 +4,7 @@ import { HashLink as Link } from 'react-router-hash-link';
 import { GlobalStore } from '../../../store';
 import User from '../../../models/User';
 import Location from '../../../img/location.png';
-import FindQueuesBox from '../../../img/find-queues-box.png';
-import Allmanhand from '../../../img/allmanhand.png';
+import EnterQueue from '../../../img/enter-queue.png';
 import { Lock, Star } from '../../../viewcomponents/FontAwesome';
 
 export default (): JSX.Element | null => {
@@ -14,7 +13,7 @@ export default (): JSX.Element | null => {
 
   return (
     user
-      ? <div ng-show="accessLevel >= 0" className="card p-3 mb-3">
+      ? <div className="card p-3 mb-3">
           <h2 id="user">Users</h2>
 
           <h3 id="join">Join a queue</h3>
@@ -23,13 +22,17 @@ export default (): JSX.Element | null => {
             When you have found the queue, let's say you want to join the queue <em>Allmänhandledning</em>,
             click the queue name.
           </p>
-          <img src={Allmanhand} alt="Allmänhandledning" />
+          <div>
+            <img src={EnterQueue} alt="Enter queue" />
+          </div>
           <p>
             You now reach the queue page, where all the queueing takes place.
             If you are at a KTH computer, your
             location will be automatically obtained.
           </p>
-          <img src={Location} alt="Your location" />
+          <div>
+            <img src={Location} alt="Your location" />
+          </div>
           <p>
             If your location is not automatically obtained, please type your location in the location field.
           </p>
@@ -68,28 +71,18 @@ export default (): JSX.Element | null => {
             White and gray backgrounds indicates that the person is merely standing in the queue and the different colors are
             only used to make it easier to distinguish between the different rows.
           </p>
-          <h4 id="blueStar" style={{'color': '#90C3D4'}}>Blue <Star color="blue" /></h4>
+          <h4 id="blueStar" style={{color: 'blue'}}>Blue <Star color="blue" /></h4>
           <p>
-            If a preson has a blue star next to their name, that means it is you.
+            If a preson has a blue star next to their name, that means that person is you.
           </p>
-          <h4 id="pulsing"><span style={{'backgroundColor': '#E3AF81'}}>Pulsing</span></h4>
+          <h4 id="green" className="text-success">Green</h4>
           <p>
-            When you see a person that keeps pulsing, this indicates that they are currently receiving help from an assistant.
-          </p>
-          <p>
-            <em>
-              Note: We do realise that there is no specific color, don't be THAT person ...
-            </em>
-          </p>
-          <h4 id="yellow" style={{'color': '#ECD024'}}>Yellow</h4>
-          <p>
-            If you see a person with a yellow background color, that means that the person was previously given a completion
-            and has now come back to present their solution.
+            When a person has a green background color, that means there is currently an assistant at the person, whom is either helping or grading them.
           </p>
           <h4 id="red" style={{'color': '#E54932'}}>Red</h4>
           <p>
-            When a person has a red background color, that means that an assistant has told the person that they have to
-            enter a more descriptive location so that the assistants can find the person.
+            When a person has a red background color, that means an assistant has notified the person that they have to
+            update their location since the assistant can't find them.
           </p>
 
           <h3>Queue status</h3>
@@ -109,8 +102,8 @@ export default (): JSX.Element | null => {
               <td>The queue is active and can be joined</td>
             </tr>
             <tr>
-              <td className="text-red"><strong>Locked queue</strong></td>
-              <td><Lock /></td>
+              <td style={{color: 'red'}}><strong>Locked queue</strong></td>
+              <td><Lock color="red"/></td>
               <td>The queue is locked and can't be joined</td>
             </tr>
           </tbody></table>
@@ -124,8 +117,7 @@ export default (): JSX.Element | null => {
             To scroll, just scroll - more info on
             scrolling will not be covered in this help section.
 
-            To search for a queue, type the queue name (or parts of the queue name) in the box that looks like this:
-            <img src={FindQueuesBox} alt="Find Queues box" />
+            To search for a queue, type the queue name (or parts of the queue name) in the search box at the top of the page.
           </p>
         </div>
       : null
