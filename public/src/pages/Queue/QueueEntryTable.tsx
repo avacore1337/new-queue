@@ -26,7 +26,7 @@ export default (props: any): JSX.Element => {
       {
         queueEntries.length === 0
           ? <h3>This queue is empty</h3>
-          : <table className="table table-hover table-striped table-responsive-lg">
+          : <table className="table table-hover table-striped table-responsive-sm">
               <thead>
                 <tr>
                   <th scope="col">#</th>
