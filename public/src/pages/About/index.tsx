@@ -42,9 +42,6 @@ export default (): JSX.Element => {
           Thus, <em>Stay A While</em> was developed in 2020 and was a complete rewrite of the original system.
         </p>
         <p>
-          Bla bla bla ...
-        </p>
-        <p>
           We hope you will enjoy the experience ~
         </p>
 

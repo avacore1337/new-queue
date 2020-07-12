@@ -119,10 +119,6 @@ Styling:
 * Make /Help page more beautiful in general (images are updated once all styling is done)
 * Do more if you like ^.^
 
-Frontend needs:
-* [Feature] Fix About page (half done, remove or replace "bla bla bla...")
-* [Feature] Fix Help page (requires styling to be done)
-
 Backend wants:
 * routing framework
 * backend websockets leave/errors
