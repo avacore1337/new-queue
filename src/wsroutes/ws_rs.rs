@@ -8,7 +8,7 @@ use std::cell::{Cell, RefCell, RefMut};
 use std::collections::HashMap;
 use std::env;
 use std::rc::Rc;
-use ws::{listen, CloseCode, Handler, Handshake, Message, Request, Response, Sender};
+use ws::{Builder, CloseCode, Handler, Handshake, Message, Request, Response, Sender, Settings};
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
@@ -423,15 +423,22 @@ pub fn websocket() -> () {
     let pool: Rc<RefCell<db::PgPool>> = Rc::new(RefCell::new(db::init_pool()));
 
     let address = env::var("ROCKET_ADDRESS").unwrap_or_else(|_| "127.0.0.1".to_string());
-    listen(address + ":7777", |out| RoomHandler {
-        out: out,
-        count: count.clone(),
-        rooms: rooms.clone(),
-        ugkthid_map: ugkthid_map.clone(),
-        user_ugkthid: None,
-        secret: get_secret().into_bytes(),
-        pool: pool.clone(),
-        active_room: None,
-    })
-    .unwrap()
+    Builder::new()
+        .with_settings(Settings {
+            max_connections: 10_000,
+            ..Settings::default()
+        })
+        .build(|out| RoomHandler {
+            out: out,
+            count: count.clone(),
+            rooms: rooms.clone(),
+            ugkthid_map: ugkthid_map.clone(),
+            user_ugkthid: None,
+            secret: get_secret().into_bytes(),
+            pool: pool.clone(),
+            active_room: None,
+        })
+        .unwrap()
+        .listen(address + ":7777")
+        .unwrap();
 }
