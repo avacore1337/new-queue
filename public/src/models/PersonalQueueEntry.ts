@@ -23,7 +23,6 @@ export default class PersonalQueueEntry {
     this._typeOfCommunication = '';
   }
 
-
   public clone(): PersonalQueueEntry {
     return new PersonalQueueEntry({
       location: this._location,

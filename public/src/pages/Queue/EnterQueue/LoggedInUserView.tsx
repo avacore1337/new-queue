@@ -10,8 +10,19 @@ import EnterInformationForm from './EnterInformationForm';
 export default (props: any): JSX.Element => {
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
-  const personalQueueEntry = useSelector<GlobalStore, QueueEntry | null>(store => store.queues.queueList.filter(q => q.name === props.queueName)[0].queueEntries.filter(e => e.ugkthid === user?.ugkthid)[0] || null);
-  const isLocked = useSelector<GlobalStore, boolean>(store => store.queues.queueList.filter(queue => queue.name === props.queueName)[0].locked);
+
+  const personalQueueEntry = useSelector<GlobalStore, QueueEntry | null>(
+    store => store.queues
+    .queueList
+    .filter(q => q.name === props.queueName)[0]
+    .queueEntries
+    .filter(e => e.ugkthid === user?.ugkthid)[0] || null);
+
+  const isLocked = useSelector<GlobalStore, boolean>(
+    store => store.queues
+    .queueList
+    .filter(queue => queue.name === props.queueName)[0]
+    .locked);
 
   const dispatch = useDispatch();
 

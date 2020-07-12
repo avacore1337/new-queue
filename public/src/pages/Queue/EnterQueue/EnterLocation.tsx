@@ -7,7 +7,12 @@ import QueueEntry from '../../../models/QueueEntry';
 export default (props: any): JSX.Element => {
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
-  const personalQueueEntry = useSelector<GlobalStore, QueueEntry | null>(store => store.queues.queueList.filter(q => q.name === props.queueName)[0].queueEntries.filter(e => e.ugkthid === user?.ugkthid)[0] || null);
+  const personalQueueEntry = useSelector<GlobalStore, QueueEntry | null>(
+    store => store.queues
+    .queueList
+    .filter(q => q.name === props.queueName)[0]
+    .queueEntries
+    .filter(e => e.ugkthid === user?.ugkthid)[0] || null);
 
   function changeLocation(event: any): void {
     if (user?.location) {

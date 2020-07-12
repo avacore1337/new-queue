@@ -176,7 +176,10 @@ export default (props: any): JSX.Element => {
                         <Cross />
                       </div>
                     </div>
-                    <div title="send message" className="col-12 col-lg-3 px-3 my-1" onClick={() => dispatch(openSendMessageModal(queueName, queueEntry.ugkthid, queueEntry.realname))}>
+                    <div
+                      title="send message"
+                      className="col-12 col-lg-3 px-3 my-1"
+                      onClick={() => dispatch(openSendMessageModal(queueName, queueEntry.ugkthid, queueEntry.realname))}>
                       <div
                         className="text-center yellow clickable"
                         style={{lineHeight: '2em'}}>
@@ -185,14 +188,20 @@ export default (props: any): JSX.Element => {
                     </div>
                     {
                       queueEntry.gettinghelp
-                        ? <div title="stop helping" className="col-12 col-lg-3 px-3 my-1" onClick={() => dispatch(toggleHelp(queueName, queueEntry.ugkthid, !queueEntry.gettinghelp))}>
+                        ? <div
+                            title="stop helping"
+                            className="col-12 col-lg-3 px-3 my-1"
+                            onClick={() => dispatch(toggleHelp(queueName, queueEntry.ugkthid, !queueEntry.gettinghelp))}>
                             <div
                               className="text-center yellow clickable"
                               style={{lineHeight: '2em'}}>
                               <CheckMark />
                             </div>
                           </div>
-                        : <div title="help" className="col-12 col-lg-3 px-3 my-1" onClick={() => dispatch(toggleHelp(queueName, queueEntry.ugkthid, !queueEntry.gettinghelp))}>
+                        : <div
+                            title="help"
+                            className="col-12 col-lg-3 px-3 my-1"
+                            onClick={() => dispatch(toggleHelp(queueName, queueEntry.ugkthid, !queueEntry.gettinghelp))}>
                             <div
                               className="text-center blue clickable"
                               style={{lineHeight: '2em'}}>

@@ -15,6 +15,6 @@ export default (state = initialState, action: FluxStandardAction) => {
     }
 
   }
-  
+
   return state;
 };

@@ -27,13 +27,18 @@ export default (): JSX.Element => {
         </p>
 
         <p>
-          <em>Stay A While</em> was originally developed as part of the DD1392 course back in 2015 and was a cooperation between students and faculty members.
-          The purpose of the application was to provide a complete framework for students and teaching assistants to queue, and manage the queueing users during lab sessions.
-          The system was designed with a sleek web interface, and was intergrated with the official KTH user-system, making it easy for students to use across different devices.
-          As such, the system quickly replaced previous queueing systems and was adopted as the default queueing system of the now called EECS school and its related sister schools.
+          <em>Stay A While</em> was originally developed as part of the DD1392 course back in 2015 and was a cooperation
+          between students and faculty members.
+          The purpose of the application was to provide a complete framework for students and teaching assistants to queue,
+          and manage the queueing users during lab sessions.
+          The system was designed with a sleek web interface, and was intergrated with the official KTH user-system,
+          making it easy for students to use across different devices.
+          As such, the system quickly replaced previous queueing systems and was adopted as the default queueing system
+          of the now called EECS school and its related sister schools.
         </p>
         <p>
-          Eventually, the system was adopted by other schools at KTH, at which point it was decided that the system would recieve a rework to improve both performance, visuals, as well as security.
+          Eventually, the system was adopted by other schools at KTH, at which point it was decided that the system
+          would recieve a rework to improve both performance, visuals, as well as security.
           Thus, <em>Stay A While</em> was developed in 2020 and was a complete rewrite of the original system.
         </p>
         <p>

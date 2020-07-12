@@ -31,15 +31,12 @@ export default (): JSX.Element | null => {
 
   const dispatch = useDispatch();
 
-
   useEffect(() => {
     if (queue !== null) {
       if (queuesAreLoaded && !hasShownMotd && queue.motd) {
         dispatch(openShowMotdModal(queue.motd));
         setHasShownMotd(true);
       }
-
-      return () => { };
     }
   }, [queuesAreLoaded, queue, dispatch]);
 

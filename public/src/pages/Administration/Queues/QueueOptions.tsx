@@ -72,10 +72,22 @@ export default (): JSX.Element | null => {
                   <div className="row mb-5">
                     {
                       selectedQueue.hiding
-                        ? <button className="btn btn-success mb-2 mb-lg-0 mr-0 mr-lg-2" onClick={() => dispatch(openShowQueueModal(selectedQueue.name))}>Reveal queue</button>
-                        : <button className="btn btn-warning mb-2 mb-lg-0 mr-0 mr-lg-2" onClick={() => dispatch(openHideQueueModal(selectedQueue.name))}>Hide queue</button>
+                        ? <button
+                            className="btn btn-success mb-2 mb-lg-0 mr-0 mr-lg-2"
+                            onClick={() => dispatch(openShowQueueModal(selectedQueue.name))}>
+                              Reveal queue
+                          </button>
+                        : <button
+                            className="btn btn-warning mb-2 mb-lg-0 mr-0 mr-lg-2"
+                            onClick={() => dispatch(openHideQueueModal(selectedQueue.name))}>
+                              Hide queue
+                          </button>
                     }
-                    <button className="btn btn-danger" onClick={() => dispatch(openDeleteQueueModal(selectedQueue.name))}>Delete queue</button>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => dispatch(openDeleteQueueModal(selectedQueue.name))}>
+                        Delete queue
+                    </button>
                   </div>
                   <div className="row">
                     <div className="col-12 col-lg-6">

@@ -11,7 +11,12 @@ export default (props: any): JSX.Element | null => {
   const queueName: string = props.queueName;
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
-  const personalQueueEntry = useSelector<GlobalStore, QueueEntry | null>(store => store.queues.queueList.filter(q => q.name === queueName)[0].queueEntries.filter(e => e.ugkthid === user?.ugkthid)[0] || null);
+  const personalQueueEntry = useSelector<GlobalStore, QueueEntry | null>(
+    store => store.queues
+    .queueList
+    .filter(q => q.name === props.queueName)[0]
+    .queueEntries
+    .filter(e => e.ugkthid === user?.ugkthid)[0] || null);
 
   const dispatch = useDispatch();
 

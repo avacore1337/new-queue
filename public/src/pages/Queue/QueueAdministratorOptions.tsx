@@ -43,8 +43,16 @@ export default (props: any): JSX.Element | null => {
             {
               isTeacher
                 ? <>
-                    <div className="dropdown-item clickable" onClick={() => dispatch(openSetMotdModal(queue.name))}><Sign /> Set MOTD</div>
-                    <div className="dropdown-item clickable" onClick={() => dispatch(openSetQueueInformationModal(queue.name))}><Information /> Set queue information</div>
+                    <div
+                      className="dropdown-item clickable"
+                      onClick={() => dispatch(openSetMotdModal(queue.name))}><Sign />
+                        Set MOTD
+                    </div>
+                    <div
+                      className="dropdown-item clickable"
+                      onClick={() => dispatch(openSetQueueInformationModal(queue.name))}><Information />
+                        Set queue information
+                    </div>
                   </>
                 : null
             }

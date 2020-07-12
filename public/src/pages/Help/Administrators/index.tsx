@@ -75,8 +75,11 @@ export default (): JSX.Element | null => {
 
           <h3>Add or remove teachers and assistants</h3>
           <p>
-            See <Link smooth to="/help#addTeacherOrAssistant">Add a teacher or assistant</Link> and <Link smooth to="/help#removeTeacherOrAssistant">Remove a teacher or assistant</Link> under
-            the <em>Teacher</em> section.
+            See <Link smooth to="/help#addTeacherOrAssistant">
+              Add a teacher or assistant
+            </Link> and <Link smooth to="/help#removeTeacherOrAssistant">
+              Remove a teacher or assistant
+            </Link> under the <em>Teacher</em> section.
           </p>
 
           <h3>Accessing statistics</h3>

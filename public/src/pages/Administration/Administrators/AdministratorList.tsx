@@ -31,7 +31,10 @@ export default (): JSX.Element => {
                         administrators.length <= 1
                           ? administrator.username
                           : <>
-                              {administrator.username} <Cross color="red" title="Remove administrator" onClick={() => dispatch(removeAdministrator(administrator.username))} />
+                              {administrator.username} <Cross
+                                                          color="red"
+                                                          title="Remove administrator"
+                                                          onClick={() => dispatch(removeAdministrator(administrator.username))} />
                             </>
                       }
                     </td>

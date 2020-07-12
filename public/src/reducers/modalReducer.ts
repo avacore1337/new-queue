@@ -28,7 +28,7 @@ export default (state = initialState, action: FluxStandardAction) => {
     }
 
     case ModalActionTypes.CloseModal: {
-      var nextState = {
+      const nextState = {
         current: state.current + 1,
         modalList: [ ...state.modalList ]
       };

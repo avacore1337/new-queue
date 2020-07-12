@@ -27,7 +27,11 @@ export default (state = initialState, action: FluxStandardAction) => {
     case ActionTypes.GetQueues.Fulfilled: {
       const queueList: Queue[] = action.payload[0];
 
-      for (let queueName in action.payload[1]) {
+      for (const queueName in action.payload[1]) {
+        if (!action.payload[1].hasOwnProperty(queueName)) {
+          continue;
+        }
+
         const queue = queueList.find(q => q.name === queueName);
         if (queue === undefined) {
           continue;
@@ -35,7 +39,7 @@ export default (state = initialState, action: FluxStandardAction) => {
         queue.setQueueEntries(action.payload[1][queueName].map((e: any) => new QueueEntry(e)));
       }
 
-      return { queueList: queueList, requestStatus: RequestStatus.Success };
+      return { queueList, requestStatus: RequestStatus.Success };
     }
 
     case AdministratorActionTypes.LoadAdditionalQueueData.Fulfilled: {

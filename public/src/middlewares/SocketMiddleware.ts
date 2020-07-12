@@ -20,7 +20,7 @@ const middleware = () => {
   let socket: WebSocket | null = null;
   let connectionEstablished = false;
   let lastJoinRequest: any = null;
-  let callbacks: any = {};
+  const callbacks: any = {};
   let token: string | null = null;
   let pendingRequests: PendingRequest[] = [];
   let disconnectedAt: number = -1;
@@ -44,7 +44,7 @@ const middleware = () => {
       socket.send(message.stringify());
     }
     else {
-      var matchingRequestExists = pendingRequests.some(item => item.request.stringify() === message.stringify());
+      const matchingRequestExists = pendingRequests.some(item => item.request.stringify() === message.stringify());
 
       if (!matchingRequestExists) {
         pendingRequests.push({ request: message, sentAt: new Date().getTime()});
@@ -93,16 +93,19 @@ const middleware = () => {
     const data = JSON.parse(event.data);
     const path: string = data.path;
 
-    let callback = callbacks[path];
+    const callback = callbacks[path];
     if (callback !== undefined) {
       store.dispatch(callback(data.content));
     }
     else {
-      let backUp = JSON.stringify(data.content);
+      const backUp = JSON.stringify(data.content);
 
-      for (let property in callbacks) {
+      for (const property in callbacks) {
+        if (!callbacks.hasOwnProperty(property)) {
+          continue;
+        }
 
-        let regex = new RegExp(`^${property.split(new RegExp(':[^/]+')).join('[^/]+')}$`);
+        const regex = new RegExp(`^${property.split(new RegExp(':[^/]+')).join('[^/]+')}$`);
         if (path.match(regex) !== null) {
           data.content = JSON.parse(backUp);
 
@@ -129,10 +132,9 @@ const middleware = () => {
         const userData = localStorage.getItem('Token');
         token = userData ? JSON.parse(userData).token : null;
 
-        callbacks['message'] = Listeners.onMessageRecieved;
+        callbacks.message = Listeners.onMessageRecieved;
         callbacks['message/:queueName'] = Listeners.onMessageRecieved;
         callbacks['updateQueue/:queueName'] = Listeners.onQueueUpdated;
-
 
         break;
       }
@@ -280,7 +282,7 @@ const middleware = () => {
 
       case UserActions.Login.Fulfilled: {
         token = action.payload.data.token;
-        callbacks['message'] = Listeners.onMessageRecieved;
+        callbacks.message = Listeners.onMessageRecieved;
         callbacks['message/:queueName'] = Listeners.onMessageRecieved;
         break;
       }
@@ -288,7 +290,7 @@ const middleware = () => {
       case UserActions.Logout: {
         sendMessage(new RequestMessage('logout'));
         token = null;
-        delete callbacks['message'];
+        delete callbacks.message;
         delete callbacks['message/:queueName'];
         break;
       }
@@ -296,7 +298,7 @@ const middleware = () => {
       case UserActions.LoadUser: {
         const userData = localStorage.getItem('Token');
         token = userData ? JSON.parse(userData).token : null;
-        callbacks['message'] = Listeners.onMessageRecieved;
+        callbacks.message = Listeners.onMessageRecieved;
         callbacks['message/:queueName'] = Listeners.onMessageRecieved;
         break;
       }
@@ -389,8 +391,8 @@ const middleware = () => {
       }
 
       case PageActions.EnterAdminPage: {
-        callbacks['addSuperAdmin'] = Listeners.onAdministratorAdded;
-        callbacks['removeSuperAdmin'] = Listeners.onAdministratorRemoved;
+        callbacks.addSuperAdmin = Listeners.onAdministratorAdded;
+        callbacks.removeSuperAdmin = Listeners.onAdministratorRemoved;
         callbacks['addTeacher/:queueName'] = Listeners.onTeacherAdded;
         callbacks['removeTeacher/:queueName'] = Listeners.onTeacherRemoved;
         callbacks['addAssistant/:queueName'] = Listeners.onAssistantAdded;
@@ -401,8 +403,8 @@ const middleware = () => {
       }
 
       case PageActions.LeaveAdminPage: {
-        delete callbacks['addSuperAdmin'];
-        delete callbacks['removeSuperAdmin'];
+        delete callbacks.addSuperAdmin;
+        delete callbacks.removeSuperAdmin;
         delete callbacks['addTeacher/:queueName'];
         delete callbacks['removeTeacher/:queueName'];
         delete callbacks['addAssistant/:queueName'];
