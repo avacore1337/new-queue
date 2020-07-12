@@ -19,7 +19,7 @@ export default (): JSX.Element | null => {
           <h3 id="join">Join a queue</h3>
           <p>
             To join a queue, you will first need to find the queue (see <Link smooth to="/help#findAQueue">Find a queue</Link>).
-            When you have found the queue, let's say you want to join the queue <em>Allmänhandledning</em>,
+            When you have found the queue, let's say you want to join the queue <em>Inda</em>,
             click the queue name.
           </p>
           <div>
@@ -28,21 +28,16 @@ export default (): JSX.Element | null => {
           <p>
             You now reach the queue page, where all the queueing takes place.
             If you are at a KTH computer, your
-            location will be automatically obtained.
+            location will be automatically filled in for you.
           </p>
           <div>
             <img src={Location} alt="Your location" />
           </div>
           <p>
-            If your location is not automatically obtained, please type your location in the location field.
+            If your location is not automatically filled in, please type your location in the location field.
           </p>
           <p>
             Now click the <em>Join queue</em> button, and you are done!
-          </p>
-          <p>
-            <em>
-              Note: On the queue list page, the queues you are currently queueing in become blue.
-            </em>
           </p>
 
           <h3 id="leave">Leave a queue</h3>
