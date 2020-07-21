@@ -9,13 +9,20 @@ import Queue from '../../models/Queue';
 import QueueCardViewComponent from './QueueCard';
 import SearchViewComponent from '../../viewcomponents/Search';
 
-export default (): JSX.Element => {
+const queueOrdering = {
+  standard: (queue1: Queue, queue2: Queue) => {
+    // 1. Hidden (visible above)
+    if (queue1.hiding && !queue2.hiding) { return 1; }
+    if (!queue1.hiding && queue2.hiding) { return -1; }
 
-  const [lastVisitedUrl, setLastVisitedUrl] = useState(null as string | null);
+    // 2. Locked (Unlocked above)
+    if (queue1.locked && !queue2.locked) { return 1; }
+    if (!queue1.locked && queue2.locked) { return -1; }
 
-  const user = useSelector<GlobalStore, User | null>(store => store.user);
-  const queues = useSelector<GlobalStore, Queue[]>(store => store.queues.queueList)
-  .sort((queue1: Queue, queue2: Queue) => {
+    // 3. Alphabetically (a-z)
+    return queue1.name.toLowerCase() < queue2.name.toLowerCase() ? -1 : 1;
+  },
+  smart: (user: User | null) => (queue1: Queue, queue2: Queue) => {
     // 1. Hidden (visible above)
     if (queue1.hiding && !queue2.hiding) { return 1; }
     if (!queue1.hiding && queue2.hiding) { return -1; }
@@ -32,13 +39,26 @@ export default (): JSX.Element => {
       }
     }
 
-    // 3. Length of queue (highest value first)
+    // 3. Locked (Unlocked above)
+    if (queue1.locked && !queue2.locked) { return 1; }
+    if (!queue1.locked && queue2.locked) { return -1; }
+
+    // 4. Length of queue (highest value first)
     if (queue1.queueEntries.length < queue2.queueEntries.length) { return 1; }
     if (queue1.queueEntries.length > queue2.queueEntries.length) { return -1; }
 
-    // 4. Alphabetically (a-z)
-    return queue1.name < queue2.name ? -1 : 1;
-  });;
+    // 5. Alphabetically (a-z)
+    return queue1.name.toLowerCase() < queue2.name.toLowerCase() ? -1 : 1;
+  }
+};
+
+export default (): JSX.Element => {
+
+  const [lastVisitedUrl, setLastVisitedUrl] = useState(null as string | null);
+
+  const user = useSelector<GlobalStore, User | null>(store => store.user);
+  const queues = useSelector<GlobalStore, Queue[]>(store => store.queues.queueList)
+  .sort(queueOrdering.standard);
 
   const [filter, setFilter] = useState('');
 
