@@ -92,9 +92,9 @@ export default (): JSX.Element | null => {
               {
                 queue.locked
                   ? <h1 className="col-12 col-lg-3 text-danger">{queue.name} <Lock /></h1>
-                  : <h1 className="col-12 col-lg-3">{queue.name}</h1>
+                  : <h1 className="col-12 col-lg-3 blue-text">{queue.name}</h1>
               }
-              <p className="col-12 col-lg-6">{queue.info}</p>
+              <p className="col-12 col-lg-6 gray-text">{queue.info}</p>
               <div className="col-12 col-lg-3">
                 <SearchViewComponent filter={filter} setFilter={setFilter} />
               </div>

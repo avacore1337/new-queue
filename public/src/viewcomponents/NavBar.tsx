@@ -20,7 +20,7 @@ export default (): JSX.Element => {
   const location = useLocation();
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav className="navbar navbar-expand-lg navbar-dark blue">
       <span onClick={hideNavBar}>
         <Link className="navbar-brand" to="/"><img src={Logo} width="160" /></Link>
       </span>
@@ -80,7 +80,7 @@ export default (): JSX.Element => {
                   {user.name}
                 </span>
                 <li className={'nav-item' + (location.pathname === '/Logout' ? ' active' : '')} onClick={hideNavBar}>
-                  <Link className="nav-link" to="/Logout">
+                  <Link className="nav-link yellow-text" to="/Logout">
                     Logout
                     {location.pathname === '/Logout' ? <span className="sr-only">(current)</span> : null}
                   </Link>

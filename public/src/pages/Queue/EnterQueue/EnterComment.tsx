@@ -47,20 +47,19 @@ export default (props: any): JSX.Element => {
     <>
         <label htmlFor="comment">Comment:</label>
         <br />
-        <div style={{backgroundColor: props.comment === '' ? 'red' : 'inherit'}}>
+        <div>
           <input
             name="comment"
             type="text"
             value={props.comment}
             onChange={changeComment}
             onKeyUp={enterQueue}
-            style={{width: '100%', borderRadius: 0}}
+            style={{width: '100%'}}
             className="form-control" />
           {
             props.comment === ''
             ? <>
-                <br />
-                <em>Required</em>
+                <p className="gray-text">Required</p>
               </>
             : null
           }

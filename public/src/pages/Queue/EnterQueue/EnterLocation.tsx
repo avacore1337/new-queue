@@ -32,21 +32,20 @@ export default (props: any): JSX.Element => {
     <>
         <label htmlFor="location">Location:</label>
         <br />
-        <div style={{backgroundColor: props.location === '' ? 'red' : 'inherit'}}>
+        <div>
           <input
             name="location"
             type="text"
             value={props.location}
             onChange={user?.location ? undefined : changeLocation}
             disabled={user?.location ? true : false}
-            style={{width: '100%', borderRadius: 0}}
+            style={{width: '100%'}}
             className="form-control"
              />
           {
             props.location === ''
             ? <>
-                <br />
-                <em>Required</em>
+                <p className="gray-text">Required</p>
               </>
             : null
           }

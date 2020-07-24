@@ -14,20 +14,47 @@ body {
   cursor: default;
 }
 
+a {
+  color: #456990;
+}
+
+.white-text {
+  color: #fff;
+}
+
 .gray {
   background-color: #A9A9A9;
 }
 
-.blue {
-  background-color: #0275d8;
+.gray-text {
+  color: #A9A9A9;
 }
 
+.green {
+  background: #49BEAA;
+}
+
+.green:hover {
+  background: #0CAA93;
+}
+
+.blue {
+  background-color: #456990;
+}
+
+.btn-primary {
+  background-color: #456990;
+}
+
+.blue-text {
+  color: #456990;
+}
 .blue.clickable:hover {
-  background-color: #0b66b5;
+  background-color: #295B87;
 }
 
 .red {
-  background-color: #f54f36;
+  background-color: #EF767A;
 }
 
 .red.clickable:hover {
@@ -35,11 +62,15 @@ body {
 }
 
 .yellow {
-  background-color: #f0d73a;
+  background-color: #EEB868;
+}
+
+.yellow:hover {
+  background-color: #EAA13F;
 }
 
 .yellow.clickable:hover {
-  background-color: #e8ca0e;
+  background-color: #EAA13F;
 }
 
 .card.clickable:hover {
@@ -309,4 +340,27 @@ td.rdtYear:hover {
 .dropdown-menu i {
   width: 25px;
   text-align: center;
+}
+
+.search {
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+}
+
+.search-box {
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  padding: 0 0 0 .75rem;
+  border: 0px;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #495057;
+}
+
+.form-control {
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
 }

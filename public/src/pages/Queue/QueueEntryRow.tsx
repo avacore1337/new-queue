@@ -140,7 +140,7 @@ export default (props: any): JSX.Element => {
           <span className="float-left">
             {
               user?.ugkthid === queueEntry.ugkthid
-                ? <><Star color="blue" /> {queueEntry.realname}</>
+                ? <><Star color="#EEB868" /> {queueEntry.realname}</>
                 : queueEntry.realname
             }
           </span>
@@ -176,7 +176,7 @@ export default (props: any): JSX.Element => {
                   <div className="row my-1">
                     <div title="kick user" className="col-12 col-lg-3 px-3 my-1" onClick={() => dispatch(kickUser(queueName, queueEntry.ugkthid))}>
                       <div
-                        className="text-center red clickable"
+                        className="text-center red clickable text-white"
                         style={{lineHeight: '2em'}}>
                         <Cross />
                       </div>
@@ -186,7 +186,7 @@ export default (props: any): JSX.Element => {
                       className="col-12 col-lg-3 px-3 my-1"
                       onClick={() => dispatch(openSendMessageModal(queueName, queueEntry.ugkthid, queueEntry.realname))}>
                       <div
-                        className="text-center yellow clickable"
+                        className="text-center yellow clickable text-white"
                         style={{lineHeight: '2em'}}>
                         <Envelope />
                       </div>
@@ -198,7 +198,7 @@ export default (props: any): JSX.Element => {
                             className="col-12 col-lg-3 px-3 my-1"
                             onClick={() => dispatch(toggleHelp(queueName, queueEntry.ugkthid, !queueEntry.gettinghelp))}>
                             <div
-                              className="text-center yellow clickable"
+                              className="text-center yellow clickable text-white"
                               style={{lineHeight: '2em'}}>
                               <CheckMark />
                             </div>
@@ -208,7 +208,7 @@ export default (props: any): JSX.Element => {
                             className="col-12 col-lg-3 px-3 my-1"
                             onClick={() => dispatch(toggleHelp(queueName, queueEntry.ugkthid, !queueEntry.gettinghelp))}>
                             <div
-                              className="text-center blue clickable"
+                              className="text-center blue clickable text-white"
                               style={{lineHeight: '2em'}}>
                               <CheckMark />
                             </div>
@@ -216,7 +216,7 @@ export default (props: any): JSX.Element => {
                     }
                     <div title="bad location" className="col-12 col-lg-3 px-3 my-1" onClick={() => dispatch(openSendBadLocationModal(queueName, queueEntry.ugkthid))}>
                       <div
-                        className="text-center yellow clickable"
+                        className="text-center yellow clickable text-white"
                         style={{lineHeight: '2em'}}>
                         <QuestionMark />
                       </div>

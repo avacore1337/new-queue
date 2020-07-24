@@ -98,14 +98,14 @@ export default (props: any): JSX.Element => {
                 personalQueueEntry.gettinghelp
                   ? null
                   : <div
-                      className="col-12 text-center yellow clickable"
+                      className="col-12 text-center green white-text clickable"
                       style={{lineHeight: '3em'}}
                       onClick={recieveHelp}>
                       <strong>Recieving help</strong>
                     </div>
               }
                 <div
-                  className="col-12 text-center red clickable"
+                  className="col-12 text-center red white-text clickable"
                   style={{lineHeight: '3em'}}
                   onClick={leave}>
                   <strong>Leave queue</strong>
@@ -113,7 +113,7 @@ export default (props: any): JSX.Element => {
               </>
             : !isLocked
                 ? <div
-                    className="col-12 text-center blue clickable"
+                    className="col-12 text-center blue clickable text-white"
                     style={{lineHeight: '3em'}}
                     onClick={enterQueue}>
                     <strong>Join queue</strong>

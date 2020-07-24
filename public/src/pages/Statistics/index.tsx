@@ -127,7 +127,7 @@ export default (): JSX.Element => {
           <div className="row">
             <div className="dropdown col-lg-8 mb-3 pl-0">
               <button
-                className="btn btn-info dropdown-toggle"
+                className="btn btn-primary dropdown-toggle"
                 type="button"
                 id="selectQueue"
                 data-toggle="dropdown"
