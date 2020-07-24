@@ -32,7 +32,7 @@ cargo install diesel_cli --no-default-features --features postgres
 ### Setup postgresql
 In case postgresql doesn't automaticaly start, run:
 ```bash
-sudo service postgreqsl start
+sudo service postgresql start
 ```
 
 [setup a user with your current username](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-postgresql-on-ubuntu-18-04).
