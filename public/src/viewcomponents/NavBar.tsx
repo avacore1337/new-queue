@@ -3,6 +3,7 @@ import { Link, useLocation  } from "react-router-dom";
 import { useSelector } from 'react-redux'
 import { GlobalStore } from '../store';
 import User from '../models/User';
+import EditQueue from '../img/logo-stay-a-while.png';
 
 export default (): JSX.Element => {
 
@@ -21,7 +22,8 @@ export default (): JSX.Element => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <span onClick={hideNavBar}>
-        <Link className="navbar-brand" to="/">Stay A While</Link>
+        <Link className="navbar-brand" to="/"><img src={EditQueue} width="160" /></Link>
+        
       </span>
       <button className="navbar-toggler" type="button"onClick={toggleNavBar} aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
         <span className="navbar-toggler-icon"></span>
