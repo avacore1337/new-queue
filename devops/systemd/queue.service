@@ -1,0 +1,11 @@
+[Unit]
+Description=The queue system service file
+After=network.target
+
+[Service]
+ExecStart=/home/queuesystem/new-queue/devops/scripts/start_server.sh
+Restart=always 
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
