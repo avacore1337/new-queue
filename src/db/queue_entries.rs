@@ -41,6 +41,7 @@ pub fn all(conn: &PgConnection) -> HashMap<String, Vec<SendableQueueEntry>> {
                 queue_entries::badlocation,
             ),
         ))
+        .order(queue_entries::id.asc())
         .load::<(String, SendableQueueEntry)>(conn)
         .expect("Could not get queues");
     let mut m = HashMap::new();
@@ -142,6 +143,7 @@ pub fn for_queue(conn: &PgConnection, queue_name: &str) -> Option<Vec<SendableQu
             queue_entries::help,
             queue_entries::badlocation,
         ))
+        .order(queue_entries::id.asc())
         .get_results::<SendableQueueEntry>(conn)
         .ok()
 }

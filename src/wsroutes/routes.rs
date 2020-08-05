@@ -12,6 +12,19 @@ use serde_json::json;
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum BadLocationType {
+    UnknownLocation,
+    WrongLocation,
+}
+
+#[serde(rename_all = "camelCase")]
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct BadLocationMessage {
+    pub ugkthid: String,
+    pub bad_location_type: BadLocationType,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Username {
     pub username: String,
 }
@@ -42,7 +55,7 @@ pub struct Text {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct FromMessage {
     pub message: String,
-    pub realname: String,
+    pub sender: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -309,7 +322,7 @@ pub fn broadcast_route(
         "message",
         json!(FromMessage {
             message: message.message,
-            realname: auth.realname
+            sender: auth.realname,
         }),
     );
     Ok(())
@@ -347,10 +360,6 @@ pub fn send_message_route(
     Ok(())
 }
 
-// pub fn not_implemented_route() -> Result<()> {
-//     unimplemented!("Route not yet implemented!");
-// }
-
 pub fn update_queue_entry_route(
     handler: &mut RoomHandler,
     auth: Auth,
@@ -380,19 +389,26 @@ pub fn update_queue_entry_route(
 
 pub fn bad_location_route(
     handler: &mut RoomHandler,
-    _auth: Auth,
-    ugkthid: Ugkthid,
+    auth: Auth,
+    bad_location_message: BadLocationMessage,
     conn: &PgConnection,
     queue_name: &str,
 ) -> Result<()> {
+    let ugkthid = &bad_location_message.ugkthid;
     let queue = db::queues::find_by_name(conn, queue_name)?;
-    let user = db::users::find_by_ugkthid(conn, &ugkthid.ugkthid)?;
+    let user = db::users::find_by_ugkthid(conn, ugkthid)?;
     let queue_entry = db::queue_entries::update_bad_location(&conn, queue.id, user.id, true)?;
     handler.broadcast_room(
         queue_name,
         "updateQueueEntry",
         json!(queue_entry.to_sendable(conn)),
     );
+    let message = match bad_location_message.bad_location_type {
+        BadLocationType::UnknownLocation => "The teaching assistant in '".to_string() + queue_name + "' could not locate you. The teaching assistant won't try to find you again until you have updated your information.",
+        BadLocationType::WrongLocation => "You are currently located in the wrong room for a teaching assistant in ".to_string() + queue_name + " to come to you.",
+    };
+
+    handler.send_user_message(queue_name, ugkthid, &message, &auth.realname);
     Ok(())
 }
 

@@ -108,10 +108,6 @@ Issues on mobile devices:
 
 Backend needs:
 * Fix validate ticket regex index (switch to get)
-* Handle sender of personal messages
-* refactor bad location
-* fix nginx for static serve?
-* dry run with database migration script
 
 Styling:
 * Location/Comment/Help section on /Queue/:queueName

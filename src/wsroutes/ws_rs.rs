@@ -146,14 +146,15 @@ impl RoomHandler {
         _queue_name: &str,
         ugkthid: &str,
         message: &str,
-        _sender_name: &str,
+        sender_name: &str,
     ) {
         let ugkthids = self.ugkthid_map.borrow();
         if let Some(handler) = ugkthids.get(ugkthid) {
             let message = &json!(SendWrapper {
                 path: "message".to_string(),
-                content: json!(Text {
-                    message: message.to_string()
+                content: json!(FromMessage {
+                    message: message.to_string(),
+                    sender: sender_name.to_string(),
                 }),
             });
             if let Err(err) = handler.send(Message::Text(message.to_string())) {
@@ -382,7 +383,7 @@ impl RoomHandler {
             }
             ["badLocation", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
-                let ugkthid = from_value::<Ugkthid>(wrapper.content.clone())?;
+                let ugkthid = from_value::<BadLocationMessage>(wrapper.content.clone())?;
                 bad_location_route(self, auth, ugkthid, conn, queue_name)
             }
             ["setMOTD", queue_name] => {
