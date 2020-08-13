@@ -1,5 +1,6 @@
 use crate::db;
-use crate::db::queue_entries::remove_all;
+use crate::db::queue_entries;
+use crate::db::queues;
 use crate::errors::LdapError;
 use crate::models::user::User;
 use crate::reqwest;
@@ -38,8 +39,11 @@ pub fn start_scheduled_tasks() {
         .unwrap();
 }
 pub fn cleanup(conn: &PgConnection) {
-    if let Err(e) = remove_all(conn) {
-        println!("Something went wrong! {}", e);
+    if let Err(e) = queue_entries::remove_all(conn) {
+        println!("Something went wrong when doing nightly cleanup! {}", e);
+    }
+    if let Err(e) = queues::clear_all_motds(conn) {
+        println!("Something went wrong when clearing motds! {}", e);
     }
 }
 
@@ -56,7 +60,7 @@ pub struct Ticket {
 
 fn convert_to_ldap_user(mut rs: Vec<ResultEntry>) -> Option<LdapUser> {
     let mut entry = SearchEntry::construct(rs.pop()?);
-    println!("Got entry:\n{:?}", entry);
+    // println!("Got entry:\n{:?}", entry);
     Some(LdapUser {
         username: entry.attrs.get_mut(LDAP_USERNAME)?.pop()?.to_string(),
         ugkthid: entry.attrs.get_mut(LDAP_UGKTHID)?.pop()?.to_string(),
@@ -66,7 +70,7 @@ fn convert_to_ldap_user(mut rs: Vec<ResultEntry>) -> Option<LdapUser> {
 
 // ldapsearch -x -H ldaps://ldap.kth.se -b ou=Unix,dc=kth,dc=se uid=ransin ugKthid | grep "ugKthid"
 fn fetch_ldap_data_by_ugkthid(ugkthid: &str) -> Result<LdapUser, Box<dyn std::error::Error>> {
-    println!("fetching ldap data");
+    // println!("fetching ldap data");
     let ldap = LdapConn::new("ldaps://ldap.kth.se")?;
     let (rs, _res) = ldap
         .search(
@@ -94,12 +98,12 @@ pub fn fetch_ldap_data_by_username(username: &str) -> Result<LdapUser, Box<dyn s
 
 // ticket example: ST-675984-sfGECP3JozSUYekz9Vg3-login01
 fn validate_ticket(ticket: &str) -> Option<String> {
-    println!("Validating ticket");
+    // println!("Validating ticket");
     let url = "https://login.kth.se/serviceValidate?ticket=".to_string()
         + ticket
         + "&service=http://queue.csc.kth.se/auth";
     let res = reqwest::blocking::get(&url).ok()?.text().ok()?;
-    println!("body = {:?}", res);
+    // println!("body = {:?}", res);
     if res.contains("authenticationFailure") {
         None
     } else {

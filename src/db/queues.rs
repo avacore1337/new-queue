@@ -24,6 +24,12 @@ impl From<Error> for QueueCreationError {
     }
 }
 
+pub fn clear_all_motds(conn: &PgConnection) -> Result<Queue, diesel::result::Error> {
+    diesel::update(queues::table)
+        .set(queues::motd.eq(""))
+        .get_result(conn)
+}
+
 pub fn update_motd(
     conn: &PgConnection,
     queue_name: &str,
