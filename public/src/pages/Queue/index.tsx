@@ -50,14 +50,16 @@ export default (): JSX.Element | null => {
   }, [queueName, queuesAreLoaded, dispatch]);
 
   useEffect(() => {
-    if (queue !== null && user !== null) {
-      for (let i = 0; i < queue.queueEntries.length; i++) {
-        if (queue.queueEntries[i].ugkthid === user.ugkthid) {
-          dispatch(setTitle(`[${i+1}/${queue.queueEntries.length}] ${queue.name} | Stay A While`));
-          return;
+    if (queue !== null) {
+      if (user !== null) {
+        for (let i = 0; i < queue.queueEntries.length; i++) {
+          if (queue.queueEntries[i].ugkthid === user.ugkthid) {
+            dispatch(setTitle(`[${i+1}/${queue.queueEntries.length}] ${queue.name} | Stay A While`));
+            return;
+          }
         }
       }
-      dispatch(setTitle(`${queue.name} | Stay A While`));
+      dispatch(setTitle(`[${queue.queueEntries.length}] ${queue.name} | Stay A While`));
     }
   }, [queue, user, dispatch]);
 
