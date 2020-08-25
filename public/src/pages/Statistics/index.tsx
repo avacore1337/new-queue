@@ -116,6 +116,10 @@ export default (): JSX.Element => {
   function getRemainingQueueLength() {
     const statisticsList = JSON.parse(statistics);
 
+    if (statisticsList.length === 0) {
+      return 0;
+    }
+
     return statisticsList[statisticsList.length - 1].queue_length;
   }
 
