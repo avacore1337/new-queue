@@ -4,7 +4,7 @@ This the the new queue system, written in Rust and React.
 
 ## Setup
 ```bash
-sudo apt install libssl-dev -y
+sudo apt install libssl-dev pkg-config -y
 sudo apt install postgresql postgresql-contrib -y
 sudo apt install libpq-dev openssl -y
 cp .env.example .env
