@@ -25,7 +25,7 @@ const middleware = () => {
   let pendingRequests: PendingRequest[] = [];
   let disconnectedAt: number = -1;
 
-  const forcedReloadAfterInterval = 5 * 60 * 1000;
+  const forcedReloadAfterInterval = 0;
 
   const connect = (store: any): void => {
     socket = new WebSocket(WEB_SOCKET_SERVER_URL);
@@ -59,7 +59,7 @@ const middleware = () => {
       store.dispatch(loadQueues());
     }
     else if (disconnectedAt !== -1 && new Date().getTime() - disconnectedAt > forcedReloadAfterInterval) {
-      setTimeout(() => store.dispatch(loadQueues()),  Math.floor(Math.random() * 30000));
+      setTimeout(() => store.dispatch(loadQueues()),  Math.floor(Math.random() * 10000));
     }
     disconnectedAt = -1;
 
