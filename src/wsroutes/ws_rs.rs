@@ -65,7 +65,7 @@ impl Handler for RoomHandler {
         Ok(())
     }
 
-    // Handle messages recieved in the websocket (in this case, only on /ws)
+    // Handle messages received in the websocket (in this case, only on /ws)
     fn on_message(&mut self, message: Message) -> ws::Result<()> {
         let raw_message = message.clone().into_text()?;
         println!("The message from the client is {:#?}", &raw_message);

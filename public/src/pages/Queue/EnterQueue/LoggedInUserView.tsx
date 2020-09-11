@@ -66,7 +66,7 @@ export default (props: any): JSX.Element => {
     }
   }
 
-  function recieveHelp() {
+  function receiveHelp() {
     if (new Date().getTime() - doubleClickProtection > 750) {
       setDoubleClickProtection(new Date().getTime());
       dispatch(recievingHelp(props.queueName, true));
@@ -100,7 +100,7 @@ export default (props: any): JSX.Element => {
                   : <div
                       className="col-12 text-center green white-text clickable"
                       style={{lineHeight: '3em'}}
-                      onClick={recieveHelp}>
+                      onClick={receiveHelp}>
                       <strong>Recieving help</strong>
                     </div>
               }

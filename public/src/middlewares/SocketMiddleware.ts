@@ -132,8 +132,8 @@ const middleware = () => {
         const userData = localStorage.getItem('Token');
         token = userData ? JSON.parse(userData).token : null;
 
-        callbacks.message = Listeners.onMessageRecieved;
-        callbacks['message/:queueName'] = Listeners.onMessageRecieved;
+        callbacks.message = Listeners.onMessageReceived;
+        callbacks['message/:queueName'] = Listeners.onMessageReceived;
         callbacks['updateQueue/:queueName'] = Listeners.onQueueUpdated;
 
         break;
@@ -282,8 +282,8 @@ const middleware = () => {
 
       case UserActions.Login.Fulfilled: {
         token = action.payload.data.token;
-        callbacks.message = Listeners.onMessageRecieved;
-        callbacks['message/:queueName'] = Listeners.onMessageRecieved;
+        callbacks.message = Listeners.onMessageReceived;
+        callbacks['message/:queueName'] = Listeners.onMessageReceived;
         break;
       }
 
@@ -298,8 +298,8 @@ const middleware = () => {
       case UserActions.LoadUser: {
         const userData = localStorage.getItem('Token');
         token = userData ? JSON.parse(userData).token : null;
-        callbacks.message = Listeners.onMessageRecieved;
-        callbacks['message/:queueName'] = Listeners.onMessageRecieved;
+        callbacks.message = Listeners.onMessageReceived;
+        callbacks['message/:queueName'] = Listeners.onMessageReceived;
         break;
       }
 

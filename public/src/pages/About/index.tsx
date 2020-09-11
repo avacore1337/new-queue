@@ -38,7 +38,7 @@ export default (): JSX.Element => {
         </p>
         <p>
           Eventually, the system was adopted by other schools at KTH, at which point it was decided that the system
-          would recieve a rework to improve both performance, visuals, as well as security.
+          would receive a rework to improve both performance, visuals, as well as security.
           Thus, <em>Stay A While</em> was developed in 2020 and was a complete rewrite of the original system.
         </p>
         <p>

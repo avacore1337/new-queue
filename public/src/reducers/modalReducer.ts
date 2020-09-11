@@ -23,7 +23,7 @@ const initialState = {
 export default (state = initialState, action: FluxStandardAction) => {
   switch (action.type) {
 
-    case Listeners.OnMessageRecieved: {
+    case Listeners.OnMessageReceived: {
       return { ...state, modalList: [...state.modalList, new Modal(ShowMessageModal, action.payload)] }
     }
 
