@@ -3,7 +3,7 @@ Description=The queue system service file
 After=network.target
 
 [Service]
-ExecStart=/home/queuesystem/new-queue/devops/scripts/is_alive.sh
+ExecStart=/home/robertwb/new-queue/devops/scripts/is_alive.sh
 
 [Install]
 WantedBy=multi-user.target

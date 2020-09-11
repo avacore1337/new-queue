@@ -4,11 +4,13 @@ set -eu
 set -o pipefail
 
 restart_system(){
-	systemctl restart queue.service
+	echo "Restarting queue"
+	/bin/systemctl restart queue
 }
 
-while true {
+while : 
+do
 	sleep 90
-	curl queue.csc.kth.se:8000 -m 15 | grep new-queue || restart_system
-	curl localhost:8000/api/queues -m 15 | grep Allmanhandledning || restart_system
-}
+	curl localhost/api/queues -m 15 2>/dev/null | grep Allmanhandledning > /dev/null || restart_system
+done
+

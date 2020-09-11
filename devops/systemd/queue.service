@@ -3,9 +3,11 @@ Description=The queue system service file
 After=network.target
 
 [Service]
-ExecStart=/home/queuesystem/new-queue/devops/scripts/start_server.sh
+ExecStart=/home/robertwb/new-queue/devops/scripts/start_server.sh
 Restart=always 
 RestartSec=10
+User=robertwb
+Group=robertwb
 
 [Install]
 WantedBy=multi-user.target
