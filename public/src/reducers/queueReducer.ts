@@ -68,7 +68,10 @@ export default (state = initialState, action: FluxStandardAction) => {
         queueEntries: queues[index].queueEntries
       });
 
-      return { ...state, queueList: queues };
+      const x = { ...state, queueList: queues };
+      console.log(x);
+
+      return x;
     }
 
     case Listeners.OnQueueEntryAdded: {
