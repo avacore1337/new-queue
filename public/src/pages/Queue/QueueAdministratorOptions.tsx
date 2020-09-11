@@ -40,22 +40,8 @@ export default (props: any): JSX.Element | null => {
           <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <div className="dropdown-item clickable" onClick={() => dispatch(openBroadcastModal(queue.name))}><Megaphone /> Broadcast</div>
             <div className="dropdown-item clickable" onClick={() => dispatch(openBroadcastFacultyModal(queue.name))}><Megaphone /> Broadcast faculty</div>
-            {
-              isTeacher
-                ? <>
-                    <div
-                      className="dropdown-item clickable"
-                      onClick={() => dispatch(openSetMotdModal(queue.name))}><Sign />
-                        Set MOTD
-                    </div>
-                    <div
-                      className="dropdown-item clickable"
-                      onClick={() => dispatch(openSetQueueInformationModal(queue.name))}><Information />
-                        Set queue information
-                    </div>
-                  </>
-                : null
-            }
+            <div className="dropdown-item clickable" onClick={() => dispatch(openSetMotdModal(queue.name))}><Sign /> Set MOTD</div>
+            <div className="dropdown-item clickable" onClick={() => dispatch(openSetQueueInformationModal(queue.name))}><Information /> Set queue information</div>
             <div className="dropdown-item clickable red" onClick={() => dispatch(purgeQueue(queue.name))}><Trashbin /> Purge queue</div>
             {
               queue.locked

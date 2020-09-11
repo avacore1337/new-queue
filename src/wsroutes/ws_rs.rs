@@ -336,7 +336,7 @@ impl RoomHandler {
                 kick_route(self, conn, kick, queue_name)
             }
             ["setQueueInfo", queue_name] => {
-                let _auth = self.get_auth(&wrapper, AuthLevel::Teacher)?;
+                let _auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
                 let text = from_value::<Text>(wrapper.content.clone())?;
                 set_queue_info_route(self, conn, text, queue_name)
             }
@@ -387,7 +387,7 @@ impl RoomHandler {
                 bad_location_route(self, auth, ugkthid, conn, queue_name)
             }
             ["setMOTD", queue_name] => {
-                let _auth = self.get_auth(&wrapper, AuthLevel::Teacher)?;
+                let _auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
                 let text = from_value::<Text>(wrapper.content.clone())?;
                 set_queue_motd_route(self, conn, text, queue_name)
             }
