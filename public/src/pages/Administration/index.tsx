@@ -35,7 +35,7 @@ export default (): JSX.Element => {
   }, [user, dispatch]);
 
   return (
-    user === null || (!user.isAdministrator && !user.isTeacher)
+    user === null || (!user.isAdministrator && !user.isTeacher())
       ? <PageNotFound />
       : <div className="container">
           <AdministrationInformationViewComponent />
