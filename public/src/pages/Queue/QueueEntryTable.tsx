@@ -1,8 +1,13 @@
 import React from 'react';
+import { useSelector } from 'react-redux'
+import { GlobalStore } from '../../store';
+import User from '../../models/User';
 import QueueEntry from '../../models/QueueEntry';
 import QueueEntryRowViewComponent from './QueueEntryRow';
 
 export default (props: any): JSX.Element => {
+
+  const user = useSelector<GlobalStore, User | null>(store => store.user);
 
   const queueName: string = props.queueName;
   const queueEntries: QueueEntry[] = props.queueEntries;
@@ -30,7 +35,7 @@ export default (props: any): JSX.Element => {
               <thead>
                 <tr>
                   <th scope="col">#</th>
-                  <th scope="col">User</th>
+                  { user === null ? null : <th scope="col">User</th> }
                   <th scope="col">Location</th>
                   <th scope="col"></th>
                   <th scope="col">Comment</th>

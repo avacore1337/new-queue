@@ -136,20 +136,23 @@ export default (props: any): JSX.Element => {
         onClick={mayAdministerQueue ? () => clickRow() : undefined}
         className={`${getRowColor()}${(mayAdministerQueue ? ' clickable' : '')}`}>
         <th scope="row">{index + 1}</th>
-        <td>
-          <span className="float-left">
-            {
-              user?.ugkthid === queueEntry.ugkthid
-                ? <><Star color="#EEB868" /> {queueEntry.realname}</>
-                : queueEntry.realname
-            }
-          </span>
-          <span className="float-right">
-            {
-              <Square color={getLocationColor(queueEntry.location)} />
-            }
-          </span>
-        </td>
+        { user === null
+          ? null
+          : <td>
+              <span className="float-left">
+                {
+                  user?.ugkthid === queueEntry.ugkthid
+                    ? <><Star color="#EEB868" /> {queueEntry.realname}</>
+                    : queueEntry.realname
+                }
+              </span>
+              <span className="float-right">
+                {
+                  <Square color={getLocationColor(queueEntry.location)} />
+                }
+              </span>
+            </td>
+        }
         <td>
         {
           checkUrlLocation(queueEntry.location)[0]
