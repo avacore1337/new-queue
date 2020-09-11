@@ -30,13 +30,14 @@ impl From<Error> for UserCreationError {
 }
 
 pub fn get_or_create(conn: &PgConnection, username: &str) -> Result<User, UserCreationError> {
+    let lower_username = &username.to_lowercase();
     if let Ok(user) = users::table
-        .filter(users::username.eq(username))
+        .filter(users::username.eq(lower_username))
         .get_result::<User>(&*conn)
     {
         Ok(user)
     } else {
-        let ldap_user = fetch_ldap_data_by_username(username)
+        let ldap_user = fetch_ldap_data_by_username(lower_username)
             .map_err(|_| UserCreationError::DuplicatedUsername)?;
 
         let new_user = &NewUser {
