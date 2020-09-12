@@ -23,7 +23,7 @@ export default (): JSX.Element => {
       return;
     }
 
-    if (user && (user.isAdministrator || user.isTeacher)) {
+    if (user && (user.isAdministrator || user.isTeacher())) {
       dispatch(enterAdminPage());
       dispatch(loadAdministrators(user?.token));
       dispatch(resetTitle());

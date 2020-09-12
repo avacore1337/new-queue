@@ -10,7 +10,7 @@ export default (): JSX.Element | null => {
   const user = useSelector<GlobalStore, User | null>(store => store.user);
 
   return (
-    user === null || (!user.isAdministrator && !user.isTeacher)
+    user === null || (!user.isAdministrator && !user.isTeacher())
       ? null
       : <>
           <div className="row mb-lg-5 mb-3">

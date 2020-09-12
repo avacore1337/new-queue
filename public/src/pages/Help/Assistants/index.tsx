@@ -9,7 +9,7 @@ export default (): JSX.Element | null => {
   const user = useSelector<GlobalStore, User | null>(store => store.user);
 
   return (
-    user?.isAdministrator || user?.isTeacher || user?.isAssistant
+    user?.isAdministrator || user?.isTeacher() || user?.isAssistant()
       ? <div className="card p-3 mb-3">
           <h2 id="assistant">Assistants</h2>
 

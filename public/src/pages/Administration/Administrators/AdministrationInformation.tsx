@@ -15,7 +15,7 @@ export default function AdministrationInformationViewComponent() {
   }
 
   return (
-    user === null || (!user.isAdministrator && !user.isTeacher)
+    user === null || (!user.isAdministrator && !user.isTeacher())
       ? null
       : <>
           <div className="row">
