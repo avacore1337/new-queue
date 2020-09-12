@@ -25,3 +25,12 @@ INSERT INTO admins (user_id, queue_id, admin_type) VALUES (
   (SELECT Id FROM Users WHERE Username = 'antbac'),
   (SELECT id FROM queues WHERE name = 'INDA'),
   'assistant');
+INSERT INTO admins (user_id, queue_id, admin_type) VALUES (
+  (SELECT Id FROM Users WHERE Username = 'tester1'),
+  (SELECT id FROM queues WHERE name = 'test1'),
+  'assistant');
+INSERT INTO admins (user_id, queue_id, admin_type) VALUES (
+  (SELECT Id FROM Users WHERE Username = 'tester2'),
+  (SELECT id FROM queues WHERE name = 'test2'),
+  'teacher');
+
