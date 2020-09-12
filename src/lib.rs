@@ -1,5 +1,6 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
+use std::panic;
 use std::thread;
 
 #[macro_use]
@@ -62,8 +63,15 @@ pub fn rocket() -> rocket::Rocket {
     thread::Builder::new()
         .name("ws-rs thread".into())
         // .stack_size(83886 * 1024) // 80mib in killobytes
-        .spawn(|| {
-            wsroutes::ws_rs::websocket();
+        .spawn(|| loop {
+            let result = panic::catch_unwind(|| {
+                wsroutes::ws_rs::websocket();
+            });
+            if result.is_err() {
+                println!("We paniced in the socket thread. That's bad");
+            } else {
+                println!("Exited normally, which shouldn't happen either...");
+            }
         })
         .unwrap();
 
