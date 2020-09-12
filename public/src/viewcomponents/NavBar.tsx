@@ -55,7 +55,7 @@ export default (): JSX.Element => {
                   {location.pathname === '/Administration' ? <span className="sr-only">(current)</span> : null}
                 </Link>
               </li>}
-          {user === null || (!user.isAdministrator && !user.isTeacher)
+          {user === null || (!user.isAdministrator && !user.isTeacher())
             ? null
             : <li className={'nav-item' + (location.pathname === '/Statistics' ? ' active' : '')} onClick={hideNavBar}>
                 <Link className="nav-link" to="/Statistics">
