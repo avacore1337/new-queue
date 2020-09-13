@@ -21,7 +21,7 @@ impl From<Error> for UserCreationError {
     fn from(err: Error) -> UserCreationError {
         if let Error::DatabaseError(DatabaseErrorKind::UniqueViolation, info) = &err {
             match info.constraint_name() {
-                Some("users_username_key") => return UserCreationError::DuplicatedUsername,
+                Some("users_ugkthid_key") => return UserCreationError::DuplicatedUsername,
                 _ => {}
             }
         }
