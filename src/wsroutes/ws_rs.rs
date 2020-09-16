@@ -315,6 +315,10 @@ impl RoomHandler {
                 let _auth = self.get_auth(&wrapper, AuthLevel::SuperOrTeacher)?;
                 remove_queue_route(self, conn, queue_name)
             }
+            ["renameQueue", queue_name] => {
+                let _auth = self.get_auth(&wrapper, AuthLevel::Super)?;
+                rename_queue_route(self, conn, queue_name)
+            }
             ["addSuperAdmin"] => {
                 let _auth = self.get_auth(&wrapper, AuthLevel::Super)?;
                 let user = from_value::<Username>(wrapper.content.clone())?;

@@ -123,6 +123,17 @@ pub fn add_queue_route(
     Ok(())
 }
 
+pub fn rename_queue_route(
+    _handler: &mut RoomHandler,
+    _conn: &PgConnection,
+    _queue_name: &str,
+) -> Result<()> {
+    // check if new name is available
+    // rename
+    // broadcast add queue and delete queue
+    Ok(())
+}
+
 pub fn remove_queue_route(
     handler: &mut RoomHandler,
     conn: &PgConnection,
@@ -142,6 +153,7 @@ pub fn kick_route(
     let queue = db::queues::find_by_name(conn, queue_name)?;
     let entry = db::queue_entries::find_by_ugkthid(conn, queue.id, &ugkthid.ugkthid)?;
     let _todo = diesel::delete(&entry).execute(&*conn);
+    db::user_events::create(conn, &entry, true)?;
     handler.broadcast_room(queue_name, "leaveQueue", json!(ugkthid));
     handler.broadcast_lobby(&queue.name, "leaveQueue", json!(ugkthid));
     Ok(())
