@@ -201,9 +201,17 @@ impl RoomHandler {
         })
         .to_string();
         let mut rooms: RefMut<_> = self.rooms.borrow_mut();
-        for sender in rooms.entry(internal_name).or_insert_with(Vec::new) {
+        let r = rooms.entry(internal_name).or_insert_with(Vec::new);
+        println!(
+            "Sending: '{}' to {:?}",
+            &message,
+            r.iter()
+                .by_ref()
+                .map(|entry| entry.connection_id())
+                .collect::<Vec<u32>>()
+        );
+        for sender in r {
             // TODO deal with errors
-            println!("Sending: '{}' to {}", &message, sender.connection_id());
             if let Err(err) = sender.send(Message::Text(message.to_string())) {
                 println!(
                     "Got error while broadcasting in room '{}' with message {} :\n {}",

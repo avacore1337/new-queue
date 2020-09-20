@@ -2,6 +2,7 @@ use crate::db;
 use crate::db::queue_entries;
 use crate::db::queues;
 use crate::errors::LdapError;
+use crate::models::queue_entry::QueueEntry;
 use crate::models::user::User;
 use crate::reqwest;
 use crate::schema;
@@ -15,6 +16,8 @@ use rocket::request::Form;
 use rocket_client_addr::ClientAddr;
 use std::thread;
 use std::time::Duration;
+
+type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 const LDAP_USERNAME: &str = "uid";
 const LDAP_REALNAME: &str = "cn";
@@ -38,12 +41,22 @@ pub fn start_scheduled_tasks() {
         })
         .unwrap();
 }
-pub fn cleanup(conn: &PgConnection) {
-    if let Err(e) = queue_entries::remove_all(conn) {
-        println!("Something went wrong when doing nightly cleanup! {}", e);
+
+pub fn cleanup_wrapper(conn: &PgConnection) -> Result<()> {
+    for queue in queues::all(conn) {
+        let entries: Vec<QueueEntry> = QueueEntry::belonging_to(&queue).load(conn)?;
+        for entry in entries {
+            db::user_events::create(conn, &entry, true)?;
+        }
     }
-    if let Err(e) = queues::clear_all_motds(conn) {
-        println!("Something went wrong when clearing motds! {}", e);
+    queue_entries::remove_all(conn)?;
+    queues::clear_all_motds(conn)?;
+    Ok(())
+}
+
+pub fn cleanup(conn: &PgConnection) {
+    if let Err(e) = cleanup_wrapper(conn) {
+        println!("Something went wrong when doing nightly cleanup! {}", e);
     }
 }
 
@@ -69,7 +82,7 @@ fn convert_to_ldap_user(mut rs: Vec<ResultEntry>) -> Option<LdapUser> {
 }
 
 // ldapsearch -x -H ldaps://ldap.kth.se -b ou=Unix,dc=kth,dc=se uid=ransin ugKthid | grep "ugKthid"
-fn fetch_ldap_data_by_ugkthid(ugkthid: &str) -> Result<LdapUser, Box<dyn std::error::Error>> {
+fn fetch_ldap_data_by_ugkthid(ugkthid: &str) -> Result<LdapUser> {
     // println!("fetching ldap data");
     let ldap = LdapConn::new("ldaps://ldap.kth.se")?;
     let (rs, _res) = ldap
@@ -83,7 +96,7 @@ fn fetch_ldap_data_by_ugkthid(ugkthid: &str) -> Result<LdapUser, Box<dyn std::er
     convert_to_ldap_user(rs).ok_or(Box::new(LdapError))
 }
 
-pub fn fetch_ldap_data_by_username(username: &str) -> Result<LdapUser, Box<dyn std::error::Error>> {
+pub fn fetch_ldap_data_by_username(username: &str) -> Result<LdapUser> {
     let ldap = LdapConn::new("ldaps://ldap.kth.se")?;
     let (rs, _res) = ldap
         .search(
