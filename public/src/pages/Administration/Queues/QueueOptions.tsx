@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../../store';
 import { loadAdditionalQueueData } from '../../../actions/administratorActions';
-import { openShowQueueModal, openHideQueueModal, openDeleteQueueModal } from '../../../actions/modalActions';
+import { openShowQueueModal, openHideQueueModal, openDeleteQueueModal, openRenameQueueModal } from '../../../actions/modalActions';
 import User from '../../../models/User';
 import Queue from '../../../models/Queue';
 import TeachersViewComponent from './Teachers/Teachers';
@@ -84,9 +84,14 @@ export default (): JSX.Element | null => {
                           </button>
                     }
                     <button
-                      className="btn btn-danger"
+                      className="btn btn-danger mb-2 mb-lg-0 mr-0 mr-lg-2"
                       onClick={() => dispatch(openDeleteQueueModal(selectedQueue.name))}>
                         Delete queue
+                    </button>
+                    <button
+                      className="btn btn-primary mb-2 mb-lg-0"
+                      onClick={() => dispatch(openRenameQueueModal(selectedQueue.name))}>
+                        Rename queue
                     </button>
                   </div>
                   <div className="row">

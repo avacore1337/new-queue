@@ -179,6 +179,11 @@ const middleware = () => {
         break;
       }
 
+      case AdministratorActions.RenameQueue: {
+        sendMessage(new RequestMessage(`renameQueue/${action.payload.oldQueueName}`, { newQueueName: action.payload.newQueueName }));
+        break;
+      }
+
       case AdministratorActions.HideQueue: {
         sendMessage(new RequestMessage(`setQueueHideStatus/${action.payload.queueName}`, {
           status: true

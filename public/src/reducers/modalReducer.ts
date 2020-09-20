@@ -12,6 +12,7 @@ import { ModalType as SetServerMessageModal } from '../viewcomponents/Modals/Ser
 import { ModalType as ShowQueueModal } from '../viewcomponents/Modals/ShowQueueModal';
 import { ModalType as HideQueueModal } from '../viewcomponents/Modals/HideQueueModal';
 import { ModalType as DeleteQueueModal } from '../viewcomponents/Modals/DeleteQueueModal';
+import { ModalType as RenameQueueModal } from '../viewcomponents/Modals/RenameQueueModal';
 import { ModalType as ShowMotdModal } from '../viewcomponents/Modals/ShowMotdModal';
 import { ModalType as SendBadLocationModal } from '../viewcomponents/Modals/SendBadLocation';
 
@@ -81,6 +82,10 @@ export default (state = initialState, action: FluxStandardAction) => {
 
     case ModalActionTypes.OpenDeleteQueueModal: {
       return { ...state, modalList: [...state.modalList, new Modal(DeleteQueueModal, action.payload)] }
+    }
+
+    case ModalActionTypes.OpenRenameQueueModal: {
+      return { ...state, modalList: [...state.modalList, new Modal(RenameQueueModal, action.payload)] }
     }
 
     case ModalActionTypes.OpenShowMotdModal: {

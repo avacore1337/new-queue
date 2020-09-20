@@ -13,6 +13,7 @@ export const ActionTypes = Object.freeze({
   RemoveAssistant: 'REMOVE_ASSISTANT',
   AddQueue: 'ADD_QUEUE',
   RemoveQueue: 'REMOVE_QUEUE',
+  RenameQueue: 'RENAME_QUEUE',
   HideQueue: 'HIDE_QUEUE',
   RevealQueue: 'REVEAL_QUEUE',
   LoadAdditionalQueueData: new AsyncFunction('LOAD_ADDITIONAL_QUEUE_DATA'),
@@ -65,6 +66,11 @@ export const addQueue = (queueName: string): FluxStandardAction => ({
 export const removeQueue = (queueName: string): FluxStandardAction => ({
   type: ActionTypes.RemoveQueue,
   payload: { queueName }
+});
+
+export const renameQueue = (oldQueueName: string, newQueueName: string): FluxStandardAction => ({
+  type: ActionTypes.RenameQueue,
+  payload: { oldQueueName, newQueueName }
 });
 
 export const hideQueue = (queueName: string): FluxStandardAction => ({
