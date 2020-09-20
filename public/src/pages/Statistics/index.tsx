@@ -204,19 +204,21 @@ export default (): JSX.Element => {
                           {statistics}
                         </code>
                       </pre>
-                      <div
-                        className='clickable card p-2'
-                        style={{position: 'absolute', right: '10%', top: '8%', backgroundColor: 'rgba(0, 0, 0, 0.1)'}}
-                        onClick={() => downloadFile(`${selectedQueue}-statistics.json`, statistics)}
-                        title='Download'>
-                        <Download />
-                      </div>
-                      <div
-                        className='clickable card p-2'
-                        style={{position: 'absolute', right: '18%', top: '8%', backgroundColor: 'rgba(0, 0, 0, 0.1)'}}
-                        onClick={() => copyToClipboard(statistics)}
-                        title='Copy to clipboard'>
-                        <Copy />
+                      <div className="row" style={{position: 'absolute', right: '10%', top: '8%'}}>
+                        <div
+                          className='clickable card p-2 mr-2'
+                          style={{backgroundColor: 'rgba(0, 0, 0, 0.1)'}}
+                          onClick={() => copyToClipboard(statistics)}
+                          title='Copy to clipboard'>
+                          <Copy />
+                        </div>
+                        <div
+                          className='clickable card p-2'
+                          style={{backgroundColor: 'rgba(0, 0, 0, 0.1)'}}
+                          onClick={() => downloadFile(`${selectedQueue}-statistics.json`, statistics)}
+                          title='Download'>
+                          <Download />
+                        </div>
                       </div>
                     </div>
                     <div className="col-lg-6">

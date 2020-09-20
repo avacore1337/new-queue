@@ -7,7 +7,7 @@ export default (props: any): JSX.Element | null => {
     { type: 'date', label: 'Time' },
     'Total',
     'Help',
-    'Present'
+    'Presentations'
   ];
 
   function formatData(): any[] {
