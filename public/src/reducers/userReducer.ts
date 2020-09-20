@@ -2,7 +2,7 @@ import { FluxStandardAction } from 'redux-promise-middleware';
 import { ActionTypes as UserActions, UserDataLocation } from '../actions/userActions';
 import User from '../models/User';
 
-const LifeTime = 4 * 3600 * 1000;
+const LifeTime = 4 * 7 * 24 * 3600 * 1000;
 
 const initialState: User | null = null;
 
