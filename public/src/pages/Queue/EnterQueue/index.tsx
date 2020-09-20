@@ -47,7 +47,7 @@ export default (props: any): JSX.Element | null => {
   return (
     user
       ? <LoggedInUserView {...props} />
-      : <div className='card p-3'>
+      : <div className='card p-3 mb-2'>
           <p>Log in to see all the information and enqueue</p>
           <div
             className="col-12 text-center blue clickable"
