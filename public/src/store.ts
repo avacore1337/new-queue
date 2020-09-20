@@ -2,6 +2,7 @@ import { applyMiddleware, createStore, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 import promise from 'redux-promise-middleware';
 import socketMiddleware from './middlewares/SocketMiddleware';
+import errorHandlingMiddleware from './middlewares/ErrorHandlingMiddleware';
 import { composeWithDevTools } from 'redux-devtools-extension/logOnlyInProduction';
 import userReducer from './reducers/userReducer';
 import queueReducer from './reducers/queueReducer';
@@ -32,7 +33,7 @@ export interface GlobalStore {
   playSounds: boolean
 }
 
-const middleware = applyMiddleware(promise, thunk, socketMiddleware);
+const middleware = applyMiddleware(errorHandlingMiddleware, promise, thunk, socketMiddleware);
 
 const reducer = combineReducers({
   user: userReducer,
