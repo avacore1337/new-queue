@@ -29,6 +29,12 @@ pub struct Username {
     pub username: String,
 }
 
+#[serde(rename_all = "camelCase")]
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct RenameQueue {
+    pub new_queue_name: String,
+}
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct UpdateQueueEntry {
     pub comment: String,
@@ -124,14 +130,21 @@ pub fn add_queue_route(
 }
 
 pub fn rename_queue_route(
-    _handler: &mut RoomHandler,
-    _conn: &PgConnection,
-    _queue_name: &str,
+    handler: &mut RoomHandler,
+    conn: &PgConnection,
+    rename_queue: RenameQueue,
+    queue_name: &str,
 ) -> Result<()> {
-    // check if new name is available
-    // rename
-    // broadcast add queue and delete queue
-    Ok(())
+    let new_queue_name = &rename_queue.new_queue_name;
+    match db::queues::find_by_name(conn, new_queue_name) {
+        Ok(_) => Err(Box::new(ServerError)),
+        Err(_) => {
+            db::queues::rename(conn, queue_name, new_queue_name)?;
+            handler.send_self(&("addQueue/".to_string() + new_queue_name), json!({}));
+            handler.send_self(&("removeQueue/".to_string() + queue_name), json!({}));
+            Ok(())
+        }
+    }
 }
 
 pub fn remove_queue_route(

@@ -125,5 +125,4 @@ Backend wants:
 
 Frontend wants
 * [Refactoring] Extract more view-components to make the HTML easier to read
-* [Feature] in /admin and /statistics, switch queue list to /queues/filtered
 

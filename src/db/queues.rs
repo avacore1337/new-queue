@@ -115,6 +115,17 @@ pub fn all(conn: &PgConnection) -> Vec<Queue> {
         .expect("Could not get queues")
 }
 
+pub fn rename(
+    conn: &PgConnection,
+    old_queue_name: &str,
+    new_queue_name: &str,
+) -> Result<(), diesel::result::Error> {
+    diesel::update(queues::table.filter(queues::name.eq(old_queue_name)))
+        .set(queues::name.eq(new_queue_name))
+        .execute(conn)
+        .map(|_| ())
+}
+
 pub fn remove(conn: &PgConnection, queue_name: &str) -> Result<(), diesel::result::Error> {
     let queue = find_by_name(conn, queue_name)?;
     diesel::delete(&queue)
