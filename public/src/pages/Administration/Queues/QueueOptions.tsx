@@ -95,15 +95,19 @@ export default (): JSX.Element | null => {
                           </button>
                     }
                     <button
-                      className="btn btn-danger mb-2 mb-lg-0 mr-0 mr-lg-2"
+                      className={`btn btn-danger mb-2 mb-lg-0 ${user.isAdministrator ? 'mr-0 mr-lg-2': null}`}
                       onClick={() => dispatch(openDeleteQueueModal(selectedQueue.name))}>
                         Delete queue
                     </button>
-                    <button
-                      className="btn btn-primary mb-2 mb-lg-0"
-                      onClick={() => dispatch(openRenameQueueModal(selectedQueue.name))}>
-                        Rename queue
-                    </button>
+                    {
+                      user.isAdministrator
+                        ? <button
+                            className="btn btn-primary mb-2 mb-lg-0"
+                            onClick={() => dispatch(openRenameQueueModal(selectedQueue.name))}>
+                              Rename queue
+                          </button>
+                        : null
+                    }
                   </div>
                   <div className="row">
                     <div className="col-12 col-lg-6">
