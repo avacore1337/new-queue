@@ -6,10 +6,12 @@ import DateTimePicker from 'react-datetime';
 import { GlobalStore } from '../../store';
 import { loadQueues } from '../../actions/queueActions';
 import { resetTitle } from '../../actions/titleActions';
+import { downloadFile } from '../../utils/FileDownloader';
 import PageNotFound from '../NoMatch';
 import ErrorMessage from '../../viewcomponents/ErrorMessage';
 import LineChart from '../../viewcomponents/LineChart';
 import User from '../../models/User';
+import { Download } from '../../viewcomponents/FontAwesome';
 import { HTTP_SERVER_URL } from '../../configuration';
 
 export default (): JSX.Element => {
@@ -198,6 +200,12 @@ export default (): JSX.Element => {
                           {statistics}
                         </code>
                       </pre>
+                      <div
+                        className='clickable card p-2'
+                        style={{position: 'absolute', right: '10%', top: '8%', backgroundColor: 'rgba(0, 0, 0, 0.1)'}}
+                        onClick={() => downloadFile(`${selectedQueue}-statistics.json`, statistics)}>
+                        <Download />
+                      </div>
                     </div>
                     <div className="col-lg-6">
                     <table className="table table-striped scrollable">

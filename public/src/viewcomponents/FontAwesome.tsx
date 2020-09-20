@@ -2,6 +2,7 @@ import React from 'react';
 
 export const CheckMark = (props: any): JSX.Element => Markup(props, 'check');
 export const Cross = (props: any): JSX.Element => Markup(props, 'times');
+export const Download = (props: any): JSX.Element => Markup(props, 'download');
 export const Envelope = (props: any): JSX.Element => Markup(props, 'envelope');
 export const Information = (props: any): JSX.Element => Markup(props, 'info');
 export const Invisible = (props: any): JSX.Element => Markup(props, 'eye-slash');
