@@ -142,8 +142,8 @@ export default (props: any): JSX.Element => {
               <span className="float-left">
                 {
                   user?.ugkthid === queueEntry.ugkthid
-                    ? <><Star color="#EEB868" /> {queueEntry.realname}</>
-                    : queueEntry.realname
+                    ? <><Star color="#EEB868" /> {`${queueEntry.realname} (${queueEntry.username})`}</>
+                    : `${queueEntry.realname} (${queueEntry.username})`
                 }
               </span>
               <span className="float-right">
@@ -156,12 +156,14 @@ export default (props: any): JSX.Element => {
         <td>
         {
           checkUrlLocation(queueEntry.location)[0]
-            ? <a
-                href={checkUrlLocation(queueEntry.location)[2] || '#'}
-                target="_blank"
-                rel="noopener noreferrer">
-                  {checkUrlLocation(queueEntry.location)[1]}
-              </a>
+            ? user === null
+              ? <span className='text-danger'>Zoom (log in to access)</span>
+              : <a
+                  href={checkUrlLocation(queueEntry.location)[2] || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer">
+                    {checkUrlLocation(queueEntry.location)[1]}
+                </a>
             : queueEntry.location
         }
         </td>
