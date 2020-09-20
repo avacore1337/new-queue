@@ -45,3 +45,15 @@ export function downloadFile(fileName: string, fileContent: string): void {
     }
     exportRaw(fileName, fileContent);
   }
+
+export function copyToClipboard(content: string): void {
+  const element = document.createElement('textarea');
+  element.value = content;
+  element.setAttribute('readonly', '');
+  element.style.position = 'absolute';
+  element.style.left = '-9999px';
+  document.body.appendChild(element);
+  element.select();
+  document.execCommand('copy');
+  document.body.removeChild(element);
+}

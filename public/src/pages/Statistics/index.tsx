@@ -6,12 +6,12 @@ import DateTimePicker from 'react-datetime';
 import { GlobalStore } from '../../store';
 import { loadQueues } from '../../actions/queueActions';
 import { resetTitle } from '../../actions/titleActions';
-import { downloadFile } from '../../utils/FileDownloader';
+import { downloadFile, copyToClipboard } from '../../utils/UtilityFunctions';
 import PageNotFound from '../NoMatch';
 import ErrorMessage from '../../viewcomponents/ErrorMessage';
 import LineChart from '../../viewcomponents/LineChart';
 import User from '../../models/User';
-import { Download } from '../../viewcomponents/FontAwesome';
+import { Copy, Download } from '../../viewcomponents/FontAwesome';
 import { HTTP_SERVER_URL } from '../../configuration';
 
 export default (): JSX.Element => {
@@ -103,13 +103,13 @@ export default (): JSX.Element => {
     .catch(response => setStatistics(response.toString()));
   }
 
-  function getHelpAmount() {
+  function getHelpNumber() {
     return JSON.parse(statistics)
             .filter((entry: any) => entry.left_queue === true)
             .reduce((peopleHelped: number, entry: any) => entry.help === true ? peopleHelped + 1 : peopleHelped, 0) || 0;
   }
 
-  function getPresentationAmount() {
+  function getPresentationNumber() {
     return JSON.parse(statistics)
             .filter((entry: any) => entry.left_queue === true)
             .reduce((peopleHelped: number, entry: any) => entry.help === false ? peopleHelped + 1 : peopleHelped, 0) || 0;
@@ -189,10 +189,14 @@ export default (): JSX.Element => {
 
           {
             statistics
-              ? <>
+              ? JSON.parse(statistics).length === 0
+              ? <div className='row mb-5'>
+                  <p>Nothing happened in the queue <em>{selectedQueue}</em> during the selected time period</p>
+                </div>
+              : <>
                   <div className="row mb-5">
-                    <LineChart data={JSON.parse(statistics)} />
-                  </div>
+                      <LineChart data={JSON.parse(statistics)} />
+                    </div>
                   <div className="row mb-5">
                     <div className="col-lg-6" style={{overflow: 'hidden'}}>
                       <pre style={{overflowY: 'scroll', overflowX: 'scroll', maxHeight: '27vh', width: '100%'}}>
@@ -203,8 +207,16 @@ export default (): JSX.Element => {
                       <div
                         className='clickable card p-2'
                         style={{position: 'absolute', right: '10%', top: '8%', backgroundColor: 'rgba(0, 0, 0, 0.1)'}}
-                        onClick={() => downloadFile(`${selectedQueue}-statistics.json`, statistics)}>
+                        onClick={() => downloadFile(`${selectedQueue}-statistics.json`, statistics)}
+                        title='Download'>
                         <Download />
+                      </div>
+                      <div
+                        className='clickable card p-2'
+                        style={{position: 'absolute', right: '18%', top: '8%', backgroundColor: 'rgba(0, 0, 0, 0.1)'}}
+                        onClick={() => copyToClipboard(statistics)}
+                        title='Copy to clipboard'>
+                        <Copy />
                       </div>
                     </div>
                     <div className="col-lg-6">
@@ -217,15 +229,15 @@ export default (): JSX.Element => {
                       </thead>
                       <tbody>
                         <tr>
-                          <td>Amount of people helped</td>
-                          <td>{getHelpAmount()}</td>
+                          <td>Number of people helped</td>
+                          <td>{getHelpNumber()}</td>
                         </tr>
                         <tr>
-                          <td>Amount of presentations</td>
-                          <td>{getPresentationAmount()}</td>
+                          <td>Number of presentations</td>
+                          <td>{getPresentationNumber()}</td>
                         </tr>
                         <tr>
-                          <td>Amount of people left in the queue</td>
+                          <td>Number of people left in the queue</td>
                           <td>{getRemainingQueueLength()}</td>
                         </tr>
                       </tbody>
