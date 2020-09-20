@@ -52,15 +52,26 @@ export default (): JSX.Element | null => {
               </button>
               <div className="dropdown-menu" aria-labelledby="selectQueue">
                 {
-                  queues.map(queue =>
-                    <button
-                      className="dropdown-item"
-                      type="button"
-                      key={`QueueOptions_${queue.name}`}
-                      onClick={() => selectQueue(queue.name)} >
-                        {queue.name}
-                      </button>
-                  )
+                  user.isAdministrator
+                    ? queues.map(queue =>
+                        <button
+                          className="dropdown-item"
+                          type="button"
+                          key={`QueueOptions_${queue.name}`}
+                          onClick={() => selectQueue(queue.name)} >
+                            {queue.name}
+                          </button>
+                      )
+                    : user.teacherIn.map(queueName =>
+                        <button
+                          className="dropdown-item"
+                          type="button"
+                          key={`QueueOptions_${queueName}`}
+                          onClick={() => selectQueue(queueName)} >
+                            {queueName}
+                          </button>
+                      )
+
                 }
               </div>
             </div>
