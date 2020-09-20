@@ -47,11 +47,14 @@ export default (props: any): JSX.Element | null => {
   return (
     user
       ? <LoggedInUserView {...props} />
-      : <div
-          className="col-12 text-center blue clickable"
-          style={{lineHeight: '3em'}}
-          onClick={login}>
-          <strong>Login</strong>
+      : <div className='card p-3'>
+          <p>In order to see all the information or to enqueue, you need to be logged in</p>
+          <div
+            className="col-12 text-center blue clickable"
+            style={{lineHeight: '3em'}}
+            onClick={login}>
+            <strong>Login</strong>
+          </div>
         </div>
   );
 };
