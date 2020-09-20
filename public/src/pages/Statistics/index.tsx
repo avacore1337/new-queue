@@ -6,7 +6,7 @@ import DateTimePicker from 'react-datetime';
 import { GlobalStore } from '../../store';
 import { loadQueues } from '../../actions/queueActions';
 import { resetTitle } from '../../actions/titleActions';
-import { downloadFile, copyToClipboard } from '../../utils/UtilityFunctions';
+import { downloadFile, copyToClipboard, addFlashCard } from '../../utils/UtilityFunctions';
 import PageNotFound from '../NoMatch';
 import ErrorMessage from '../../viewcomponents/ErrorMessage';
 import LineChart from '../../viewcomponents/LineChart';
@@ -208,7 +208,7 @@ export default (): JSX.Element => {
                         <div
                           className='clickable card p-2 mr-2'
                           style={{backgroundColor: 'rgba(0, 0, 0, 0.1)'}}
-                          onClick={() => copyToClipboard(statistics)}
+                          onClick={() => {copyToClipboard(statistics); addFlashCard('Copied to clipboard')}}
                           title='Copy to clipboard'>
                           <Copy />
                         </div>

@@ -133,6 +133,39 @@ p, h1, h2, h3, h4, h5, h6 {
   white-space: pre-wrap;
 }
 
+.flash-card {
+  animation-timing-function: linear;
+  border: 3px dashed #8fd962;
+  padding: 1em;
+  background-color: #cfff9e;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  opacity: 0.8;
+  display: flex;
+  transform: translate(-50%, -50%);
+  border-radius: 1em;
+  animation-name: phase-out;
+  animation-duration: 1s;
+}
+
+@keyframes phase-out {
+  0%   {
+    opacity: 0.8;
+    top: 20%;
+  }
+  50%  {
+    opacity: 0.7;
+    top: 21%;
+  }
+  100% {
+    opacity: 0;
+    top: 22%;
+  }
+}
+
 /* DateTimePicker */
 /*!
  * https://github.com/YouCanBookMe/react-datetime

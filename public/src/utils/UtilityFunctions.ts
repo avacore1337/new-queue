@@ -57,3 +57,20 @@ export function copyToClipboard(content: string): void {
   document.execCommand('copy');
   document.body.removeChild(element);
 }
+
+export function addFlashCard(message: string): void {
+
+  const body = document.querySelector('body');
+  if (body === null) {
+    return;
+  }
+
+  const flashCard = document.createElement("div");
+  flashCard.className = "flash-card";
+  flashCard.appendChild(document.createTextNode(message));
+
+  body.appendChild(flashCard);
+  flashCard.addEventListener('webkitAnimationEnd', () => {
+    body.removeChild(flashCard);
+  }, false);
+}
