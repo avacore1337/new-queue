@@ -131,6 +131,50 @@ export default (): JSX.Element | null => {
           <p>
             To unlock a queue, perform the same procedure as above, but instead of choosing <em>Lock</em>, you choose <em>Unlock</em>.
           </p>
+
+          <h3 id="setMOTD">Set MOTD</h3>
+          <p>
+            MOTD stands for <em>Message Of The Day</em>.
+            If you want users to know something once they enter the <em>room</em>, you can set an MOTD.
+            The MOTD will be shown to every user once they enter the <em>room</em> and may i.e.
+            be used to let them know that you only accept presentations today.
+          </p>
+          <p>
+            The MOTD may be set by entering the queue page and clicking the <Link smooth to="/help#assistantOptions">dropdown</Link> with
+            administrative options and clicking <em>Set MOTD</em>. This will open a
+            window prompting the user to enter a message, as well as showing the current
+            MOTD if there is one. Once the message is entered, click the <em>Set MOTD</em> button to save it.
+          </p>
+          <p>
+            In order to remove the MOTD, follow the same procedure, but click <em>Remove MOTD</em> on the window that opens up.
+          </p>
+          <p>
+            <em>
+              Note: If you want the user to see the information for a longer amount of time,
+              use <Link smooth to="/help#setInfo">Set queue info</Link> described below.
+            </em>
+          </p>
+
+          <h3 id="setInfo">Set queue info</h3>
+          <p>
+            Information that you wish to show the user continuously should be entered as <em>queue info</em>.
+            The queue info is shown on the top of the screen on the queue page if there is one,
+            and can only be removed by a teacher.
+          </p>
+          <p>
+            You set the <em>queue info</em> by clicking the <Link smooth to="/help#assistantOptions">dropdown</Link> with administrative options
+            and clicking <em>Set queue info</em>, this will open a window prompting the user to enter some information.
+            Once the message is entered, click the <em>Set info</em> button to save it.
+          </p>
+          <p>
+            In order to remove the info, follow the same procedure, but click <em>Remove info</em> on the window that opens up.
+          </p>
+          <p>
+            <em>
+              Note: If you only want the user to see the info once, when they enter the <em>room</em>, try
+              using <Link smooth to="/help#setMOTD">MOTD</Link> instead.
+            </em>
+          </p>
         </div>
       : null
   );
