@@ -101,7 +101,7 @@ export default (props: any): JSX.Element => {
                       className="col-12 text-center green white-text clickable"
                       style={{lineHeight: '3em'}}
                       onClick={receiveHelp}>
-                      <strong>Recieving help</strong>
+                      <strong>Receiving help</strong>
                     </div>
               }
                 <div
