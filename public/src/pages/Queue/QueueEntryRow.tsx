@@ -142,7 +142,7 @@ export default (props: any): JSX.Element => {
               <span className="float-left">
                 {
                   user?.ugkthid === queueEntry.ugkthid
-                    ? <><Star color="#EEB868" /> {`${queueEntry.realname} (${queueEntry.username})`}</>
+                    ? <><Star color="#f0d73a" /> {`${queueEntry.realname} (${queueEntry.username})`}</>
                     : `${queueEntry.realname} (${queueEntry.username})`
                 }
               </span>

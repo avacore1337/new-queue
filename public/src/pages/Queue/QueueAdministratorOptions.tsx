@@ -37,11 +37,11 @@ export default (props: any): JSX.Element | null => {
             aria-expanded="false" >
             Options
           </button>
-          <div className="dropdown-menu col-12" aria-labelledby="dropdownMenuButton">
-            <div className="dropdown-item clickable" onClick={() => dispatch(openBroadcastModal(queue.name))}><Megaphone /> Broadcast</div>
-            <div className="dropdown-item clickable" onClick={() => dispatch(openBroadcastFacultyModal(queue.name))}><Megaphone /> Broadcast faculty</div>
-            <div className="dropdown-item clickable" onClick={() => dispatch(openSetMotdModal(queue.name))}><Sign /> Set MOTD</div>
-            <div className="dropdown-item clickable" onClick={() => dispatch(openSetQueueInformationModal(queue.name))}><Information /> Set queue information</div>
+          <div className="dropdown-menu col-12 py-0 mb-2 grey-border" aria-labelledby="dropdownMenuButton">
+            <div className="dropdown-item clickable yellow" onClick={() => dispatch(openBroadcastModal(queue.name))}><Megaphone /> Broadcast</div>
+            <div className="dropdown-item clickable yellow" onClick={() => dispatch(openBroadcastFacultyModal(queue.name))}><Megaphone /> Broadcast faculty</div>
+            <div className="dropdown-item clickable yellow" onClick={() => dispatch(openSetMotdModal(queue.name))}><Sign /> Set MOTD</div>
+            <div className="dropdown-item clickable yellow" onClick={() => dispatch(openSetQueueInformationModal(queue.name))}><Information /> Set queue information</div>
             <div className="dropdown-item clickable red" onClick={() => dispatch(purgeQueue(queue.name))}><Trashbin /> Purge queue</div>
             {
               queue.locked
@@ -50,8 +50,8 @@ export default (props: any): JSX.Element | null => {
             }
             {
               playSounds
-                ? <div className="dropdown-item clickable" onClick={() => dispatch(disableSounds())}><Muted /> Disable sounds</div>
-                : <div className="dropdown-item clickable" onClick={() => dispatch(enableSounds())}><VolumeUp /> Enable sounds</div>
+                ? <div className="dropdown-item clickable yellow" onClick={() => dispatch(disableSounds())}><Muted /> Disable sounds</div>
+                : <div className="dropdown-item clickable yellow" onClick={() => dispatch(enableSounds())}><VolumeUp /> Enable sounds</div>
             }
           </div>
         </div>
