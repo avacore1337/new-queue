@@ -27,9 +27,9 @@ export default (props: any): JSX.Element | null => {
   return (
     !isTeacher && !isAssistant
       ? null
-      : <div className="col-12 col-lg-4 mt-lg-3 my-3 pl-0">
+      : <div className="col-12 mt-lg-3 my-3 p-0">
           <button
-            className="btn dropdown-toggle"
+            className="btn btn-block dropdown-toggle"
             type="button"
             id="dropdownMenuButton"
             data-toggle="dropdown"
@@ -37,7 +37,7 @@ export default (props: any): JSX.Element | null => {
             aria-expanded="false" >
             Options
           </button>
-          <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <div className="dropdown-menu col-12" aria-labelledby="dropdownMenuButton">
             <div className="dropdown-item clickable" onClick={() => dispatch(openBroadcastModal(queue.name))}><Megaphone /> Broadcast</div>
             <div className="dropdown-item clickable" onClick={() => dispatch(openBroadcastFacultyModal(queue.name))}><Megaphone /> Broadcast faculty</div>
             <div className="dropdown-item clickable" onClick={() => dispatch(openSetMotdModal(queue.name))}><Sign /> Set MOTD</div>
