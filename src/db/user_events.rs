@@ -1,7 +1,6 @@
-use crate::db::queues;
 use crate::models::queue_entry::QueueEntry;
-use crate::models::user_event::UserEvent;
-use crate::schema::{queue_entries, user_events};
+use crate::models::user_event::{SendableUserEvent, UserEvent};
+use crate::schema::{queue_entries, queues, user_events, users};
 use chrono::{DateTime, TimeZone, Utc};
 use diesel::pg::PgConnection;
 use diesel::prelude::*;
@@ -12,9 +11,23 @@ pub fn for_queue(
     conn: &PgConnection,
     queue_name: &str,
     params: Form<Interval>,
-) -> Option<Vec<UserEvent>> {
-    let queue = queues::find_by_name(conn, queue_name).ok()?;
-    let mut query = UserEvent::belonging_to(&queue).into_boxed();
+) -> Option<Vec<SendableUserEvent>> {
+    let mut query = user_events::table
+        .inner_join(users::table)
+        .inner_join(queues::table)
+        .select((
+            users::username,
+            users::ugkthid,
+            users::realname,
+            user_events::time,
+            user_events::help,
+            user_events::left_queue,
+            user_events::queue_length,
+            user_events::help_amount,
+            user_events::present_amount,
+        ))
+        .filter(queues::name.eq(queue_name))
+        .into_boxed();
     if let Some(from) = params.from {
         let from: DateTime<Utc> = Utc.timestamp(from, 0);
         query = query.filter(user_events::time.ge(from));
@@ -84,17 +97,6 @@ pub fn create(
         .map_err(Into::into)
 }
 
-// user_events (id) {
-//     id -> Int4,
-//     user_id -> Int4,
-//     queue_id -> Int4,
-//     time -> Timestamptz,
-//     help -> Bool,
-//     left_queue -> Bool,
-//     queue_length -> Int4,
-//     help_amount -> Int4,
-//     present_amount -> Int4,
-// }
 #[derive(Insertable)]
 #[table_name = "user_events"]
 pub struct NewUserEvent {

@@ -21,3 +21,16 @@ pub struct UserEvent {
     pub help_amount: i32,
     pub present_amount: i32,
 }
+
+#[derive(Serialize, Queryable, Clone)]
+pub struct SendableUserEvent {
+    pub username: String,
+    pub ugkthid: String,
+    pub realname: String,
+    pub time: DateTime<Utc>,
+    pub help: bool,
+    pub left_queue: bool,
+    pub queue_length: i32,
+    pub help_amount: i32,
+    pub present_amount: i32,
+}
