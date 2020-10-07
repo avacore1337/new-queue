@@ -2,19 +2,20 @@ import { FluxStandardAction } from 'redux-promise-middleware';
 import { Listeners } from '../actions/listenerActions';
 import { ActionTypes as ModalActionTypes } from '../actions/modalActions';
 import Modal from '../models/Modal';
-import { ModalType as ShowMessageModal } from '../viewcomponents/Modals/ShowMessageModal';
-import { ModalType as SendMessageModal } from '../viewcomponents/Modals/SendMessageModal';
-import { ModalType as BroadcastModal } from '../viewcomponents/Modals/BroadcastModal';
 import { ModalType as BroadcastFacultyModal } from '../viewcomponents/Modals/BroadcastFacultyModal';
+import { ModalType as BroadcastModal } from '../viewcomponents/Modals/BroadcastModal';
+import { ModalType as DeleteQueueModal } from '../viewcomponents/Modals/DeleteQueueModal';
+import { ModalType as HideQueueModal } from '../viewcomponents/Modals/HideQueueModal';
+import { ModalType as PurgeQueueModal } from '../viewcomponents/Modals/PurgeQueueModal';
+import { ModalType as RenameQueueModal } from '../viewcomponents/Modals/RenameQueueModal';
+import { ModalType as SendBadLocationModal } from '../viewcomponents/Modals/SendBadLocationModal';
+import { ModalType as SendMessageModal } from '../viewcomponents/Modals/SendMessageModal';
 import { ModalType as SetMotdModal } from '../viewcomponents/Modals/SetMotdModal';
 import { ModalType as SetQueueInformationModal } from '../viewcomponents/Modals/SetQueueInformationModal';
 import { ModalType as SetServerMessageModal } from '../viewcomponents/Modals/ServerMessageModal';
-import { ModalType as ShowQueueModal } from '../viewcomponents/Modals/ShowQueueModal';
-import { ModalType as HideQueueModal } from '../viewcomponents/Modals/HideQueueModal';
-import { ModalType as DeleteQueueModal } from '../viewcomponents/Modals/DeleteQueueModal';
-import { ModalType as RenameQueueModal } from '../viewcomponents/Modals/RenameQueueModal';
+import { ModalType as ShowMessageModal } from '../viewcomponents/Modals/ShowMessageModal';
 import { ModalType as ShowMotdModal } from '../viewcomponents/Modals/ShowMotdModal';
-import { ModalType as SendBadLocationModal } from '../viewcomponents/Modals/SendBadLocation';
+import { ModalType as ShowQueueModal } from '../viewcomponents/Modals/ShowQueueModal';
 
 const initialState = {
   modalList: [] as Modal[],
@@ -78,6 +79,10 @@ export default (state = initialState, action: FluxStandardAction) => {
 
     case ModalActionTypes.OpenHideQueueModal: {
       return { ...state, modalList: [...state.modalList, new Modal(HideQueueModal, action.payload)] }
+    }
+
+    case ModalActionTypes.OpenPurgeQueueModal: {
+      return { ...state, modalList: [...state.modalList, new Modal(PurgeQueueModal, action.payload)] }
     }
 
     case ModalActionTypes.OpenDeleteQueueModal: {

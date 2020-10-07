@@ -3,19 +3,20 @@ import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../store';
 import { closeModal, removeModal } from '../actions/modalActions';
 import ModalInformation from '../models/Modal';
-import SendMessage, { ModalType as SendMessageModal } from './Modals/SendMessageModal';
-import ShowMessage, { ModalType as ShowMessageModal } from './Modals/ShowMessageModal';
-import ShowMotd, { ModalType as ShowMotdModal } from './Modals/ShowMotdModal';
 import Broadcast, { ModalType as BroadcastModal } from './Modals/BroadcastModal';
 import BroadcastFaculty, { ModalType as BroadcastFacultyModal } from './Modals/BroadcastFacultyModal';
-import ServerMessage, { ModalType as ServerMessageModal } from './Modals/ServerMessageModal';
-import ShowQueue, { ModalType as ShowQueueModal } from './Modals/ShowQueueModal';
-import HideQueue, { ModalType as HideQueueModal } from './Modals/HideQueueModal';
 import DeleteQueue, { ModalType as DeleteQueueModal } from './Modals/DeleteQueueModal';
+import HideQueue, { ModalType as HideQueueModal } from './Modals/HideQueueModal';
+import PurgeQueue, { ModalType as PurgeQueueModal } from './Modals/PurgeQueueModal';
 import RenameQueue, { ModalType as RenameQueueModal } from './Modals/RenameQueueModal';
-import SendBadLocation, { ModalType as SendBadLocationModal } from './Modals/SendBadLocation';
+import SendBadLocation, { ModalType as SendBadLocationModal } from './Modals/SendBadLocationModal';
+import SendMessage, { ModalType as SendMessageModal } from './Modals/SendMessageModal';
+import ServerMessage, { ModalType as ServerMessageModal } from './Modals/ServerMessageModal';
 import SetMotd, { ModalType as SetMotdModal } from './Modals/SetMotdModal';
 import SetQueueInformation, { ModalType as SetQueueInformationModal } from './Modals/SetQueueInformationModal';
+import ShowMessage, { ModalType as ShowMessageModal } from './Modals/ShowMessageModal';
+import ShowMotd, { ModalType as ShowMotdModal } from './Modals/ShowMotdModal';
+import ShowQueue, { ModalType as ShowQueueModal } from './Modals/ShowQueueModal';
 
 export default (): JSX.Element => {
 
@@ -37,14 +38,6 @@ export default (): JSX.Element => {
 
     switch (modal.modalType) {
 
-      case SendMessageModal: {
-        return (<SendMessage { ...props } />);
-      }
-
-      case ShowMessageModal: {
-        return (<ShowMessage { ...props } />);
-      }
-
       case BroadcastModal: {
         return (<Broadcast { ...props } />);
       }
@@ -53,20 +46,16 @@ export default (): JSX.Element => {
         return (<BroadcastFaculty { ...props } />);
       }
 
-      case ServerMessageModal: {
-        return (<ServerMessage { ...props } />);
-      }
-
-      case ShowQueueModal: {
-        return (<ShowQueue { ...props } />);
+      case DeleteQueueModal: {
+        return (<DeleteQueue { ...props } />);
       }
 
       case HideQueueModal: {
         return (<HideQueue { ...props } />);
       }
 
-      case DeleteQueueModal: {
-        return (<DeleteQueue { ...props } />);
+      case PurgeQueueModal: {
+        return (<PurgeQueue { ...props } />);
       }
 
       case RenameQueueModal: {
@@ -77,16 +66,32 @@ export default (): JSX.Element => {
         return (<SendBadLocation { ...props } />);
       }
 
+      case SendMessageModal: {
+        return (<SendMessage { ...props } />);
+      }
+
+      case ServerMessageModal: {
+        return (<ServerMessage { ...props } />);
+      }
+
       case SetMotdModal: {
         return (<SetMotd { ...props } />);
+      }
+
+      case SetQueueInformationModal: {
+        return (<SetQueueInformation { ...props } />);
+      }
+
+      case ShowMessageModal: {
+        return (<ShowMessage { ...props } />);
       }
 
       case ShowMotdModal: {
         return (<ShowMotd { ...props } />);
       }
 
-      case SetQueueInformationModal: {
-        return (<SetQueueInformation { ...props } />);
+      case ShowQueueModal: {
+        return (<ShowQueue { ...props } />);
       }
 
     }

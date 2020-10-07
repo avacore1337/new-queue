@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../store';
-import { purgeQueue, lockQueue, unlockQueue } from '../../actions/assistantActions';
-import { openBroadcastModal, openSetMotdModal, openSetQueueInformationModal, openBroadcastFacultyModal } from '../../actions/modalActions';
+import { lockQueue, unlockQueue } from '../../actions/assistantActions';
+import {
+  openBroadcastModal,
+  openSetMotdModal,
+  openSetQueueInformationModal,
+  openPurgeQueueModal,
+  openBroadcastFacultyModal
+} from '../../actions/modalActions';
 import { enableSounds, disableSounds } from '../../actions/soundActions';
 import User from '../../models/User';
 import Queue from '../../models/Queue';
@@ -42,7 +48,7 @@ export default (props: any): JSX.Element | null => {
             <div className="dropdown-item clickable yellow" onClick={() => dispatch(openBroadcastFacultyModal(queue.name))}><Megaphone /> Broadcast faculty</div>
             <div className="dropdown-item clickable yellow" onClick={() => dispatch(openSetMotdModal(queue.name))}><Sign /> Set MOTD</div>
             <div className="dropdown-item clickable yellow" onClick={() => dispatch(openSetQueueInformationModal(queue.name))}><Information /> Set queue information</div>
-            <div className="dropdown-item clickable red" onClick={() => dispatch(purgeQueue(queue.name))}><Trashbin /> Purge queue</div>
+            <div className="dropdown-item clickable red" onClick={() => dispatch(openPurgeQueueModal(queue.name))}><Trashbin /> Purge queue</div>
             {
               queue.locked
                 ? <div className="dropdown-item clickable" onClick={() => dispatch(unlockQueue(queue.name))}><Unlock /> Unlock queue</div>

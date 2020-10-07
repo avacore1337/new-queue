@@ -3,18 +3,19 @@ import { FluxStandardAction } from 'redux-promise-middleware';
 export const ActionTypes = Object.freeze({
   CloseModal: 'CLOSE_MODAL',
   RemoveModal: 'REMOVE_MODAL',
-  OpenSendMessageModal: 'OPEN_SEND_MESSAGE_MODAL',
-  OpenBroadcastModal: 'OPEN_BROADCAST_MODAL',
   OpenBroadcastFacultyModal: 'OPEN_BROADCAST_FACULTY_MODAL',
+  OpenBroadcastModal: 'OPEN_BROADCAST_MODAL',
+  OpenDeleteQueueModal: 'OPEN_DELETE_QUEUE_MODAL',
+  OpenHideQueueModal: 'OPEN_HIDE_QUEUE_MODAL',
+  OpenPurgeQueueModal: 'OPEN_PURGE_QUEUE_MODAL',
+  OpenRenameQueueModal: 'OPEN_RENAME_QUEUE_MODAL',
+  OpenSendBadLocationModal: 'OPEN_SEND_BAD_LOCATION_MODAL',
+  OpenSendMessageModal: 'OPEN_SEND_MESSAGE_MODAL',
   OpenSetMotdModal: 'OPEN_SET_MOTD_MODAL',
   OpenSetQueueInformationModal: 'OPEN_SET_QUEUE_INFORMATION_MODAL',
   OpenSetServerMessageModal: 'OPEN_SET_SERVER_MESSAGE_MODAL',
-  OpenShowQueueModal: 'OPEN_SHOW_QUEUE_MODAL',
-  OpenHideQueueModal: 'OPEN_HIDE_QUEUE_MODAL',
-  OpenDeleteQueueModal: 'OPEN_DELETE_QUEUE_MODAL',
-  OpenRenameQueueModal: 'OPEN_RENAME_QUEUE_MODAL',
   OpenShowMotdModal: 'OPEN_SHOW_MOTD_MODAL',
-  OpenSendBadLocationModal: 'OPEN_SEND_BAD_LOCATION_MODAL'
+  OpenShowQueueModal: 'OPEN_SHOW_QUEUE_MODAL'
 });
 
 export const closeModal = (): FluxStandardAction => ({
@@ -61,6 +62,11 @@ export const openShowQueueModal = (queueName: string): FluxStandardAction => ({
 
 export const openHideQueueModal = (queueName: string): FluxStandardAction => ({
   type: ActionTypes.OpenHideQueueModal,
+  payload: { queueName }
+});
+
+export const openPurgeQueueModal = (queueName: string): FluxStandardAction => ({
+  type: ActionTypes.OpenPurgeQueueModal,
   payload: { queueName }
 });
 
