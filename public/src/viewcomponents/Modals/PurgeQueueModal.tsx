@@ -30,15 +30,10 @@ export default (props: any): JSX.Element => {
       </Modal.Body>
       <Modal.Footer>
         <button
-          className="btn btn-primary"
-          onClick={props.onHide} >
-            No, don't purge the queue
-          </button>
-          <button
-            className="btn btn-danger"
-            onClick={confirm} >
-              Yes, purge the queue
-            </button>
+          className="btn btn-danger"
+          onClick={confirm} >
+          Yes, purge the queue
+        </button>
       </Modal.Footer>
     </Modal>
   );
