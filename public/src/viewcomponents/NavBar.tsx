@@ -70,7 +70,7 @@ export default (): JSX.Element => {
             ? <li
                 className={'nav-item' + (location.pathname === '/MockLogin' ? ' active' : '')}
                 onClick={() => localStorage.setItem('LastVisitedUrl', window.location.pathname)}>
-                <a className="nav-link" href="https://login.kth.se/login?service=http://queue.csc.kth.se/auth">
+                <a className="nav-link" href={`https://login.kth.se/login?service=${window.location.protocol === 'http:' ? 'http' : 'https'}://queue.csc.kth.se/auth`}>
                   Login
                   {location.pathname === '/MockLogin' ? <span className="sr-only">(current)</span> : null}
                 </a>
