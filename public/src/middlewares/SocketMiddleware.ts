@@ -53,7 +53,6 @@ const middleware = () => {
   };
 
   const onOpen = (store: any) => (event: any) => {
-    alert('WebSocket connection established');
     connectionEstablished = true;
 
     if (store.getState().queues.requestStatus === RequestStatus.Failed) {
