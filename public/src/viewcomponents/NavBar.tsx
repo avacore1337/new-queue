@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation  } from "react-router-dom";
 import { useSelector } from 'react-redux'
 import { GlobalStore } from '../store';
+import { LOGIN_CALLBACK } from '../configuration';
 import User from '../models/User';
 import Logo from '../img/logo-stay-a-while.png';
 
@@ -70,7 +71,7 @@ export default (): JSX.Element => {
             ? <li
                 className={'nav-item' + (location.pathname === '/MockLogin' ? ' active' : '')}
                 onClick={() => localStorage.setItem('LastVisitedUrl', window.location.pathname)}>
-                <a className="nav-link" href={`https://login.kth.se/login?service=${window.location.protocol === 'http:' ? 'http' : 'https'}://queue.csc.kth.se/auth`}>
+                <a className="nav-link" href={`https://login.kth.se/login?service=${LOGIN_CALLBACK}`}>
                   Login
                   {location.pathname === '/MockLogin' ? <span className="sr-only">(current)</span> : null}
                 </a>
