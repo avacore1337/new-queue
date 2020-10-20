@@ -3,7 +3,7 @@
 This the the new queue system for KTH (semi-official), rewritten in Rust and React.
 The old one can be found [here](https://github.com/avacore1337/queueSystem) but is no longer in service.
 
-The system is current running at <http://queue.csc.kth.se> and help students and teachers keep track of who's next to present and/or get help. For help/support please direct your questions to <robertwb@kth.se>.
+The system is current running at <https://queue.csc.kth.se> and help students and teachers keep track of who's next to present and/or get help. For help/support please direct your questions to <robertwb@kth.se>.
 
 ## Setup
 ```bash

@@ -114,7 +114,7 @@ fn validate_ticket(ticket: &str) -> Option<String> {
     // println!("Validating ticket");
     let url = "https://login.kth.se/serviceValidate?ticket=".to_string()
         + ticket
-        + "&service=http://queue.csc.kth.se/auth";
+        + "&service=https://queue.csc.kth.se/auth";
     let res = reqwest::blocking::get(&url).ok()?.text().ok()?;
     // println!("body = {:?}", res);
     if res.contains("authenticationFailure") {
