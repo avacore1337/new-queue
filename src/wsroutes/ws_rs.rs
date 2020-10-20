@@ -427,8 +427,12 @@ impl RoomHandler {
 }
 
 pub fn websocket() -> () {
-    println!("Web Socket RoomHandler is ready at ws://127.0.0.1:7777/ws");
-    println!("RoomHandler is ready at http://127.0.0.1:7777/");
+    let port = if cfg!(debug_assertions) { 7777 } else { 7000 };
+    println!(
+        "Web Socket RoomHandler is ready at ws://127.0.0.1:{}/ws",
+        port
+    );
+    println!("RoomHandler is ready at http://127.0.0.1:{}/", port);
 
     // Listen on an address and call the closure for each connection
     let count = Rc::new(Cell::new(0));
@@ -453,6 +457,6 @@ pub fn websocket() -> () {
             active_room: None,
         })
         .unwrap()
-        .listen(address + ":7777")
+        .listen(address + ":" + &port.to_string())
         .unwrap();
 }
