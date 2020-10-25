@@ -21,7 +21,7 @@ export default (): JSX.Element => {
   return (
     <div className="container">
     	<h1>Help and FAQ</h1>
-    	<h4>Contact: <a href="mailto:robertwb@kth.se?Subject=Stay%20A%20While" target="_top">robertwb@kth.se</a></h4>
+    	<h4>Have further questions or wish to create new queues? Contact: <a href="mailto:robertwb@kth.se?Subject=Stay%20A%20While" target="_top">robertwb@kth.se</a></h4>
 
       <AdministratorHelp />
       <TeacherHelp />
