@@ -51,9 +51,9 @@ export default (): JSX.Element | null => {
 
           <h3 id="help">Help a user</h3>
           <p>
-            By helping a user, you mark them using the green button with a checkmark accessed in the same way as you would access the
+            By helping a user, you mark them using the blue button with a checkmark accessed in the same way as you would access the
             button to <Link smooth to="/help#kick">kick</Link> someone.
-            When a user is receiving help, they will start pulsing, notifing any other assistant that they can move to the next person
+            When a user is receiving help, their row will have a green background, notifing any other assistant that they can move to the next person
             in the queue.
           </p>
 

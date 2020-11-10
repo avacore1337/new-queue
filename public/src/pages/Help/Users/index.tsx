@@ -51,7 +51,7 @@ export default (): JSX.Element | null => {
 
           <h3 id="receivingHelp">Receiving help</h3>
           <p>
-            Once you have <Link smooth to="/help#join">joined</Link> a queue, you will notice that you are rewarded with a yellow
+            Once you have <Link smooth to="/help#join">joined</Link> a queue, you will notice that you are rewarded with a green
             button saying <em>Receiving help</em>, this button should be used if you are receiving help from an assistant
             who forgot to personally mark you as receiving help.
             If this is the case, click the button to prevent more assistants to come to you while you are receiving help.
