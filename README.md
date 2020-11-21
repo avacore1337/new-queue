@@ -63,6 +63,11 @@ Then simply run ```diesel migration run``` and then start the server in producti
 cargo run --release
 ```
 
+Since things need to be reliable you probably want to enable auto-restart, start on boot, static serve, firewall, https certificates, etc.
+All the settings to set this up on a standard ubuntu 18.04, using Systemd and Nginx is available under the devops folder.
+The current setting assume that you use let's encrypt. 
+Example instructions for how to set up can be found [here](https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-18-04).
+
 ## Building
 Build the project
 ```bash
