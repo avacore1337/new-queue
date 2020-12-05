@@ -72,6 +72,7 @@ pub fn kth_auth(
 ) -> Redirect {
     match handle_login(&conn, params) {
         Some(user) => {
+            println!("User logged in: {:?}", user);
             cookies.add(Cookie::new(
                 "userdata",
                 json!(user.to_user_auth(&conn, &state.secret, client_addr)).to_string(),

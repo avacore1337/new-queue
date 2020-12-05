@@ -118,6 +118,7 @@ fn validate_ticket(ticket: &str) -> Option<String> {
     let res = reqwest::blocking::get(&url).ok()?.text().ok()?;
     // println!("body = {:?}", res);
     if res.contains("authenticationFailure") {
+        println!("authenticationFailure for ticket {}", ticket);
         None
     } else {
         let re = Regex::new(r"(u1[\d|\w]+)").unwrap();

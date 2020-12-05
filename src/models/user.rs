@@ -6,7 +6,7 @@ use chrono::{Duration, Utc};
 use rocket_client_addr::ClientAddr;
 use serde::Serialize;
 
-#[derive(Identifiable, Queryable, Serialize)]
+#[derive(Identifiable, Queryable, Serialize, Debug)]
 pub struct User {
     pub id: i32,
     pub username: String,
