@@ -96,7 +96,12 @@ pub struct Auth {
 
 impl Auth {
     pub fn token(&self, secret: &[u8]) -> String {
-        jwt::encode(&jwt::Header::default(), self, secret).expect("jwt")
+        jwt::encode(
+            &jwt::Header::default(),
+            self,
+            &jwt::EncodingKey::from_secret(secret),
+        )
+        .expect("jwt")
     }
 }
 
@@ -138,10 +143,14 @@ fn extract_token_from_header(header: &str) -> Option<&str> {
 pub fn decode_token(token: &str, secret: &[u8]) -> Option<Auth> {
     use jwt::{Algorithm, Validation};
 
-    jwt::decode(token, secret, &Validation::new(Algorithm::HS256))
-        .map_err(|err| {
-            eprintln!("Auth decode error: {:?}", err);
-        })
-        .ok()
-        .map(|token_data| token_data.claims)
+    jwt::decode(
+        token,
+        &jwt::DecodingKey::from_secret(secret),
+        &Validation::new(Algorithm::HS256),
+    )
+    .map_err(|err| {
+        eprintln!("Auth decode error: {:?}", err);
+    })
+    .ok()
+    .map(|token_data| token_data.claims)
 }
