@@ -17,8 +17,8 @@ pub enum BadLocationType {
     WrongLocation,
 }
 
-#[serde(rename_all = "camelCase")]
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct BadLocationMessage {
     pub ugkthid: String,
     pub bad_location_type: BadLocationType,
@@ -29,8 +29,8 @@ pub struct Username {
     pub username: String,
 }
 
-#[serde(rename_all = "camelCase")]
 #[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct RenameQueue {
     pub new_queue_name: String,
 }
