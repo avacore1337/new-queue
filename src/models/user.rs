@@ -60,7 +60,7 @@ impl User {
             username: &self.username,
             ugkthid: &self.ugkthid,
             realname: &self.realname,
-            location: location,
+            location,
             superadmin,
             assistant_in,
             teacher_in,

@@ -23,7 +23,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 If it doesn't compile you might need to install our currently used nightly version:
 ```bash
-rustup toolchain install nightly-2020-07-08
+rustup toolchain install nightly-2021-05-11
 ```
 
 

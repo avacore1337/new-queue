@@ -45,7 +45,7 @@ pub fn validate_auth(
     match auth_level {
         AuthLevel::Any => Ok(auth),
         AuthLevel::Assistant => {
-            let queue_name = queue_name.ok_or_else(|| BadAuth)?;
+            let queue_name = queue_name.ok_or(BadAuth)?;
             match db::admins::admin_for_queue(conn, &queue_name, &auth) {
                 Some(_) => Ok(auth),
                 None => Err(Box::new(BadAuth)),
@@ -61,7 +61,7 @@ pub fn validate_auth(
         AuthLevel::SuperOrTeacher => match db::super_admins::is_super(conn, auth.id) {
             Some(_) => Ok(auth),
             None => {
-                let queue_name = queue_name.ok_or_else(|| BadAuth)?;
+                let queue_name = queue_name.ok_or(BadAuth)?;
                 match db::admins::admin_for_queue(conn, &queue_name, &auth) {
                     Some(AdminEnum::Teacher) => Ok(auth),
                     _ => Err(Box::new(BadAuth)),
@@ -131,11 +131,7 @@ fn extract_auth_from_request(request: &Request, secret: &[u8]) -> Option<Auth> {
 }
 
 fn extract_token_from_header(header: &str) -> Option<&str> {
-    if header.starts_with(config::TOKEN_PREFIX) {
-        Some(&header[config::TOKEN_PREFIX.len()..])
-    } else {
-        None
-    }
+    header.strip_prefix(config::TOKEN_PREFIX)
 }
 
 /// Decode token into `Auth` struct. If any error is encountered, log it

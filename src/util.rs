@@ -162,7 +162,7 @@ pub fn get_location(client_addr: &ClientAddr) -> Option<String> {
         None
     } else {
         let kth_subname = host
-            .split(".")
+            .split('.')
             .next()
             .unwrap()
             .replace("-", " ")

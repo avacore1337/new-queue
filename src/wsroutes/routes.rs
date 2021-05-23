@@ -330,7 +330,7 @@ pub fn join_queue_route(
     println!("QueueEntry {:?}", queue_entry);
 
     let sendable = queue_entry.to_sendable(conn);
-    handler.broadcast_room(queue_name, "joinQueue", json!(sendable.clone()));
+    handler.broadcast_room(queue_name, "joinQueue", json!(sendable));
     handler.broadcast_lobby(&queue.name, "joinQueue", json!(sendable));
     Ok(())
 }

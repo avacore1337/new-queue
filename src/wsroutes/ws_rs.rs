@@ -45,8 +45,7 @@ impl Handler for RoomHandler {
                 // https://ws-rs.org/api_docs/ws/struct.Request.html
                 println!("Browser Request from {:?}", req.origin().unwrap().unwrap());
                 println!("Client found is {:?}", req.client_addr().unwrap());
-                let resp = Response::from_request(req);
-                resp
+                Response::from_request(req)
             }
 
             _ => Ok(Response::new(404, "Not Found", b"404 - Not Found".to_vec())),
@@ -67,7 +66,7 @@ impl Handler for RoomHandler {
 
     // Handle messages received in the websocket (in this case, only on /ws)
     fn on_message(&mut self, message: Message) -> ws::Result<()> {
-        let raw_message = message.clone().into_text()?;
+        let raw_message = message.into_text()?;
         println!("The message from the client is {:#?}", &raw_message);
         if let Err(e) = self.handle_message(&raw_message) {
             self.send_error_message(e, &raw_message);
@@ -169,7 +168,7 @@ impl RoomHandler {
     pub fn send_self(&self, path: &str, content: Json) {
         let message = &json!(SendWrapper {
             path: path.to_string(),
-            content: content,
+            content,
         })
         .to_string();
         if let Err(err) = self.out.send(Message::Text(message.to_string())) {
@@ -181,7 +180,7 @@ impl RoomHandler {
         println!("broadcasting to entire server");
         let message = &json!(SendWrapper {
             path: "message".to_string(),
-            content: content,
+            content,
         })
         .to_string();
         if let Err(err) = self.out.broadcast(Message::Text(message.to_string())) {
@@ -197,7 +196,7 @@ impl RoomHandler {
         let internal_name = "room_".to_string() + room;
         let message = &json!(SendWrapper {
             path: path.to_string() + "/" + room,
-            content: content,
+            content,
         })
         .to_string();
         let mut rooms: RefMut<_> = self.rooms.borrow_mut();
@@ -225,7 +224,7 @@ impl RoomHandler {
         println!("broadcasting to lobby");
         let message = &json!(SendWrapper {
             path: path.to_string() + "/" + room,
-            content: content,
+            content,
         })
         .to_string();
         let mut rooms: RefMut<_> = self.rooms.borrow_mut();
@@ -298,17 +297,17 @@ impl RoomHandler {
 
             ["updateQueueEntry", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Any)?;
-                let join_queue = from_value::<UpdateQueueEntry>(wrapper.content.clone())?;
+                let join_queue = from_value::<UpdateQueueEntry>(wrapper.content)?;
                 update_queue_entry_route(self, auth, conn, join_queue, queue_name)
             }
             ["sendMessage", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
-                let user_message = from_value::<UserMessage>(wrapper.content.clone())?;
+                let user_message = from_value::<UserMessage>(wrapper.content)?;
                 send_message_route(self, auth, user_message, queue_name)
             }
             ["joinQueue", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Any)?;
-                let join_queue = from_value::<UpdateQueueEntry>(wrapper.content.clone())?;
+                let join_queue = from_value::<UpdateQueueEntry>(wrapper.content)?;
                 join_queue_route(self, auth, conn, join_queue, queue_name)
             }
             ["leaveQueue", queue_name] => {
@@ -325,83 +324,83 @@ impl RoomHandler {
             }
             ["renameQueue", queue_name] => {
                 let _auth = self.get_auth(&wrapper, AuthLevel::Super)?;
-                let rename_queue = from_value::<RenameQueue>(wrapper.content.clone())?;
+                let rename_queue = from_value::<RenameQueue>(wrapper.content)?;
                 rename_queue_route(self, conn, rename_queue, queue_name)
             }
             ["addSuperAdmin"] => {
                 let _auth = self.get_auth(&wrapper, AuthLevel::Super)?;
-                let user = from_value::<Username>(wrapper.content.clone())?;
+                let user = from_value::<Username>(wrapper.content)?;
                 add_super_admin_route(self, conn, user)
             }
             ["removeSuperAdmin"] => {
                 let _auth = self.get_auth(&wrapper, AuthLevel::Super)?;
-                let user = from_value::<Username>(wrapper.content.clone())?;
+                let user = from_value::<Username>(wrapper.content)?;
                 remove_super_route(self, conn, user)
             }
             ["setHelpStatus", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Any)?;
-                let status = from_value::<Status>(wrapper.content.clone())?;
+                let status = from_value::<Status>(wrapper.content)?;
                 set_help_status_route(self, auth, conn, status, queue_name)
             }
             ["kick", queue_name] => {
                 let _auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
-                let kick = from_value::<Ugkthid>(wrapper.content.clone())?;
+                let kick = from_value::<Ugkthid>(wrapper.content)?;
                 kick_route(self, conn, kick, queue_name)
             }
             ["setQueueInfo", queue_name] => {
                 let _auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
-                let text = from_value::<Text>(wrapper.content.clone())?;
+                let text = from_value::<Text>(wrapper.content)?;
                 set_queue_info_route(self, conn, text, queue_name)
             }
             ["addTeacher", queue_name] => {
                 let _auth = self.get_auth(&wrapper, AuthLevel::SuperOrTeacher)?;
-                let user = from_value::<Username>(wrapper.content.clone())?;
+                let user = from_value::<Username>(wrapper.content)?;
                 add_teacher_route(self, conn, user, queue_name)
             }
             ["addAssistant", queue_name] => {
                 let _auth = self.get_auth(&wrapper, AuthLevel::SuperOrTeacher)?;
-                let user = from_value::<Username>(wrapper.content.clone())?;
+                let user = from_value::<Username>(wrapper.content)?;
                 add_assistant_route(self, conn, user, queue_name)
             }
             ["removeTeacher", queue_name] => {
                 let _auth = self.get_auth(&wrapper, AuthLevel::SuperOrTeacher)?;
-                let user = from_value::<Username>(wrapper.content.clone())?;
+                let user = from_value::<Username>(wrapper.content)?;
                 remove_teacher_route(self, conn, user, queue_name)
             }
             ["removeAssistant", queue_name] => {
                 let _auth = self.get_auth(&wrapper, AuthLevel::SuperOrTeacher)?;
-                let user = from_value::<Username>(wrapper.content.clone())?;
+                let user = from_value::<Username>(wrapper.content)?;
                 remove_assistant_route(self, conn, user, queue_name)
             }
             ["setUserHelpStatus", queue_name] => {
                 let _auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
-                let user_status = from_value::<UserStatus>(wrapper.content.clone())?;
+                let user_status = from_value::<UserStatus>(wrapper.content)?;
                 set_user_help_status_route(self, conn, user_status, queue_name)
             }
             ["broadcast", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
-                let message = from_value::<Text>(wrapper.content.clone())?;
+                let message = from_value::<Text>(wrapper.content)?;
                 broadcast_route(self, auth, message, queue_name)
             }
             ["broadcastFaculty", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
-                let message = from_value::<Text>(wrapper.content.clone())?;
+                let message = from_value::<Text>(wrapper.content)?;
                 broadcast_faculty_route(self, auth, conn, message, queue_name)
             }
             ["broadcastServer"] => {
                 let _auth = self.get_auth(&wrapper, AuthLevel::Super)?;
-                let message = from_value::<Text>(wrapper.content.clone())?;
+                let message = from_value::<Text>(wrapper.content)?;
                 self.broadcast_server(json!(message));
                 Ok(())
             }
             ["badLocation", queue_name] => {
                 let auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
-                let ugkthid = from_value::<BadLocationMessage>(wrapper.content.clone())?;
+                let ugkthid = from_value::<BadLocationMessage>(wrapper.content)?;
                 bad_location_route(self, auth, ugkthid, conn, queue_name)
             }
             ["setMOTD", queue_name] => {
                 let _auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
-                let text = from_value::<Text>(wrapper.content.clone())?;
+                let text = from_value::<Text>(wrapper.content)?;
                 set_queue_motd_route(self, conn, text, queue_name)
             }
             ["purgeQueue", queue_name] => {
@@ -409,13 +408,13 @@ impl RoomHandler {
                 purge_queue_route(self, conn, queue_name)
             }
             ["setQueueLockStatus", queue_name] => {
-                let status = from_value::<Status>(wrapper.content.clone())?;
                 let _auth = self.get_auth(&wrapper, AuthLevel::Assistant)?;
+                let status = from_value::<Status>(wrapper.content)?;
                 set_queue_lock_status(self, conn, status, queue_name)
             }
             ["setQueueHideStatus", queue_name] => {
-                let status = from_value::<Status>(wrapper.content.clone())?;
                 let _auth = self.get_auth(&wrapper, AuthLevel::SuperOrTeacher)?;
+                let status = from_value::<Status>(wrapper.content)?;
                 set_queue_hide_status(self, conn, status, queue_name)
             }
             _ => {
@@ -426,7 +425,7 @@ impl RoomHandler {
     }
 }
 
-pub fn websocket() -> () {
+pub fn websocket() {
     let port = if cfg!(debug_assertions) { 7777 } else { 7000 };
     println!(
         "Web Socket RoomHandler is ready at ws://127.0.0.1:{}/ws",
@@ -447,7 +446,7 @@ pub fn websocket() -> () {
             ..Settings::default()
         })
         .build(|out| RoomHandler {
-            out: out,
+            out,
             count: count.clone(),
             rooms: rooms.clone(),
             ugkthid_map: ugkthid_map.clone(),
