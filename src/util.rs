@@ -75,9 +75,9 @@ fn convert_to_ldap_user(mut rs: Vec<ResultEntry>) -> Option<LdapUser> {
     let mut entry = SearchEntry::construct(rs.pop()?);
     // println!("Got entry:\n{:?}", entry);
     Some(LdapUser {
-        username: entry.attrs.get_mut(LDAP_USERNAME)?.pop()?.to_string(),
-        ugkthid: entry.attrs.get_mut(LDAP_UGKTHID)?.pop()?.to_string(),
-        realname: entry.attrs.get_mut(LDAP_REALNAME)?.pop()?.to_string(),
+        username: entry.attrs.get_mut(LDAP_USERNAME)?.pop()?,
+        ugkthid: entry.attrs.get_mut(LDAP_UGKTHID)?.pop()?,
+        realname: entry.attrs.get_mut(LDAP_REALNAME)?.pop()?,
     })
 }
 

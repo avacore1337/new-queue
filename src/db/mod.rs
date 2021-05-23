@@ -21,7 +21,7 @@ pub type PgPool = Pool<ConnectionManager<PgConnection>>;
 
 pub fn get_single_connection() -> PgConnection {
     PgConnection::establish(&database_url())
-        .expect(&format!("Error connecting to {}", database_url()))
+        .unwrap_or_else(|_| panic!("Error connecting to {}", database_url()))
 }
 
 // fn init_pool() -> Result<PgPool, PoolError> {

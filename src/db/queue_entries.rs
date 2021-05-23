@@ -157,10 +157,10 @@ pub fn remove_all(conn: &PgConnection) -> Result<(), diesel::result::Error> {
 
 pub fn remove_multiple(
     conn: &PgConnection,
-    entries: &Vec<QueueEntry>,
+    entries: &[QueueEntry],
 ) -> Result<(), diesel::result::Error> {
     diesel::delete(queue_entries::table.filter(
-        queue_entries::id.eq_any::<Vec<i32>>(entries.into_iter().map(|entry| entry.id).collect()),
+        queue_entries::id.eq_any::<Vec<i32>>(entries.iter().map(|entry| entry.id).collect()),
     ))
     .execute(conn)
     .map(|_| ())
