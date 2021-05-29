@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom';
-import { LOGIN_CALLBACK } from '../../../configuration';
 import { GlobalStore } from '../../../store';
 import User from '../../../models/User';
 
@@ -19,7 +18,7 @@ export default (): JSX.Element | null => {
 
           <p>
             If you only want to view a queue, that's cool,
-            but to be able to join a queue, you will need to <span onClick={() => localStorage.setItem('LastVisitedUrl', window.location.pathname)}><a href={`https://login.kth.se/login?service=${LOGIN_CALLBACK}`}>log in</a></span>.
+            but to be able to join a queue, you will need to <span onClick={() => localStorage.setItem('LastVisitedUrl', window.location.pathname)}><a href={`https://queue.csc.kth.se/login`}>log in</a></span>.
           </p>
 
           <h4>Viewing a queue</h4>

@@ -42,7 +42,7 @@ export default (props: any): JSX.Element | null => {
 
   function login() {
     localStorage.setItem('LastVisitedUrl', window.location.pathname);
-    window.location.href = `https://login.kth.se/login?service=${LOGIN_CALLBACK}`;
+    window.location.href = `https://queue.csc.kth.se/login`;
   }
 
   return (

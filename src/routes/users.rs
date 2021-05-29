@@ -57,7 +57,7 @@ pub fn post_users_login(
     }
 }
 
-#[get("/users/login2")]
+#[get("/login")]
 pub fn kth_login() -> Redirect {
     Redirect::to("https://login.kth.se/login?service=https://queue.csc.kth.se/auth")
 }
