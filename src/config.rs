@@ -48,8 +48,6 @@ pub fn from_env() -> Config {
         .expect("PORT environment variable should parse to an integer");
 
     let address = env::var("ROCKET_ADDRESS").unwrap_or_else(|_| "127.0.0.1".to_string());
-    // let application_id = env::var("APPLICATION_ID").unwrap_or_else(|_| "unset".to_string());
-    // let client_secret = env::var("CLIENT_SECRET").unwrap_or_else(|_| "unset".to_string());
 
     let mut database_config = HashMap::new();
     let mut databases = HashMap::new();

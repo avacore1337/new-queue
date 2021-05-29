@@ -32,6 +32,7 @@ unicode-truncate = "0.2.0"
 dns-lookup = "1.0.6"
 rocket-client-addr = "0.4.6"
 openidconnect = "2.0.1"
+anyhow = "1.0.40"
 
 
 [dependencies.rocket_contrib]

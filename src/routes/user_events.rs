@@ -1,5 +1,5 @@
 use crate::auth::{validate_auth, Auth, AuthLevel};
-use crate::db::{self};
+use crate::db;
 use rocket::request::Form;
 
 use rocket_contrib::json::JsonValue;

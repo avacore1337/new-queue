@@ -78,7 +78,11 @@ pub fn rocket() -> rocket::Rocket {
         .mount("/", StaticFiles::from("public/build"))
         .mount(
             "/",
-            routes![routes::users::kth_auth, routes::users::kth_login,],
+            routes![
+                routes::users::kth_auth,
+                routes::users::kth_oidc_auth,
+                routes::users::kth_login,
+            ],
         )
         .mount(
             "/api",
