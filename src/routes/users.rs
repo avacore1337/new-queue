@@ -108,8 +108,8 @@ pub fn kth_oidc_auth(
     // cookies.add(Cookie::new("nonce", nonce.secret().clone()));
     match cookies.get("nonce") {
         Some(nonce) => {
-            println!("got nonce: {}", nonce);
-            match get_oidc_user(params, Nonce::new(nonce.to_string())) {
+            println!("got nonce: {}", nonce.value());
+            match get_oidc_user(params, Nonce::new(nonce.value().to_string())) {
                 Ok(_) => println!("good login!"),
                 Err(err) => {
                     println!("oidc error: {:?}", err);
