@@ -185,13 +185,14 @@ pub fn use_oidc(mut cookies: Cookies) -> Result<Redirect> {
 
     // This is the URL you should redirect the user to, in order to trigger the authorization
     // process.
-    println!("Browse to: {}", auth_url);
 
     cookies.add(Cookie::new("nonce", nonce.secret().clone()));
+    println!("wrote nonce: {:?}", nonce);
     Ok(Redirect::to(auth_url.to_string()))
 }
 
 pub fn get_oidc_user(params: Form<Code>, nonce: Nonce) -> Result<()> {
+    println!("got nonce: {:?}", nonce);
     let client = get_client()?;
     println!("getting oidc_user");
     let code = params
