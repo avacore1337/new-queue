@@ -107,12 +107,15 @@ pub fn kth_oidc_auth(
     println!("starting oidc auth");
     // cookies.add(Cookie::new("nonce", nonce.secret().clone()));
     match cookies.get("nonce") {
-        Some(nonce) => match get_oidc_user(params, Nonce::new(nonce.to_string())) {
-            Ok(_) => println!("good login!"),
-            Err(err) => {
-                println!("oidc error: {:?}", err);
+        Some(nonce) => {
+            println!("got nonce: {}", nonce);
+            match get_oidc_user(params, Nonce::new(nonce.to_string())) {
+                Ok(_) => println!("good login!"),
+                Err(err) => {
+                    println!("oidc error: {:?}", err);
+                }
             }
-        },
+        }
         None => println!("failed to get nonce"),
     }
     Redirect::to("/")
@@ -187,12 +190,12 @@ pub fn use_oidc(mut cookies: Cookies) -> Result<Redirect> {
     // process.
 
     cookies.add(Cookie::new("nonce", nonce.secret().clone()));
-    println!("wrote nonce: {:?}", nonce);
+    println!("wrote nonce: {:?}", nonce.secret());
     Ok(Redirect::to(auth_url.to_string()))
 }
 
 pub fn get_oidc_user(params: Form<Code>, nonce: Nonce) -> Result<()> {
-    println!("got nonce: {:?}", nonce);
+    println!("got nonce: {:?}", nonce.secret());
     let client = get_client()?;
     println!("getting oidc_user");
     let code = params
