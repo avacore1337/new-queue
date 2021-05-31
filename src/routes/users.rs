@@ -5,12 +5,17 @@ use crate::errors::{Errors, FieldValidator};
 use crate::util::{handle_login, Ticket};
 use anyhow::{anyhow, Result};
 use openidconnect::core::{
-    CoreAuthenticationFlow, CoreClient, CoreProviderMetadata, CoreUserInfoClaims,
+    CoreAuthDisplay, CoreAuthPrompt, CoreAuthenticationFlow, CoreErrorResponseType,
+    CoreGenderClaim, CoreJsonWebKey, CoreJsonWebKeyType, CoreJsonWebKeyUse,
+    CoreJweContentEncryptionAlgorithm, CoreJwsSigningAlgorithm, CoreProviderMetadata,
+    CoreRevocableToken, CoreRevocationErrorResponse, CoreTokenIntrospectionResponse, CoreTokenType,
 };
+use serde::Serialize;
 
 use openidconnect::{
-    AccessTokenHash, AuthorizationCode, ClientId, ClientSecret, CsrfToken, IssuerUrl, Nonce,
-    PkceCodeChallenge, RedirectUrl, Scope,
+    AccessTokenHash, AdditionalClaims, AuthorizationCode, Client, ClientId, ClientSecret,
+    CsrfToken, EmptyExtraTokenFields, IdTokenFields, IssuerUrl, Nonce, RedirectUrl, Scope,
+    StandardErrorResponse, StandardTokenResponse,
 };
 use rocket::http::{Cookie, Cookies};
 use rocket::request::Form;
@@ -22,13 +27,48 @@ use serde::Deserialize;
 use std::env;
 
 use openidconnect::reqwest::http_client;
-
 use openidconnect::{OAuth2TokenResponse, TokenResponse};
 
 #[derive(Deserialize)]
 pub struct LoginUser {
     user: LoginUserData,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct KthAdditionalClaims {
+    kthid: std::string::String,
+}
+impl AdditionalClaims for KthAdditionalClaims {}
+
+pub type KthIdTokenFields = IdTokenFields<
+    KthAdditionalClaims,
+    EmptyExtraTokenFields,
+    CoreGenderClaim,
+    CoreJweContentEncryptionAlgorithm,
+    CoreJwsSigningAlgorithm,
+    CoreJsonWebKeyType,
+>;
+
+pub type KthTokenResponse = StandardTokenResponse<KthIdTokenFields, CoreTokenType>;
+
+// EmptyAdditionalClaims,
+type KthClient = Client<
+    KthAdditionalClaims,
+    CoreAuthDisplay,
+    CoreGenderClaim,
+    CoreJweContentEncryptionAlgorithm,
+    CoreJwsSigningAlgorithm,
+    CoreJsonWebKeyType,
+    CoreJsonWebKeyUse,
+    CoreJsonWebKey,
+    CoreAuthPrompt,
+    StandardErrorResponse<CoreErrorResponseType>,
+    KthTokenResponse,
+    CoreTokenType,
+    CoreTokenIntrospectionResponse,
+    CoreRevocableToken,
+    CoreRevocationErrorResponse,
+>;
 
 #[derive(Deserialize)]
 struct LoginUserData {
@@ -72,7 +112,7 @@ pub fn post_users_login(
 }
 
 #[get("/login")]
-pub fn kth_login(mut cookies: Cookies) -> Redirect {
+pub fn kth_login(cookies: Cookies) -> Redirect {
     if let Ok(oidc) = env::var("USE_OIDC") {
         println!("use oidc: {}", oidc);
         match oidc.as_str() {
@@ -93,16 +133,16 @@ pub fn kth_login(mut cookies: Cookies) -> Redirect {
 #[derive(FromForm, Default)]
 pub struct Code {
     code: Option<String>,
-    state: Option<String>,
+    // state: Option<String>,
 }
 
 #[get("/oidc-auth?<params..>")]
 pub fn kth_oidc_auth(
-    mut cookies: Cookies,
-    conn: db::DbConn,
-    state: State<AppState>,
+    cookies: Cookies,
+    _conn: db::DbConn,
+    _state: State<AppState>,
     params: Form<Code>,
-    client_addr: &ClientAddr,
+    // client_addr: &ClientAddr,
 ) -> Redirect {
     println!("starting oidc auth");
     // cookies.add(Cookie::new("nonce", nonce.secret().clone()));
@@ -142,7 +182,7 @@ pub fn kth_auth(
     Redirect::to("/")
 }
 
-pub fn get_client() -> Result<CoreClient> {
+pub fn get_client() -> Result<KthClient> {
     let provider_metadata = CoreProviderMetadata::discover(
         &IssuerUrl::new("https://login.ug.kth.se/adfs".to_string())?,
         http_client,
@@ -152,7 +192,7 @@ pub fn get_client() -> Result<CoreClient> {
     // and token URL.
     let application_id = env::var("APPLICATION_ID").expect("OIDC need an application ID");
     let client_secret = env::var("CLIENT_SECRET").expect("OIDC need a client secret");
-    let client = CoreClient::from_provider_metadata(
+    let client = KthClient::from_provider_metadata(
         provider_metadata,
         ClientId::new(application_id),
         Some(ClientSecret::new(client_secret)),
@@ -228,19 +268,5 @@ pub fn get_oidc_user(params: Form<Code>, nonce: Nonce) -> Result<()> {
             .unwrap_or("<not provided>"),
     );
 
-    // If available, we can use the UserInfo endpoint to request additional information.
-
-    // The user_info request uses the AccessToken returned in the token response. To parse custom
-    // claims, use UserInfoClaims directly (with the desired type parameters) rather than using the
-    // CoreUserInfoClaims type alias.
-    let userinfo: CoreUserInfoClaims = client
-        .user_info(token_response.access_token().to_owned(), None)
-        .map_err(|err| anyhow!("No user info endpoint: {:?}", err))?
-        .request(http_client)
-        .map_err(|err| anyhow!("Failed requesting user info: {:?}", err))?;
-
-    println!("user info: {:?}", userinfo);
-    // See the OAuth2TokenResponse trait for a listing of other available fields such as
-    // access_token() and refresh_token().
     Ok(())
 }
