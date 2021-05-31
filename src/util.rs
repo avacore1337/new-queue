@@ -125,9 +125,12 @@ fn validate_ticket(ticket: &str) -> Option<String> {
         re.captures(&res).map(|cap| cap[0].to_string())
     }
 }
-
 pub fn handle_login(conn: &PgConnection, params: Form<Ticket>) -> Option<User> {
     let ugkthid = validate_ticket(params.ticket.as_ref()?)?;
+    ugkthid_to_user(conn, ugkthid)
+}
+
+pub fn ugkthid_to_user(conn: &PgConnection, ugkthid: String) -> Option<User> {
     match fetch_ldap_data_by_ugkthid(&ugkthid) {
         Ok(ldap_user) => match db::users::find_by_ugkthid(conn, &ugkthid) {
             Ok(user) => diesel::update(&user)
