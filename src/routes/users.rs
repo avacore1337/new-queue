@@ -133,7 +133,7 @@ pub fn kth_login(cookies: Cookies) -> Redirect {
 #[derive(FromForm, Default)]
 pub struct Code {
     code: Option<String>,
-    // state: Option<String>,
+    state: Option<String>,
 }
 
 #[get("/oidc-auth?<params..>")]
