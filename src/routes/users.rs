@@ -259,6 +259,7 @@ pub fn get_oidc_user(params: Form<Code>, nonce: Nonce) -> Result<()> {
 
     // The authenticated user's identity is now available. See the IdTokenClaims struct for a
     // complete listing of the available claims.
+    println!("Got kthid: {:?}", claims.additional_claims().kthid);
     println!(
         "User {} with e-mail address {} has authenticated successfully",
         claims.subject().as_str(),
