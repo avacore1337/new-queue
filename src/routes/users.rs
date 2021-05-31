@@ -143,13 +143,6 @@ pub fn kth_auth(
 }
 
 pub fn get_client() -> Result<CoreClient> {
-    // "https://login.ug.kth.se/adfs/.well-known/openid-configuration".to_string(),
-    // println!(
-    //     "metadata: {:?}",
-    //     &IssuerUrl::new(
-    //         "https://login.ug.kth.se/adfs/.well-known/openid-configuration".to_string(),
-    //     )?
-    // );
     let provider_metadata = CoreProviderMetadata::discover(
         &IssuerUrl::new("https://login.ug.kth.se/adfs".to_string())?,
         http_client,
@@ -172,7 +165,6 @@ pub fn get_client() -> Result<CoreClient> {
 }
 
 pub fn use_oidc(mut cookies: Cookies) -> Result<Redirect> {
-    println!("generating redirect");
     let client = get_client()?;
 
     // Generate the full authorization URL.
@@ -183,26 +175,21 @@ pub fn use_oidc(mut cookies: Cookies) -> Result<Redirect> {
             Nonce::new_random,
         )
         // Set the desired scopes.
-        // .add_scope(Scope::new("openid".to_string()))
+        .add_scope(Scope::new("kthid".to_string()))
         .url();
 
-    // This is the URL you should redirect the user to, in order to trigger the authorization
-    // process.
-
     cookies.add(Cookie::new("nonce", nonce.secret().clone()));
-    println!("wrote nonce: {:?}", nonce.secret());
+    // println!("wrote nonce: {:?}", nonce.secret());
     Ok(Redirect::to(auth_url.to_string()))
 }
 
 pub fn get_oidc_user(params: Form<Code>, nonce: Nonce) -> Result<()> {
-    println!("got nonce: {:?}", nonce.secret());
+    // println!("got nonce: {:?}", nonce.secret());
     let client = get_client()?;
-    println!("getting oidc_user");
     let code = params
         .code
         .as_ref()
         .ok_or_else(|| anyhow!("got no code in request"))?;
-    println!("code: {}", code);
     // Once the user has been redirected to the redirect URL, you'll have access to the
     // authorization code. For security reasons, your code should verify that the `state`
     // parameter returned by the server matches `csrf_state`.
@@ -212,7 +199,6 @@ pub fn get_oidc_user(params: Form<Code>, nonce: Nonce) -> Result<()> {
         .exchange_code(AuthorizationCode::new(code.to_string()))
         .request(http_client)?;
 
-    println!("Got token response");
     // Extract the ID token claims after verifying its authenticity and nonce.
     let id_token = token_response
         .id_token()
@@ -247,12 +233,13 @@ pub fn get_oidc_user(params: Form<Code>, nonce: Nonce) -> Result<()> {
     // The user_info request uses the AccessToken returned in the token response. To parse custom
     // claims, use UserInfoClaims directly (with the desired type parameters) rather than using the
     // CoreUserInfoClaims type alias.
-    let _userinfo: CoreUserInfoClaims = client
+    let userinfo: CoreUserInfoClaims = client
         .user_info(token_response.access_token().to_owned(), None)
         .map_err(|err| anyhow!("No user info endpoint: {:?}", err))?
         .request(http_client)
         .map_err(|err| anyhow!("Failed requesting user info: {:?}", err))?;
 
+    println!("user info: {:?}", userinfo);
     // See the OAuth2TokenResponse trait for a listing of other available fields such as
     // access_token() and refresh_token().
     Ok(())
