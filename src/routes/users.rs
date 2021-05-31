@@ -72,11 +72,18 @@ pub fn post_users_login(
 }
 
 #[get("/login")]
-pub fn kth_login() -> Redirect {
+pub fn kth_login(mut cookies: Cookies) -> Redirect {
     if let Ok(oidc) = env::var("USE_OIDC") {
         println!("use oidc: {}", oidc);
         match oidc.as_str() {
-            "true" => return use_oidc(),
+            "true" => match use_oidc(cookies) {
+                Ok(redirect) => return redirect,
+                Err(err) => {
+                    println!("oidc error: {:?}", err);
+
+                    return Redirect::to("https://queue.csc.kth.se/failed_login");
+                }
+            },
             _ => {}
         }
     }
@@ -97,11 +104,16 @@ pub fn kth_oidc_auth(
     params: Form<Code>,
     client_addr: &ClientAddr,
 ) -> Redirect {
-    match get_oidc_user(params) {
-        Ok(_) => println!("good login!"),
-        Err(err) => {
-            println!("oidc error: {:?}", err);
-        }
+    println!("starting oidc auth");
+    // cookies.add(Cookie::new("nonce", nonce.secret().clone()));
+    match cookies.get("nonce") {
+        Some(nonce) => match get_oidc_user(params, Nonce::new(nonce.to_string())) {
+            Ok(_) => println!("good login!"),
+            Err(err) => {
+                println!("oidc error: {:?}", err);
+            }
+        },
+        None => println!("failed to get nonce"),
     }
     Redirect::to("/")
 }
@@ -156,23 +168,12 @@ pub fn get_client() -> Result<CoreClient> {
     Ok(client)
 }
 
-pub fn use_oidc() -> Redirect {
-    match generate_redirect() {
-        Ok(redirect) => redirect,
-        Err(err) => {
-            println!("oidc error: {:?}", err);
-
-            Redirect::to("https://queue.csc.kth.se/failed_login")
-        }
-    }
-}
-
-pub fn generate_redirect() -> Result<Redirect> {
+pub fn use_oidc(mut cookies: Cookies) -> Result<Redirect> {
     println!("generating redirect");
     let client = get_client()?;
 
     // Generate the full authorization URL.
-    let (auth_url, _csrf_token, _nonce) = client
+    let (auth_url, _csrf_token, nonce) = client
         .authorize_url(
             CoreAuthenticationFlow::AuthorizationCode,
             CsrfToken::new_random,
@@ -186,10 +187,11 @@ pub fn generate_redirect() -> Result<Redirect> {
     // process.
     println!("Browse to: {}", auth_url);
 
+    cookies.add(Cookie::new("nonce", nonce.secret().clone()));
     Ok(Redirect::to(auth_url.to_string()))
 }
 
-pub fn get_oidc_user(params: Form<Code>) -> Result<()> {
+pub fn get_oidc_user(params: Form<Code>, nonce: Nonce) -> Result<()> {
     let client = get_client()?;
     println!("getting oidc_user");
     let code = params
@@ -197,7 +199,6 @@ pub fn get_oidc_user(params: Form<Code>) -> Result<()> {
         .as_ref()
         .ok_or_else(|| anyhow!("got no code in request"))?;
     println!("code: {}", code);
-    let nonce = Nonce::new("fake_nonce".to_string());
     // Once the user has been redirected to the redirect URL, you'll have access to the
     // authorization code. For security reasons, your code should verify that the `state`
     // parameter returned by the server matches `csrf_state`.
