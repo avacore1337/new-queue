@@ -1,4 +1,4 @@
-use crate::db::{self};
+use crate::db;
 
 use rocket_contrib::json::JsonValue;
 

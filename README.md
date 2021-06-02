@@ -93,6 +93,12 @@ revert migrations with
 diesel migration revert
 ```
 
+Use sqlformat:
+```
+pip install sqlparse
+sqlformat --reindent queue_history.sql -o queue_history.sql
+```
+
 
 Install debuggin extensions for React and Redux
 (Chrome)
