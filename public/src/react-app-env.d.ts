@@ -3,3 +3,5 @@ declare module '*.mp3' {
   const src: string;
   export default src;
 }
+
+declare module 'react-alert-template-basic';

@@ -7,6 +7,7 @@ import { ActionTypes as LobbyActions } from '../actions/lobbyActions';
 import { ActionTypes as UserActions } from '../actions/userActions';
 import { ActionTypes as AssistantActions } from '../actions/assistantActions';
 import { ActionTypes as PageActions } from '../actions/pageActions';
+import { ActionTypes as BannerActions } from '../actions/bannerActions';
 import * as Listeners from '../actions/listenerActions';
 import RequestStatus from '../enums/RequestStatus';
 
@@ -201,6 +202,22 @@ const middleware = () => {
       case AdministratorActions.SetServerMessage: {
         sendMessage(new RequestMessage(`broadcastServer`, {
           message: action.payload.message
+        }));
+        break;
+      }
+
+      case BannerActions.AddBanner: {
+        sendMessage(new RequestMessage(`addBanner`, {
+          message: action.payload.message,
+          startTime: action.payload.startTime,
+          endTime: action.payload.endTime
+        }));
+        break;
+      }
+
+      case BannerActions.DeleteBanner: {
+        sendMessage(new RequestMessage(`deleteBanner`, {
+          id: action.payload.id
         }));
         break;
       }

@@ -1,17 +1,25 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../../store';
-import { openSetServerMessageModal } from '../../../actions/modalActions';
+import { openSetServerMessageModal, openAddBannerModal } from '../../../actions/modalActions';
+import { deleteBanner } from '../../../actions/bannerActions';
 import User from '../../../models/User';
+import Banner from '../../../models/Banner';
+import { Cross } from '../../../viewcomponents/FontAwesome';
 
 export default function AdministrationInformationViewComponent() {
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
+  const banners = useSelector<GlobalStore, Banner[]>(store => store.banners);
 
   const dispatch = useDispatch();
 
   function displayMotd() {
     dispatch(openSetServerMessageModal());
+  }
+
+  function displayBanner() {
+    dispatch(openAddBannerModal());
   }
 
   return (
@@ -27,13 +35,33 @@ export default function AdministrationInformationViewComponent() {
           {
             !user.isAdministrator
               ? null
-              : <div className="row mb-5">
-                  <button
-                    className="btn btn-primary mb-2"
-                    onClick={displayMotd}>
-                    Send server-message
-                    </button>
-                </div>
+              : <>
+                  <div className="row mb-5">
+                      <button
+                        className="btn btn-primary mb-2 mr-1"
+                        onClick={displayMotd}>
+                        Send server-message
+                        </button>
+                      <button
+                        className="btn btn-warning mb-2"
+                        onClick={displayBanner}>
+                        Add new information banner
+                        </button>
+                  </div>
+                  {
+                    banners.length === 0
+                      ? null
+                      : <div className="mb-5">
+                          <h4>Active information banners</h4>
+                          {
+                            banners.map((banner: Banner) =>
+                              <p key={banner.id}>
+                                <Cross color="red" title="Remove banner" onClick={() => dispatch(deleteBanner(banner.id))} /> { banner.message }
+                              </p>)
+                          }
+                        </div>
+                  }
+                </>
           }
         </>
   );

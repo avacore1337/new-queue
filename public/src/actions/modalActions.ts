@@ -14,6 +14,7 @@ export const ActionTypes = Object.freeze({
   OpenSetMotdModal: 'OPEN_SET_MOTD_MODAL',
   OpenSetQueueInformationModal: 'OPEN_SET_QUEUE_INFORMATION_MODAL',
   OpenSetServerMessageModal: 'OPEN_SET_SERVER_MESSAGE_MODAL',
+  OpenAddBannerModal: 'OPEN_ADD_BANNER_MODAL',
   OpenShowMotdModal: 'OPEN_SHOW_MOTD_MODAL',
   OpenShowQueueModal: 'OPEN_SHOW_QUEUE_MODAL'
 });
@@ -53,6 +54,10 @@ export const openSetQueueInformationModal = (queueName: string): FluxStandardAct
 
 export const openSetServerMessageModal = (): FluxStandardAction => ({
   type: ActionTypes.OpenSetServerMessageModal
+});
+
+export const openAddBannerModal = (): FluxStandardAction => ({
+  type: ActionTypes.OpenAddBannerModal
 });
 
 export const openShowQueueModal = (queueName: string): FluxStandardAction => ({

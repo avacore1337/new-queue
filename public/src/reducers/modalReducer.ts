@@ -13,6 +13,7 @@ import { ModalType as SendMessageModal } from '../viewcomponents/Modals/SendMess
 import { ModalType as SetMotdModal } from '../viewcomponents/Modals/SetMotdModal';
 import { ModalType as SetQueueInformationModal } from '../viewcomponents/Modals/SetQueueInformationModal';
 import { ModalType as SetServerMessageModal } from '../viewcomponents/Modals/ServerMessageModal';
+import { ModalType as AddBannerModal } from '../viewcomponents/Modals/AddBannerModal';
 import { ModalType as ShowMessageModal } from '../viewcomponents/Modals/ShowMessageModal';
 import { ModalType as ShowMotdModal } from '../viewcomponents/Modals/ShowMotdModal';
 import { ModalType as ShowQueueModal } from '../viewcomponents/Modals/ShowQueueModal';
@@ -71,6 +72,10 @@ export default (state = initialState, action: FluxStandardAction) => {
 
     case ModalActionTypes.OpenSetServerMessageModal: {
       return { ...state, modalList: [...state.modalList, new Modal(SetServerMessageModal)] }
+    }
+
+    case ModalActionTypes.OpenAddBannerModal: {
+      return { ...state, modalList: [...state.modalList, new Modal(AddBannerModal)] }
     }
 
     case ModalActionTypes.OpenShowQueueModal: {

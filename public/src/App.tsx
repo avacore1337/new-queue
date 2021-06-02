@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { useAlert } from 'react-alert';
 import { loadQueues } from './actions/queueActions';
+import { loadBanners } from './actions/bannerActions';
 import HomePage from './pages/Home';
 import Queue from './pages/Queue';
 import NavBar from './viewcomponents/NavBar';
@@ -13,11 +15,21 @@ import LoginPage from './pages/MockLogin';
 import LogoutPage from './pages/Logout';
 import AdministrationPage from './pages/Administration';
 import Modal from './viewcomponents/Modal';
+import { GlobalStore } from './store';
+import Banner from './models/Banner';
 
 export default (): JSX.Element => {
 
+  const alert = useAlert();
+  const banners = useSelector<GlobalStore, Banner[]>(store => store.banners);
+
   const dispatch = useDispatch();
   dispatch(loadQueues());
+  dispatch(loadBanners());
+
+  useEffect(() => {
+    
+  }, [banners]);
 
   return (
     <Router>

@@ -1,6 +1,7 @@
 import React from 'react';
 
 export const CheckMark = (props: any): JSX.Element => Markup(props, 'check');
+export const Clock = (props: any): JSX.Element => Markup(props, 'clock');
 export const Copy = (props: any): JSX.Element => Markup(props, 'copy');
 export const Cross = (props: any): JSX.Element => Markup(props, 'times');
 export const Download = (props: any): JSX.Element => Markup(props, 'download');
