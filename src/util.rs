@@ -4,7 +4,6 @@ use crate::db::queues;
 use crate::errors::LdapError;
 use crate::models::queue_entry::QueueEntry;
 use crate::models::user::User;
-use crate::reqwest;
 use crate::schema;
 use clokwerk::{Scheduler, TimeUnits};
 use diesel::pg::PgConnection;
@@ -12,7 +11,6 @@ use diesel::prelude::*;
 use dns_lookup::lookup_addr;
 use ldap3::{LdapConn, ResultEntry, Scope, SearchEntry};
 use regex::Regex;
-use rocket::request::Form;
 use rocket_client_addr::ClientAddr;
 use std::thread;
 use std::time::Duration;
@@ -66,11 +64,6 @@ pub struct LdapUser {
     pub realname: String,
 }
 
-#[derive(FromForm, Default)]
-pub struct Ticket {
-    ticket: Option<String>,
-}
-
 fn convert_to_ldap_user(mut rs: Vec<ResultEntry>) -> Option<LdapUser> {
     let mut entry = SearchEntry::construct(rs.pop()?);
     // println!("Got entry:\n{:?}", entry);
@@ -107,27 +100,6 @@ pub fn fetch_ldap_data_by_username(username: &str) -> Result<LdapUser> {
         )?
         .success()?;
     convert_to_ldap_user(rs).ok_or(Box::new(LdapError))
-}
-
-// ticket example: ST-675984-sfGECP3JozSUYekz9Vg3-login01
-fn validate_ticket(ticket: &str) -> Option<String> {
-    // println!("Validating ticket");
-    let url = "https://login.kth.se/serviceValidate?ticket=".to_string()
-        + ticket
-        + "&service=https://queue.csc.kth.se/auth";
-    let res = reqwest::blocking::get(&url).ok()?.text().ok()?;
-    // println!("body = {:?}", res);
-    if res.contains("authenticationFailure") {
-        println!("authenticationFailure for ticket {}", ticket);
-        None
-    } else {
-        let re = Regex::new(r"(u1[\d|\w]+)").unwrap();
-        re.captures(&res).map(|cap| cap[0].to_string())
-    }
-}
-pub fn handle_login(conn: &PgConnection, params: Form<Ticket>) -> Option<User> {
-    let ugkthid = validate_ticket(params.ticket.as_ref()?)?;
-    ugkthid_to_user(conn, ugkthid)
 }
 
 pub fn ugkthid_to_user(conn: &PgConnection, ugkthid: String) -> Option<User> {

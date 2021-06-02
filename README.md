@@ -16,15 +16,12 @@ cp .env.example .env
 ### Get rust nightly
 Get [rustup](https://rustup.rs/) (nightly version)
 
-run script, but pick nightly instead of stable. Can be changed for the project with rustup if you forget.
+run script, but pick nightly instead of stable. Subject to change when next time rocket [is upgraded](https://github.com/SergioBenitez/Rocket/milestone/8)
 ```bash
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ````
 
-If it doesn't compile you might need to install our currently used nightly version:
-```bash
-rustup toolchain install nightly-2021-05-11
-```
+rust version is managed by rust-toolchain.toml and should be automatically handled by ```cargo build```
 
 
 Install Diesel CLI
@@ -68,13 +65,16 @@ All the settings to set this up on a standard ubuntu 18.04, using Systemd and Ng
 The current setting assume that you use let's encrypt. 
 Example instructions for how to set up can be found [here](https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-18-04).
 
-## Building
+
+## Working Localy
+
+### Building
 Build the project
 ```bash
 cargo build
 ```
 
-## Starting the webserver
+### Starting the webserver
 Start the project using
 ```bash
 cargo run
@@ -82,7 +82,7 @@ cargo run
 
 In this mode anyone can log in as anyone by going to /mocklogin
 
-## Tips and tricks
+### Tips and tricks
 Run new migrations with
 ```bash
 diesel migration run
@@ -92,6 +92,7 @@ revert migrations with
 ```bash
 diesel migration revert
 ```
+
 
 Install debuggin extensions for React and Redux
 (Chrome)
@@ -113,9 +114,6 @@ Install debuggin extensions for React and Redux
 
 Issues on mobile devices:
 * Images and text does not adapt to mobile devices
-
-Backend needs:
-* Fix validate ticket regex index (switch to get)
 
 Styling:
 * Location/Comment/Help section on /Queue/:queueName
