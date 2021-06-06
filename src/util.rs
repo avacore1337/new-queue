@@ -74,21 +74,6 @@ fn convert_to_ldap_user(mut rs: Vec<ResultEntry>) -> Option<LdapUser> {
     })
 }
 
-// ldapsearch -x -H ldaps://ldap.kth.se -b ou=Unix,dc=kth,dc=se uid=ransin ugKthid | grep "ugKthid"
-fn fetch_ldap_data_by_ugkthid(ugkthid: &str) -> Result<LdapUser> {
-    // println!("fetching ldap data");
-    let ldap = LdapConn::new("ldaps://ldap.kth.se")?;
-    let (rs, _res) = ldap
-        .search(
-            "ou=Unix,dc=kth,dc=se",
-            Scope::Subtree,
-            &(LDAP_UGKTHID.to_string() + "=" + ugkthid),
-            vec![LDAP_UGKTHID, LDAP_USERNAME, LDAP_REALNAME],
-        )?
-        .success()?;
-    convert_to_ldap_user(rs).ok_or(Box::new(LdapError))
-}
-
 pub fn fetch_ldap_data_by_username(username: &str) -> Result<LdapUser> {
     let ldap = LdapConn::new("ldaps://ldap.kth.se")?;
     let (rs, _res) = ldap
@@ -102,25 +87,22 @@ pub fn fetch_ldap_data_by_username(username: &str) -> Result<LdapUser> {
     convert_to_ldap_user(rs).ok_or(Box::new(LdapError))
 }
 
-pub fn ugkthid_to_user(conn: &PgConnection, ugkthid: String) -> Option<User> {
-    match fetch_ldap_data_by_ugkthid(&ugkthid) {
-        Ok(ldap_user) => match db::users::find_by_ugkthid(conn, &ugkthid) {
-            Ok(user) => diesel::update(&user)
-                .set((
-                    schema::users::username.eq(&ldap_user.username),
-                    schema::users::realname.eq(&ldap_user.realname),
-                ))
-                .get_result(&*conn)
-                .ok(),
-            Err(_) => db::users::create(
-                conn,
-                &ldap_user.username,
-                &ldap_user.ugkthid,
-                &ldap_user.realname,
-            )
+pub fn userdata_to_user(conn: &PgConnection, ldap_user: LdapUser) -> Option<User> {
+    match db::users::find_by_ugkthid(conn, &ldap_user.ugkthid) {
+        Ok(user) => diesel::update(&user)
+            .set((
+                schema::users::username.eq(&ldap_user.username),
+                schema::users::realname.eq(&ldap_user.realname),
+            ))
+            .get_result(&*conn)
             .ok(),
-        },
-        Err(_) => None,
+        Err(_) => db::users::create(
+            conn,
+            &ldap_user.username,
+            &ldap_user.ugkthid,
+            &ldap_user.realname,
+        )
+        .ok(),
     }
 }
 

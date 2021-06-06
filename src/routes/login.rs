@@ -1,6 +1,6 @@
 use crate::config::AppState;
 use crate::db;
-use crate::util::ugkthid_to_user;
+use crate::util::{userdata_to_user, LdapUser};
 use anyhow::{anyhow, Result};
 use openidconnect::core::{
     CoreAuthDisplay, CoreAuthPrompt, CoreAuthenticationFlow, CoreErrorResponseType,
@@ -12,7 +12,7 @@ use serde::Serialize;
 
 use openidconnect::{
     AccessTokenHash, AdditionalClaims, AuthorizationCode, Client, ClientId, ClientSecret,
-    CsrfToken, EmptyExtraTokenFields, IdTokenFields, IssuerUrl, Nonce, RedirectUrl, Scope,
+    CsrfToken, EmptyExtraTokenFields, IdTokenFields, IssuerUrl, Nonce, RedirectUrl,
     StandardErrorResponse, StandardTokenResponse,
 };
 use rocket::http::{Cookie, Cookies};
@@ -27,8 +27,11 @@ use openidconnect::reqwest::http_client;
 use openidconnect::{OAuth2TokenResponse, TokenResponse};
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct KthAdditionalClaims {
     kthid: std::string::String,
+    username: std::string::String,
+    display_name: std::string::String,
 }
 impl AdditionalClaims for KthAdditionalClaims {}
 
@@ -94,9 +97,9 @@ pub fn kth_oidc_auth(
         Some(nonce) => {
             println!("got nonce: {}", nonce.value());
             match get_oidc_user(params, Nonce::new(nonce.value().to_string())) {
-                Ok(ugkthid) => {
+                Ok(userdata) => {
                     println!("good login!");
-                    match ugkthid_to_user(&conn, ugkthid) {
+                    match userdata_to_user(&conn, userdata) {
                         Some(user) => {
                             println!("User logged in: {:?}", user);
                             cookies.add(Cookie::new(
@@ -150,8 +153,6 @@ pub fn use_oidc(mut cookies: Cookies) -> Result<Redirect> {
             CsrfToken::new_random,
             Nonce::new_random,
         )
-        // Set the desired scopes.
-        .add_scope(Scope::new("kthid".to_string()))
         .url();
 
     cookies.add(Cookie::new("nonce", nonce.secret().clone()));
@@ -159,7 +160,7 @@ pub fn use_oidc(mut cookies: Cookies) -> Result<Redirect> {
     Ok(Redirect::to(auth_url.to_string()))
 }
 
-pub fn get_oidc_user(params: Form<Code>, nonce: Nonce) -> Result<String> {
+pub fn get_oidc_user(params: Form<Code>, nonce: Nonce) -> Result<LdapUser> {
     // println!("got nonce: {:?}", nonce.secret());
     let client = get_client()?;
     let code = params
@@ -196,5 +197,9 @@ pub fn get_oidc_user(params: Form<Code>, nonce: Nonce) -> Result<String> {
     // The authenticated user's identity is now available. See the IdTokenClaims struct for a
     // complete listing of the available claims.
     println!("Got kthid: {:?}", claims.additional_claims().kthid);
-    Ok(claims.additional_claims().kthid.clone())
+    Ok(LdapUser {
+        username: claims.additional_claims().username.clone(),
+        ugkthid: claims.additional_claims().kthid.clone(),
+        realname: claims.additional_claims().display_name.clone(),
+    })
 }
