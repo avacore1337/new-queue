@@ -29,9 +29,9 @@ use openidconnect::{OAuth2TokenResponse, TokenResponse};
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct KthAdditionalClaims {
-    kthid: std::string::String,
-    username: std::string::String,
-    display_name: std::string::String,
+    kthid: String,
+    username: String,
+    unique_name: Vec<String>,
 }
 impl AdditionalClaims for KthAdditionalClaims {}
 
@@ -200,6 +200,6 @@ pub fn get_oidc_user(params: Form<Code>, nonce: Nonce) -> Result<LdapUser> {
     Ok(LdapUser {
         username: claims.additional_claims().username.clone(),
         ugkthid: claims.additional_claims().kthid.clone(),
-        realname: claims.additional_claims().display_name.clone(),
+        realname: claims.additional_claims().unique_name[0].clone(),
     })
 }
