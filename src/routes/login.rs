@@ -27,7 +27,6 @@ use openidconnect::reqwest::http_client;
 use openidconnect::{OAuth2TokenResponse, TokenResponse};
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
-#[serde(rename_all = "camelCase")]
 pub struct KthAdditionalClaims {
     kthid: String,
     username: String,
@@ -200,6 +199,11 @@ pub fn get_oidc_user(params: Form<Code>, nonce: Nonce) -> Result<LdapUser> {
     Ok(LdapUser {
         username: claims.additional_claims().username.clone(),
         ugkthid: claims.additional_claims().kthid.clone(),
-        realname: claims.additional_claims().unique_name[0].clone(),
+        realname: claims
+            .additional_claims()
+            .unique_name
+            .get(0)
+            .ok_or(anyhow!("The person doesn't have a name"))?
+            .clone(),
     })
 }
