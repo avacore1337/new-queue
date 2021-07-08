@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { useAlert } from 'react-alert';
 import { loadQueues } from './actions/queueActions';
-import { loadBanners } from './actions/bannerActions';
+import { loadBanners, hideBanner } from './actions/bannerActions';
 import HomePage from './pages/Home';
 import Queue from './pages/Queue';
 import NavBar from './viewcomponents/NavBar';
@@ -28,7 +28,17 @@ export default (): JSX.Element => {
   dispatch(loadBanners());
 
   useEffect(() => {
-    
+    const seenBanners = (localStorage.getItem('SeenBanners') ?? []) as number[];
+    for (let banner of banners) {
+      if (banner.startTime > Date.now() || banner.endTime < Date.now() || seenBanners.some(id => id === banner.id)) {
+        continue;
+      }
+
+      alert.show(banner.message,
+      {
+        onClose: () => dispatch(hideBanner(banner.id))
+      });
+    }
   }, [banners]);
 
   return (

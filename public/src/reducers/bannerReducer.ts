@@ -24,6 +24,10 @@ export default (state = initialState, action: FluxStandardAction) => {
     }
 
     case BannerActionTypes.HideBanner: {
+      const token = 'SeenBanners';
+      const seenBanners = (localStorage.getItem(token) ?? []) as number[];
+      seenBanners.push(action.payload.id);
+      localStorage.setItem(token, JSON.stringify(seenBanners));
       return state;
     }
 
