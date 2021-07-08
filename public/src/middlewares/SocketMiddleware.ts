@@ -236,6 +236,7 @@ const middleware = () => {
       }
 
       case QueueActions.JoinQueue: {
+        console.log('Trying to send message');
         sendMessage(new RequestMessage(`joinQueue/${action.payload.queueName}`, {
           location: action.payload.location,
           comment: action.payload.comment,
