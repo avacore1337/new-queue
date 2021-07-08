@@ -17,7 +17,7 @@ export default (state = initialState, action: FluxStandardAction) => {
     }
 
     case BannerActionTypes.GetBanners.Fulfilled: {
-      return action.payload;
+      return action.payload.map((payload: any) => new Banner(payload));
     }
 
     case BannerActionTypes.HideBanner: {
