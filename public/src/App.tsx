@@ -28,7 +28,7 @@ export default (): JSX.Element => {
   dispatch(loadBanners());
 
   useEffect(() => {
-    const seenBanners = (localStorage.getItem('SeenBanners') ?? []) as number[];
+    const seenBanners = JSON.parse(localStorage.getItem('SeenBanners') ?? '[]') as number[];
     for (let banner of banners) {
       if (banner.startTime > Date.now() || banner.endTime < Date.now() || seenBanners.some(id => id === banner.id)) {
         continue;

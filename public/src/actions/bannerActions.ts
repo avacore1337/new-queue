@@ -5,6 +5,7 @@ import { HTTP_SERVER_URL } from '../configuration';
 
 export const ActionTypes = Object.freeze({
   AddBanner: 'ADD_BANNER',
+  UpdateBanner: 'UPDATE_BANNER',
   DeleteBanner: 'DELETE_BANNER',
   GetBanners: new AsyncFunction('GET_BANNERS'),
   HideBanner: 'HIDE_BANNER'
@@ -15,9 +16,14 @@ export const addBanner = (message: string, startTime: number, endTime: number): 
   payload: { message, startTime, endTime }
 });
 
-export const deleteBanner = (id: number): FluxStandardAction => ({
+export const updateBanner = (id: number, message: string, startTime: number, endTime: number): FluxStandardAction => ({
+  type: ActionTypes.UpdateBanner,
+  payload: { id, message, startTime, endTime }
+});
+
+export const deleteBanner = (id: number, message: string, startTime: number, endTime: number): FluxStandardAction => ({
   type: ActionTypes.DeleteBanner,
-  payload: { id }
+  payload: { id, message, startTime, endTime }
 });
 
 export const loadBanners = (): AsyncAction => ({

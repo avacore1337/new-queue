@@ -114,6 +114,13 @@ export default (): JSX.Element | null => {
 
             To search for a queue, type the queue name (or parts of the queue name) in the search box at the top of the page.
           </p>
+
+          <h3 id="banner">Banners</h3>
+          <p>
+            Although <i>Stay A While</i> is a flawless system, once in a blue moon, an administrator may want to inform the users of upcoming or current issues and changes.
+            If that were to ever happen, an alert box will be displayed at the bottom of the user's screen.
+            Feel free to discard the message after reading it thoroughly several times over.
+          </p>
         </div>
       : null
   );

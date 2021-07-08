@@ -11,6 +11,7 @@ export const Invisible = (props: any): JSX.Element => Markup(props, 'eye-slash')
 export const Lock = (props: any): JSX.Element => Markup(props, 'lock');
 export const Megaphone = (props: any): JSX.Element => Markup(props, 'bullhorn');
 export const Muted = (props: any): JSX.Element => Markup(props, 'volume-mute');
+export const Pen = (props: any): JSX.Element => Markup(props, 'pen');
 export const Plus = (props: any): JSX.Element => Markup(props, 'plus');
 export const QuestionMark = (props: any): JSX.Element => Markup(props, 'question');
 export const Sign = (props: any): JSX.Element => Markup(props, 'sign');

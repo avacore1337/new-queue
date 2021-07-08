@@ -13,6 +13,7 @@ import SendBadLocation, { ModalType as SendBadLocationModal } from './Modals/Sen
 import SendMessage, { ModalType as SendMessageModal } from './Modals/SendMessageModal';
 import ServerMessage, { ModalType as ServerMessageModal } from './Modals/ServerMessageModal';
 import AddBanner, { ModalType as AddBannerModal } from './Modals/AddBannerModal';
+import UpdateBanner, { ModalType as UpdateBannerModal } from './Modals/UpdateBannerModal';
 import SetMotd, { ModalType as SetMotdModal } from './Modals/SetMotdModal';
 import SetQueueInformation, { ModalType as SetQueueInformationModal } from './Modals/SetQueueInformationModal';
 import ShowMessage, { ModalType as ShowMessageModal } from './Modals/ShowMessageModal';
@@ -77,6 +78,10 @@ export default (): JSX.Element => {
 
       case AddBannerModal: {
         return (<AddBanner { ...props } />);
+      }
+
+      case UpdateBannerModal: {
+        return (<UpdateBanner { ...props } />);
       }
 
       case SetMotdModal: {

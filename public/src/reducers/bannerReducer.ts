@@ -7,10 +7,6 @@ const initialState = [] as Banner[];
 export default (state = initialState, action: FluxStandardAction) => {
   switch (action.type) {
 
-    case BannerActionTypes.DeleteBanner: {
-      return state;
-    }
-
     case BannerActionTypes.GetBanners.Rejected: {
       return state;
     }
@@ -25,7 +21,7 @@ export default (state = initialState, action: FluxStandardAction) => {
 
     case BannerActionTypes.HideBanner: {
       const token = 'SeenBanners';
-      const seenBanners = (localStorage.getItem(token) ?? []) as number[];
+      const seenBanners = JSON.parse(localStorage.getItem('SeenBanners') ?? '[]') as number[];
       seenBanners.push(action.payload.id);
       localStorage.setItem(token, JSON.stringify(seenBanners));
       return state;

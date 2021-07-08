@@ -215,9 +215,22 @@ const middleware = () => {
         break;
       }
 
+      case BannerActions.UpdateBanner: {
+        sendMessage(new RequestMessage(`updateBanner`, {
+          id: action.payload.id,
+          message: action.payload.message,
+          startTime: action.payload.startTime,
+          endTime: action.payload.endTime
+        }));
+        break;
+      }
+
       case BannerActions.DeleteBanner: {
-        sendMessage(new RequestMessage(`deleteBanner`, {
-          id: action.payload.id
+        sendMessage(new RequestMessage(`updateBanner`, {
+          id: action.payload.id,
+          message: action.payload.message,
+          startTime: action.payload.startTime,
+          endTime: action.payload.endTime
         }));
         break;
       }

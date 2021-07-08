@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../../store';
+import { Link } from 'react-router-dom';
 import { openSetServerMessageModal, openAddBannerModal } from '../../../actions/modalActions';
-import { deleteBanner } from '../../../actions/bannerActions';
 import User from '../../../models/User';
 import Banner from '../../../models/Banner';
-import { Cross } from '../../../viewcomponents/FontAwesome';
+import BannerList from './BannerList';
 
 export default function AdministrationInformationViewComponent() {
 
@@ -51,14 +51,11 @@ export default function AdministrationInformationViewComponent() {
                   {
                     banners.length === 0
                       ? null
-                      : <div className="mb-5">
-                          <h4>Active information banners</h4>
-                          {
-                            banners.map((banner: Banner) =>
-                              <p key={banner.id}>
-                                <Cross color="red" title="Remove banner" onClick={() => dispatch(deleteBanner(banner.id))} /> { banner.message }
-                              </p>)
-                          }
+                      : <div className="row mb-5">
+                          <div className="col-12 mb-3">
+                            <h2>Currently active banners <Link to="/help#banner">?</Link></h2>
+                          </div>
+                          <BannerList />
                         </div>
                   }
                 </>
