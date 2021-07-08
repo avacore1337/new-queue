@@ -136,6 +136,8 @@ const middleware = () => {
         callbacks.message = Listeners.onMessageReceived;
         callbacks['message/:queueName'] = Listeners.onMessageReceived;
         callbacks['updateQueue/:queueName'] = Listeners.onQueueUpdated;
+        callbacks['addBanner'] = Listeners.onBannerAdded;
+        callbacks['updateBanner'] = Listeners.onBannerUpdated;
 
         break;
       }
@@ -209,8 +211,8 @@ const middleware = () => {
       case BannerActions.AddBanner: {
         sendMessage(new RequestMessage(`addBanner`, {
           message: action.payload.message,
-          startTime: action.payload.startTime,
-          endTime: action.payload.endTime
+          startTime: new Date(action.payload.startTime).toISOString(),
+          endTime: new Date(action.payload.endTime).toISOString()
         }));
         break;
       }
@@ -219,8 +221,8 @@ const middleware = () => {
         sendMessage(new RequestMessage(`updateBanner`, {
           id: action.payload.id,
           message: action.payload.message,
-          startTime: action.payload.startTime,
-          endTime: action.payload.endTime
+          startTime: new Date(action.payload.startTime).toISOString(),
+          endTime: new Date(action.payload.endTime).toISOString()
         }));
         break;
       }
@@ -229,14 +231,13 @@ const middleware = () => {
         sendMessage(new RequestMessage(`updateBanner`, {
           id: action.payload.id,
           message: action.payload.message,
-          startTime: action.payload.startTime,
-          endTime: action.payload.endTime
+          startTime: new Date(action.payload.startTime).toISOString(),
+          endTime: new Date(action.payload.endTime).toISOString()
         }));
         break;
       }
 
       case QueueActions.JoinQueue: {
-        console.log('Trying to send message');
         sendMessage(new RequestMessage(`joinQueue/${action.payload.queueName}`, {
           location: action.payload.location,
           comment: action.payload.comment,

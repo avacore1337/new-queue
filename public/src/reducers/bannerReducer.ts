@@ -32,6 +32,23 @@ export default (state = initialState, action: FluxStandardAction) => {
       return [...state, new Banner(action.payload)];
     }
 
+    case Listeners.OnBannerUpdated: {
+      const token = 'SeenBanners';
+      let seenBanners = JSON.parse(localStorage.getItem('SeenBanners') ?? '[]') as number[];
+      const bannerToUpdate = state.find(banner => banner.id === action.payload.id);
+      if (bannerToUpdate === undefined) {
+        return state;
+      }
+
+      const messageHasBeenUpdated = bannerToUpdate.message !== action.payload.message;
+      if (messageHasBeenUpdated) {
+        seenBanners = seenBanners.filter(id => id !== bannerToUpdate.id);
+        localStorage.setItem(token, JSON.stringify(seenBanners));
+      }
+
+      return state.map(banner => banner.id !== bannerToUpdate.id ? banner : new Banner(action.payload));
+    }
+
   }
 
   return state;
