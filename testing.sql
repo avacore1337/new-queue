@@ -33,4 +33,5 @@ INSERT INTO admins (user_id, queue_id, admin_type) VALUES (
   (SELECT Id FROM Users WHERE Username = 'tester2'),
   (SELECT id FROM queues WHERE name = 'test2'),
   'teacher');
-
+INSERT INTO banners (message, start_time, end_time) VALUES
+  ('Hello Cutie', NOW(), CURRENT_DATE + INTERVAL '10 year');
