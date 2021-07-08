@@ -98,7 +98,7 @@ export default (props: any): JSX.Element | null => {
           <button
             className="btn btn-primary"
             onClick={submitMessage} >
-              Send message
+              Update banner
             </button>
         </Modal.Footer>
       </Modal>
