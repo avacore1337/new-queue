@@ -18,7 +18,7 @@ export default (): JSX.Element | null => {
   }
 
   return (
-    banners.length
+    banners.filter(banner => banner.startTime !== banner.endTime).length
       ? <div>
           <table className="table table-striped scrollable">
             <thead>
@@ -30,7 +30,7 @@ export default (): JSX.Element | null => {
             </thead>
             <tbody>
               {
-                banners.map((banner: Banner) =>
+                banners.filter(banner => banner.startTime !== banner.endTime).map((banner: Banner) =>
                   <tr key={ banner.id }>
                     <td>{ banner.message }</td>
                     <td>{ getTimestamp(banner.startTime) } and { getTimestamp(banner.endTime) }</td>

@@ -9,6 +9,7 @@ import { positions, Provider as AlertProvider } from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
 import * as serviceWorker from './serviceWorker';
 import { loadQueues } from './actions/queueActions';
+import { loadBanners } from './actions/bannerActions';
 import { initialize } from './actions/globalActions';
 import { loadUser } from './actions/userActions';
 
@@ -27,6 +28,7 @@ function LifeCycle() {
 
     dispatch(loadUser());
     dispatch(loadQueues());
+    dispatch(loadBanners());
     dispatch(initialize());
   }, [dispatch]);
 

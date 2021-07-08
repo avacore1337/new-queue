@@ -62,7 +62,7 @@ cargo run --release
 
 Since things need to be reliable you probably want to enable auto-restart, start on boot, static serve, firewall, https certificates, etc.
 All the settings to set this up on a standard ubuntu 18.04, using Systemd and Nginx is available under the devops folder.
-The current setting assume that you use let's encrypt. 
+The current setting assume that you use let's encrypt.
 Example instructions for how to set up can be found [here](https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-18-04).
 
 
@@ -118,23 +118,10 @@ Install debuggin extensions for React and Redux
 
 # Features and Bugs
 
-Issues on mobile devices:
-* Images and text does not adapt to mobile devices
-
-Styling:
-* Location/Comment/Help section on /Queue/:queueName
-* Assistant/Teacher options drop-down on /Queue/:queueName
-* Can we improve layout on /Statistics ?
-* Can we improve search bar looks? Maybe make them smaller or add a magnifying glass or something ?
-* Do not collapse nav-bar upon clicking it if it is not expanded (visual bug)
-* Make /Help page more beautiful in general (images are updated once all styling is done)
-* Do more if you like ^.^
-
 Backend wants:
 * routing framework
 * backend websockets leave/errors
 * can we please rename "help" to something else? Or make it an enum perhaps
 
 Frontend wants
-* [Refactoring] Extract more view-components to make the HTML easier to read
-
+* [Feature] Check the banners constantly to check if it is time to show them yet

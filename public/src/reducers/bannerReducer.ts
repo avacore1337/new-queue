@@ -28,6 +28,17 @@ export default (state = initialState, action: FluxStandardAction) => {
       return state;
     }
 
+    case BannerActionTypes.ShowBanner: {
+      const bannerToUpdate = state.find(banner => banner.id === action.payload.id);
+      if (bannerToUpdate === undefined) {
+        return state;
+      }
+
+      const updatedBanner = bannerToUpdate.clone();
+      updatedBanner.show();
+      return state.map(banner => banner.id !== action.payload.id ? banner : updatedBanner);
+    }
+
     case Listeners.OnBannerAdded: {
       return [...state, new Banner(action.payload)];
     }

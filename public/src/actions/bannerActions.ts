@@ -8,7 +8,8 @@ export const ActionTypes = Object.freeze({
   UpdateBanner: 'UPDATE_BANNER',
   DeleteBanner: 'DELETE_BANNER',
   GetBanners: new AsyncFunction('GET_BANNERS'),
-  HideBanner: 'HIDE_BANNER'
+  HideBanner: 'HIDE_BANNER',
+  ShowBanner: 'SHOW_BANNER'
 });
 
 export const addBanner = (message: string, startTime: number, endTime: number): FluxStandardAction => ({
@@ -35,5 +36,10 @@ export const loadBanners = (): AsyncAction => ({
 
 export const hideBanner = (id: number): FluxStandardAction => ({
   type: ActionTypes.HideBanner,
+  payload: { id }
+});
+
+export const showBanner = (id: number): FluxStandardAction => ({
+  type: ActionTypes.ShowBanner,
   payload: { id }
 });

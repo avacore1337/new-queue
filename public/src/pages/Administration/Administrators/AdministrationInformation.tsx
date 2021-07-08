@@ -49,7 +49,7 @@ export default function AdministrationInformationViewComponent() {
                         </button>
                   </div>
                   {
-                    banners.length === 0
+                    banners.filter(banner => banner.startTime !== banner.endTime).length === 0
                       ? null
                       : <div className="row mb-5">
                           <div className="col-12 mb-3">
