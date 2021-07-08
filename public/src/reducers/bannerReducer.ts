@@ -1,5 +1,6 @@
 import { FluxStandardAction } from 'redux-promise-middleware';
 import { ActionTypes as BannerActionTypes } from '../actions/bannerActions';
+import { Listeners } from '../actions/listenerActions';
 import Banner from '../models/Banner';
 
 const initialState = [] as Banner[];
@@ -25,6 +26,10 @@ export default (state = initialState, action: FluxStandardAction) => {
       seenBanners.push(action.payload.id);
       localStorage.setItem(token, JSON.stringify(seenBanners));
       return state;
+    }
+
+    case Listeners.OnBannerAdded: {
+      return [...state, new Banner(action.payload)];
     }
 
   }

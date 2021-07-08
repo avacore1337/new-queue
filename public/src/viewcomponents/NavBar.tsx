@@ -22,7 +22,7 @@ export default (): JSX.Element => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark blue">
       <span onClick={hideNavBar}>
-        <Link className="navbar-brand" to="/"><img src={Logo} width="160" /></Link>
+        <Link className="navbar-brand" to="/"><img alt="Stay A While" src={Logo} width="160" /></Link>
       </span>
       <button className="navbar-toggler" type="button"onClick={toggleNavBar} aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
         <span className="navbar-toggler-icon"></span>

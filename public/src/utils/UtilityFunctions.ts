@@ -32,10 +32,10 @@ export function downloadFile(fileName: string, fileContent: string): void {
         // msSaveBlob will respect the provided filename
         navigator.msSaveBlob(export_blob, name);
       } else if ('download' in HTMLAnchorElement.prototype) {
-        const saveLink = <HTMLAnchorElement>document.createElementNS(
+        const saveLink = document.createElementNS(
           "http://www.w3.org/1999/xhtml",
           "a"
-        );
+        ) as HTMLAnchorElement;
         saveLink.href = urlObject.createObjectURL(export_blob);
         saveLink.download = name;
         fakeClick(saveLink);

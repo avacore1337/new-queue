@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux'
 import { GlobalStore } from '../../../store';
 import { updatePersonalEntry } from '../../../actions/queueActions';
-import { LOGIN_CALLBACK } from '../../../configuration';
 import User from '../../../models/User';
 import QueueEntry from '../../../models/QueueEntry';
 import LoggedInUserView from './LoggedInUserView';

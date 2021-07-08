@@ -13,7 +13,8 @@ export const Listeners = Object.freeze({
   OnQueueEntryAdded: 'ON_QUEUE_ENTRY_ADDED',
   OnQueueEntryRemoved: 'ON_QUEUE_ENTRY_REMOVED',
   OnQueueEntryUpdated: 'ON_QUEUE_ENTRY_UPDATED',
-  OnMessageReceived: 'ON_MESSAGE_RECEIVED'
+  OnMessageReceived: 'ON_MESSAGE_RECEIVED',
+  OnBannerAdded: 'ON_BANNER_ADDED'
 });
 
 export const onAdministratorAdded = (data: any): FluxStandardAction => ({
@@ -78,5 +79,10 @@ export const onQueueEntryUpdated = (data: any): FluxStandardAction => ({
 
 export const onMessageReceived = (data: any): FluxStandardAction => ({
   type: Listeners.OnMessageReceived,
+  payload: { ...data }
+});
+
+export const OnBannerAdded = (data: any): FluxStandardAction => ({
+  type: Listeners.OnBannerAdded,
   payload: { ...data }
 });
