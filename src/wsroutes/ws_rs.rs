@@ -327,6 +327,16 @@ impl RoomHandler {
                 let rename_queue = from_value::<RenameQueue>(wrapper.content)?;
                 rename_queue_route(self, conn, rename_queue, queue_name)
             }
+            ["addBanner"] => {
+                let _auth = self.get_auth(&wrapper, AuthLevel::Super)?;
+                let banner = from_value::<NewBanner>(wrapper.content)?;
+                add_banner_route(self, conn, banner)
+            }
+            ["updateBanner"] => {
+                let _auth = self.get_auth(&wrapper, AuthLevel::Super)?;
+                let banner = from_value::<Banner>(wrapper.content)?;
+                update_banner_route(self, conn, banner)
+            }
             ["addSuperAdmin"] => {
                 let _auth = self.get_auth(&wrapper, AuthLevel::Super)?;
                 let user = from_value::<Username>(wrapper.content)?;

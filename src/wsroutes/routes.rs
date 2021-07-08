@@ -4,6 +4,7 @@ use crate::errors::ServerError;
 use crate::models::queue_entry::QueueEntry;
 use crate::sql_types::AdminEnum;
 use crate::wsroutes::ws_rs::RoomHandler;
+use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
@@ -75,6 +76,23 @@ pub struct Ugkthid {
     pub ugkthid: String,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct NewBanner {
+    pub message: String,
+    pub start_time: DateTime<Utc>,
+    pub end_time: DateTime<Utc>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct Banner {
+    pub id: i32,
+    pub message: String,
+    pub start_time: DateTime<Utc>,
+    pub end_time: DateTime<Utc>,
+}
+
 pub fn leave_queue_route(
     handler: &mut RoomHandler,
     auth: Auth,
@@ -95,6 +113,32 @@ pub fn leave_queue_route(
         "leaveQueue",
         json!({ "ugkthid": &auth.ugkthid }),
     );
+    Ok(())
+}
+
+pub fn add_banner_route(
+    handler: &mut RoomHandler,
+    conn: &PgConnection,
+    banner: NewBanner,
+) -> Result<()> {
+    let banner = db::banners::create(conn, banner.message, banner.start_time, banner.end_time)?;
+    handler.send_self("addBanner", json!(banner));
+    Ok(())
+}
+
+pub fn update_banner_route(
+    handler: &mut RoomHandler,
+    conn: &PgConnection,
+    banner: Banner,
+) -> Result<()> {
+    let banner = db::banners::update(
+        conn,
+        banner.id,
+        banner.message,
+        banner.start_time,
+        banner.end_time,
+    )?;
+    handler.send_self("updateBanner", json!(banner));
     Ok(())
 }
 

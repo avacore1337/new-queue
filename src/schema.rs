@@ -14,6 +14,18 @@ table! {
     use diesel::sql_types::*;
     use crate::sql_types::*;
 
+    banners (id) {
+        id -> Int4,
+        message -> Varchar,
+        start_time -> Timestamptz,
+        end_time -> Timestamptz,
+    }
+}
+
+table! {
+    use diesel::sql_types::*;
+    use crate::sql_types::*;
+
     queue_entries (id) {
         id -> Int4,
         user_id -> Int4,
@@ -90,6 +102,7 @@ joinable!(user_events -> users (user_id));
 
 allow_tables_to_appear_in_same_query!(
     admins,
+    banners,
     queue_entries,
     queues,
     super_admins,

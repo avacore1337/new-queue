@@ -85,6 +85,7 @@ pub fn rocket() -> rocket::Rocket {
             routes![
                 routes::users::post_users_login,
                 routes::users::get_user,
+                routes::banners::get_banners,
                 routes::queues::get_queues,
                 routes::queues::get_queues_filtered,
                 routes::queues::get_queue,
