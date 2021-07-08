@@ -15,8 +15,8 @@ export default class Banner {
   public constructor(data: any) {
     this._id = data.id;
     this._message = data.message;
-    this._startTime = data.startTime;
-    this._endTime = data.endTime;
+    this._startTime = new Date(data.startTime).getTime();
+    this._endTime = new Date(data.endTime).getTime();
   }
 
   public clone(): Banner {
