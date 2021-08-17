@@ -124,4 +124,4 @@ Backend wants:
 * can we please rename "help" to something else? Or make it an enum perhaps
 
 Frontend wants
-* [Feature] Check the banners constantly to check if it is time to show them yet
+* [Feature] Anything else?
