@@ -10,7 +10,7 @@ import BannerList from './BannerList';
 export default function AdministrationInformationViewComponent() {
 
   const user = useSelector<GlobalStore, User | null>(store => store.user);
-  const banners = useSelector<GlobalStore, Banner[]>(store => store.banners);
+  const banners = useSelector<GlobalStore, Banner[]>(store => store.banners.banners);
 
   const dispatch = useDispatch();
 

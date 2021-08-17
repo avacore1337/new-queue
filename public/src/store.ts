@@ -33,7 +33,10 @@ export interface GlobalStore {
   },
   title: string,
   playSounds: boolean,
-  banners: Banner[]
+  banners: {
+    redrawTrigger: number,
+    banners: Banner[]
+  }
 }
 
 const middleware = applyMiddleware(errorHandlingMiddleware, promise, thunk, socketMiddleware);

@@ -7,7 +7,7 @@ import { Pen } from '../../../viewcomponents/FontAwesome';
 
 export default (): JSX.Element | null => {
 
-  const banners = useSelector<GlobalStore, Banner[]>(store => store.banners);
+  const banners = useSelector<GlobalStore, Banner[]>(store => store.banners.banners);
 
   const dispatch = useDispatch();
 

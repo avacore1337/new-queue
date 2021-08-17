@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux'
 import { useAlert } from 'react-alert';
 import { loadQueues } from './actions/queueActions';
-import { showBanner, hideBanner } from './actions/bannerActions';
+import { showBanner, hideBanner, triggerBannerRedraw } from './actions/bannerActions';
 import HomePage from './pages/Home';
 import Queue from './pages/Queue';
 import NavBar from './viewcomponents/NavBar';
@@ -21,25 +21,39 @@ import Banner from './models/Banner';
 export default (): JSX.Element => {
 
   const alert = useAlert();
-  const banners = useSelector<GlobalStore, Banner[]>(store => store.banners);
+  const banners = useSelector<GlobalStore, Banner[]>(store => store.banners.banners);
+  const bannerRedrawTrigger = useSelector<GlobalStore, number>(store => store.banners.redrawTrigger);
 
   const dispatch = useDispatch();
   dispatch(loadQueues());
 
   useEffect(() => {
+    let nextBanner = -1;
+
     const seenBanners = JSON.parse(localStorage.getItem('SeenBanners') ?? '[]') as number[];
     for (let banner of banners) {
-      if (banner.isShowing || banner.startTime > Date.now() || banner.endTime < Date.now() || seenBanners.some(id => id === banner.id)) {
+      if (banner.isShowing || banner.endTime < Date.now() || seenBanners.some(id => id === banner.id)) {
         continue;
       }
 
+      if (banner.startTime > Date.now()) {
+        nextBanner = nextBanner === -1 ? banner.startTime : Math.min(nextBanner, banner.startTime);
+        continue;
+      }
+
+      console.log(JSON.stringify(banner));
       alert.show(banner.message,
       {
         onOpen: () => dispatch(showBanner(banner.id)),
         onClose: () => dispatch(hideBanner(banner.id))
       });
     }
-  }, [banners]);
+
+    if (nextBanner !== -1) {
+      const timeoutId = setTimeout(() => { dispatch(triggerBannerRedraw()); }, nextBanner - Date.now());
+      return () => { clearTimeout(timeoutId) };
+    }
+  }, [banners, bannerRedrawTrigger]);
 
   return (
     <Router>

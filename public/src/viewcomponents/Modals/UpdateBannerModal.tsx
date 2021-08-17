@@ -11,7 +11,7 @@ export const ModalType = 'UPDATE_BANNER_MODAL';
 
 export default (props: any): JSX.Element | null => {
 
-  const banner = useSelector<GlobalStore, Banner | undefined>(store => store.banners.find(banner => banner.id === props.id));
+  const banner = useSelector<GlobalStore, Banner | undefined>(store => store.banners.banners.find(banner => banner.id === props.id));
 
   const [message, setMessage] = useState(banner?.message);
   const [startDate, setStartDate] = useState(new Date(banner?.startTime ?? new Date().getTime()));
