@@ -27,7 +27,8 @@ left join
   (select *
    from user_events
    where date(user_events.time) > (current_date - '1 year'::interval)) u on q.id = u.queue_id
-where u.user_id is null;
+where u.user_id is null
+order by 1;
 
 \echo '\n\n\nGetting the queues that has had no entries during the last 24 months, candidates for hide/delete'
 select q.name
@@ -36,35 +37,13 @@ left join
   (select *
    from user_events
    where date(user_events.time) > (current_date - '2 year'::interval)) u on q.id = u.queue_id
-where u.user_id is null;
+where u.user_id is null
+order by 1;
 
 \echo '\n\n\nGetting the queues that has had no entries ever, candidates for delete'
 select q.name
 from queues q
 left join user_events u on q.id = u.queue_id
-where u.user_id is null;
+where u.user_id is null
+order by 1;
 
-/*
-May 2021 list
- PPM
- Beslut
- Automat
- DD2419
- Xmlpub
- Dbtek
- OOP
- MI
- pallinda
- maskin
- IR
- Sprakt
- Sudata
- DD2380
- DM2518
- PDC Summer School
- prgciteh
- DT1130
- Semant
- DD1346
- Qmisk
- */
