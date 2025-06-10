@@ -68,7 +68,7 @@ export default (): JSX.Element | null => {
           </p>
           <h4 id="goldenStar" style={{color: '#EEB868'}}>Golden <Star color="#EEB868" /></h4>
           <p>
-            If a preson has a golden star next to their name, that means that person is you.
+            If a person has a golden star next to their name, that means that person is you.
           </p>
           <h4 id="green" className="text-success">Green</h4>
           <p>
